@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %5p [%c] %m%n" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <logger name="java.sql" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </logger>
+          <!-- log SQL with timing information, post execution -->
+        <logger name="jdbc.sqltiming" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </logger>
+        <logger name="org.springframework" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </logger>
+        <logger name="org.springframework.scheduling" >
+    		<level value="info" />
+		</logger>
+		<logger name="org.springframework.session.web.http.SessionRepositoryFilter.SESSION_LOGGER" level="INFO" additivity="false" >
+    		<AppenderRef ref="console" />
+		</logger>
+		<logger name="org.springframework.scheduling" level="INFO" additivity="false" >
+			<AppenderRef ref="console" />
+		</logger>
+		
+		<logger name="com.soas.controller" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </logger>
+        <logger name="com.soas.api" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </logger>
+        <logger name="com.soas.service" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </logger>
+        <logger name="com.soas.aop" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </logger>
+        <logger name="com.soas.exception" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </logger>
+        <logger name="com.soas.listner" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </logger>
+        <logger name="com.soas.interceptor" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </logger>
+        <logger name="com.soas.initializer" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </logger>
+        <logger name="com.soas.security" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </logger>
+        <logger name="com.soas.util" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </logger>
+
+        <Root level="ERROR">
+            <AppenderRef ref="console" />
+        </Root>
+    </Loggers>
+</Configuration>

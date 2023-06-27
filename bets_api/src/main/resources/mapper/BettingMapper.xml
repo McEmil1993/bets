@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="BettingMapper">
+
+    
+    <insert id="insertCasinoBet">
+        INSERT KP_CSN_BET_HIST (TYPE, MBR_IDX, HLD_MNY, BET_MNY, RSLT_MNY, PRD_ID, GAME_ID, TRX_ID)
+        VALUES ('B', #{memberIdx}, #{holdMoney}, #{betMoney}, - #{betMoney}, #{productId}, #{gameId}, #{transactionId})
+    </insert>
+
+
+    <insert id="insertCasinoBonus">
+        INSERT KP_CSN_BET_HIST (TYPE, MBR_IDX, HLD_MNY, BET_MNY, RSLT_MNY, PRD_ID, GAME_ID, TRX_ID)
+        VALUES (#{type}, #{memberIdx}, #{holdMoney}, 0, #{amount}, #{productId}, 0, #{transactionId})
+    </insert>
+
+
+    <insert id="insertSlotBet">
+        INSERT KP_SLOT_BET_HIST (TYPE, MBR_IDX, HLD_MNY, BET_MNY, RSLT_MNY, PRD_ID, GAME_ID, TRX_ID)
+        VALUES ('B', #{memberIdx}, #{holdMoney}, #{betMoney}, - #{betMoney}, #{productId}, #{gameId}, #{transactionId})
+    </insert>
+
+
+    <insert id="insertSlotBonus">
+        INSERT KP_SLOT_BET_HIST (TYPE, MBR_IDX, HLD_MNY, BET_MNY, RSLT_MNY, PRD_ID, GAME_ID, TRX_ID)
+        VALUES (#{type}, #{memberIdx}, #{holdMoney}, 0, #{amount}, #{productId}, 0, #{transactionId})
+    </insert>
+
+
+    <insert id="insertEsptBet">
+        INSERT KP_ESPT_BET_HIST (TYPE, MBR_IDX, HLD_MNY, BET_MNY, RSLT_MNY, PRD_ID, GAME_ID, TRX_ID)
+        VALUES ('B', #{memberIdx}, #{holdMoney}, #{betMoney}, - #{betMoney}, #{productId}, #{gameId}, #{transactionId})
+    </insert>
+
+
+    <insert id="insertEsptBonus">
+        INSERT KP_ESPT_BET_HIST (TYPE, MBR_IDX, HLD_MNY, BET_MNY, RSLT_MNY, PRD_ID, GAME_ID, TRX_ID)
+        VALUES (#{type}, #{memberIdx}, #{holdMoney}, 0, #{amount}, #{productId}, 0, #{transactionId})
+    </insert>
+
+
+    <update id="updateCasinoBet">
+        UPDATE KP_CSN_BET_HIST
+        SET TYPE = #{type},
+            RSLT_MNY = RSLT_MNY + #{addMoney},
+            MOD_DTM = NOW()
+        WHERE TRX_ID = #{transactionId}
+    </update>
+
+
+    <update id="updateSlotBet">
+        UPDATE KP_SLOT_BET_HIST
+        SET TYPE = #{type},
+            RSLT_MNY = RSLT_MNY + #{addMoney},
+            MOD_DTM = NOW()
+        WHERE TRX_ID = #{transactionId}
+    </update>
+
+    <update id="updateEsptBet">
+        UPDATE KP_ESPT_BET_HIST
+        SET TYPE = #{type},
+            RSLT_MNY = RSLT_MNY + #{addMoney},
+            MOD_DTM = NOW()
+        WHERE TRX_ID = #{transactionId}
+    </update>
+
+
+    <select id="selectDelayBetList" resultType="CustomMap">
+        <![CDATA[
+        SELECT KPI.TYPE     AS game_type,
+        T1.*
+        FROM (SELECT *
+        FROM KP_CSN_BET_HIST
+        UNION
+        SELECT *
+        FROM KP_SLOT_BET_HIST
+        UNION
+        SELECT *
+        FROM KP_ESPT_BET_HIST    ) T1
+        LEFT JOIN
+        KP_PRD_INF KPI
+        ON KPI.PRD_ID = T1.PRD_ID
+        WHERE T1.TYPE = 'B'
+        AND DATE_ADD(T1.REG_DTM, INTERVAL 2 MINUTE) <= NOW()
+        ]]>
+    </select>
+
+
+    <update id="updateLastDepositBet">
+        UPDATE member_money_charge_history
+        SET
+        <if test="!@com.soas.util.CommonUtil@isEmpty(casinoBetMoney)">
+            casino_bet_money = casino_bet_money + #{casinoBetMoney}
+        </if>
+        <if test="!@com.soas.util.CommonUtil@isEmpty(slotBetMoney)">
+            slot_bet_money = slot_bet_money + #{slotBetMoney}
+        </if>
+        <if test="!@com.soas.util.CommonUtil@isEmpty(esptBetMoney)">
+            esports_bet_money = esports_bet_money + #{esptBetMoney}
+        </if>
+        <if test="!@com.soas.util.CommonUtil@isEmpty(hashBetMoney)">
+            hash_bet_money = hash_bet_money + #{hashBetMoney}
+        </if>
+        WHERE member_idx = #{memberIdx} AND status = 3 ORDER BY update_dt DESC LIMIT 1;
+
+    </update>
+
+    <update id="updateBetPlus">
+        INSERT INTO tb_user_pay_back_info (member_idx) VALUES (#{memberIdx}) ON DUPLICATE KEY UPDATE tot_bet_money = IF(charge > 0 , tot_bet_money + #{betMoney}, tot_bet_money);
+    </update>
+
+
+    <insert id="insertHashBet">
+        INSERT INTO OD_HASH_BET_HIST (TYPE, MBR_IDX, HLD_MNY, BET_MNY, RSLT_MNY, PRD_TYPE, WAVE)
+        VALUES ('B', #{memberIdx},  #{holdMoney}, #{betMoney}, - #{betMoney}, #{productType}, #{wave})
+    </insert>
+
+
+    <update id="updateHashBet">
+        UPDATE OD_HASH_BET_HIST
+        SET TYPE = #{type},
+            RSLT_MNY = RSLT_MNY + #{addMoney},
+            MOD_DTM = NOW()
+        WHERE PRD_TYPE = #{productType}
+        AND   WAVE = #{wave}
+    </update>
+
+
+    <select id="updateLoseHashBet">
+        <![CDATA[
+        UPDATE OD_HASH_BET_HIST
+        SET TYPE = 'L',
+            MOD_DTM = NOW()
+        WHERE TYPE = 'B'
+        AND DATE_ADD(REG_DTM, INTERVAL 2 MINUTE) <= NOW()
+        ]]>
+    </select>
+
+    <insert id="insertCashLog">
+        /* BettingMapper.insertCashLog */
+        -- ac_code : 3 (배팅), 7 (배팅결과)
+        -- acType : M(차감), P(증감)
+        -- comment : 제품 한글명
+        INSERT INTO t_log_cash (member_idx, ac_code, ac_idx, r_money, be_r_money, af_r_money, point, be_point, af_point, m_kind, coment)
+        VALUES (#{memberIdx}, #{acCode}, #{acIdx}, ABS(#{money}), #{holdMoney}, #{holdMoney} + #{money}, 0, #{holdPoint}, #{holdPoint}, #{acType}, #{comment} )
+    </insert>
+
+    <select id="selectKplayBet" resultType="CustomMap">
+        SELECT *
+        FROM (SELECT CSN_BET_IDX AS TTL_BET_IDX, TRX_ID
+              FROM KP_CSN_BET_HIST
+              UNION
+              SELECT SLOT_BET_IDX AS TTL_BET_IDX, TRX_ID
+              FROM KP_SLOT_BET_HIST
+              UNION
+              SELECT SLOT_BET_IDX AS TTL_BET_IDX, TRX_ID
+              FROM KP_ESPT_BET_HIST) T1
+        WHERE T1.TRX_ID = #{transactionId}
+    </select>
+
+
+	<select id="selectHLHashBet" resultType="Integer">
+		SELECT  IFNULL(HS.HASH_BET_IDX,count(HS.HASH_BET_IDX)) as idx
+		FROM
+		OD_HASH_BET_HIST HS
+		WHERE HS.MBR_IDX = #{memberIdx}
+		AND HS.PRD_TYPE = #{productType}
+		AND HS.WAVE = #{wave}
+		AND HS.BT_TYPE = #{betting_type}
+		AND HS.BT_TYPE_LB = #{betting_type_label}
+	</select>
+
+	<select id="selectRTHashBet" resultType="Integer">
+		SELECT  IFNULL(HS.HASH_BET_IDX,count(HS.HASH_BET_IDX)) as idx
+		FROM
+		OD_HASH_BET_HIST HS
+		WHERE HS.MBR_IDX = #{memberIdx}
+		AND HS.PRD_TYPE = #{productType}
+		AND HS.WAVE = #{wave}
+
+	</select>
+
+	<select id="selectBRHashBet" resultType="Integer">
+		SELECT  IFNULL(HS.HASH_BET_IDX,count(HS.HASH_BET_IDX)) as idx
+		FROM
+		OD_HASH_BET_HIST HS
+		WHERE HS.MBR_IDX = #{memberIdx}
+		AND HS.PRD_TYPE = #{productType}
+		AND HS.WAVE = #{wave}
+		AND HS.CH_CODE = #{channel_code}
+	</select>
+	
+	<insert id="insertOdHashBet" parameterType="hashMap">
+		INSERT INTO OD_HASH_BET_HIST (TYPE, MBR_IDX, HLD_MNY, BET_MNY, RSLT_MNY,
+		PRD_TYPE, WAVE,CH_CODE,BT_TYPE,BT_TYPE_LB)
+		VALUES ('B', #{memberIdx}, #{holdMoney}, #{betMoney}, - #{betMoney},
+		#{productType}, #{wave}, #{channel_code}, #{betting_type}, #{betting_type_label})
+		
+		<selectKey keyProperty="id" resultType="Integer">
+    		SELECT LAST_INSERT_ID()
+  		</selectKey>
+	</insert>
+	
+	<update id="updateOdBetHashBet">
+		UPDATE OD_HASH_BET_HIST SET
+		HLD_MNY = #{holdMoney},
+		BET_MNY = BET_MNY +  #{betMoney},
+		RSLT_MNY = RSLT_MNY - #{betMoney},
+		MOD_DTM = NOW()
+		WHERE HASH_BET_IDX = #{hash_bet_idx}
+		
+	</update>
+	
+	<update id="updateOdRewardHashBet">
+		UPDATE OD_HASH_BET_HIST SET
+		TYPE = #{type},
+		RSLT_MNY = RSLT_MNY + #{addMoney},
+		MOD_DTM = NOW()
+		WHERE HASH_BET_IDX = #{hash_bet_idx}
+		
+	</update>
+</mapper>

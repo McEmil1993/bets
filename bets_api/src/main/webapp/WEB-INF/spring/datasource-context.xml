@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<!-- Mysql DB 설정 -->
+	<bean id="mysql.dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    	<qualifier value="dataSourceMysql" />
+        <property name="driverClassName" value="${Globals.Mysql.DriverClassName}"/>
+        <property name="url" value="${Globals.Mysql.Url}" />
+        <property name="username" value="${Globals.Mysql.Username}"/>
+		<property name="password" value="${Globals.Mysql.Password}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="10000" />
+        <property name="testWhileIdle" value="true" />
+        <property name="numTestsPerEvictionRun" value="3" />
+        <property name="poolPreparedStatements" value="true" />
+        <property name="initialSize" value="15" />
+        <property name="maxActive" value="15" />
+        <property name="maxIdle" value="15" />
+        <property name="maxWait" value="-1" />
+        <property name="defaultAutoCommit" value="false" />
+    </bean>
+
+</beans>

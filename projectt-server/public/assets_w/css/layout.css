@@ -1,0 +1,507 @@
+@charset "utf-8";
+#wrap {width:100%; overflow:hidden;}
+
+/*-------------------------------------------------------------------------------------*
+ *  Header                                                                             *
+ *-------------------------------------------------------------------------------------*/
+.header_wrap {float:left; width:100%; overflow:hidden;}
+
+.header_box_wrap{float:left; width:100%; height:70px; overflow:hidden; background:#333333;}
+.header_box{width:1860px; margin:0 auto; transition:all 0.5s;}
+
+.gnb_wrap{float:left; width:100%; height:40px; overflow:hidden; background:#009dd9;}
+.gnb_box{width:1860px; height:40px; overflow:hidden; margin:0 auto; display:flex; align-items:center; justify-content:space-between; transition:all 0.5s;}
+
+.logo{float:left; line-height:70px; margin:0 100px 0 0; position:relative; transition:all 0.5s;}
+.m_game_open{display:none;}
+.m_my_open{display:none;}
+
+.game{float:left;}
+.game li{float:left; margin: 0 60px 0 0; line-height:74px; transition:all 0.5s;}
+.game li:last-child{margin:0;}
+.game li a{display:block; font-size:18px; letter-spacing:-1pt; font-family:'GmarketSans'; font-weight:300; color:#ffffff; transition:all 0.5s;}
+@media (hover: hover) {
+	.game li a:hover{color:#00c8d3;}
+}
+
+.my{float:left;}
+.my li{float:left; color:#ffffff; margin: 0 40px 0 0; font-size:14px; font-weight:500; line-height:28px; transition:all 0.5s;}
+.my li a{color:#ffffff; font-size:14px;}
+.my_btn{display:inline-block; min-width:100px; height:40px; line-height:40px; padding:0 10px 0 10px; text-align:center; font-size:14px; font-weight:500; color:#ffffff; background:#009dd9; border:1px solid #009dd9; border-radius:0px; transition:all 0.5s;}
+.m_my_btn{display:inline-block; width:100%; height:40px; line-height:40px; padding:0 10px 0 10px; text-align:center; font-size:14px; font-weight:500; color:#ffffff; border:1px solid #009dd9; background-color:#009dd9; border-radius:0px; transition:all 0.5s;}
+
+@media (hover: hover) {
+	.my_btn:hover{background:#ffffff; color:#009dd9;}
+	.m_my_btn:hover{background:#ffffff; color:#009dd9;}
+}
+
+.gnb {float:right;}
+.gnb li {float:left; margin: 0 0 0 30px; transition:all 0.5s;}
+.gnb li a{font-size:14px; letter-spacing:-1pt; font-weight:400; color:#ffffff;}
+@media (hover: hover) {
+	.gnb li a:hover{color:#00e4ff;}
+}
+
+.login {float:right; margin:15px 0 0 0;}
+.login ul li {float:left; margin:0 0 0 5px; line-height:40px; font-size:16px; color:#ffffff; letter-spacing:-1px;}
+.input_login  {background-color:#5c5c5c; border:1px solid #5c5c5c; padding:4px 0 4px 10px; max-width:130px; height:40px; border-radius:0px; color:#bbdbff; font-size:12px; margin:-5px 0 0 0;}
+.input_login::-webkit-input-placeholder    {color:#bbdbff; font-size:13px; letter-spacing:0pt;}
+.input_login:-ms-input-placeholder         {color:#bbdbff; font-size:13px; letter-spacing:0pt;}
+
+.m_input_login  {background-color:#5c5c5c; border:1px solid #5c5c5c; padding:4px 0 4px 15px; min-width:100%; height:40px; border-radius:0px; color:#ffffff; font-size:12px;}
+.m_input_login::-webkit-input-placeholder    {color:#bbdbff; font-size:13px; letter-spacing:0pt;}
+.m_input_login:-ms-input-placeholder         {color:#bbdbff; font-size:13px; letter-spacing:0pt;}
+
+@media screen and (max-width:1860px) {
+	.header_box{width:98%;}
+	.gnb_box{width:98%;}
+	.logo{margin:0 40px 0 0;}
+}
+
+@media screen and (max-width:1640px) {
+	.logo{margin:0 30px 0 0;}
+	.my li {margin: 0 30px 0 0;}
+	.my_btn{min-width:70px; font-size:14px;}
+	.input_login{max-width:110px;}
+}
+
+@media screen and (max-width:1440px) {
+	.game li {margin: 0 25px 0 0;}
+	.gnb li {margin: 0 0 0 25px;}
+	.big_t{display:none;}
+}
+
+@media screen and (max-width:1240px) {
+.logo{width:100%; text-align:center;}
+.game{display:none;}
+.gnb_wrap{height:auto;}
+.gnb_box{height:100%;}
+.gnb{display:none;}
+.m_game_open{display:inline-block; position:absolute; left:10px;}
+.m_my_open{display:inline-block; position:absolute; right:10px;}
+
+.my{width:100%; text-align:center;}
+.my ul{display:inline-block;}
+.my ul li{margin: 0 20px 0 20px;}
+.big_t{display:inline;}
+}
+
+@media screen and (max-width:768px) {
+.gnb_box{width:100%;}
+.my{width:100%; padding:0.5%}
+.my ul{display:flex; flex-wrap: wrap; justify-content: space-around;  }
+.my ul li{margin:0;width:49%; background-color:#127ad5; border:1px solid #0e6ec2; margin:0.5%; font-size:11px;}
+.my ul li a {font-size:11px;}
+}
+
+@media screen and (max-width:375px) {
+}
+
+/*-------------------------------------------------------------------------------------*
+ *  Contents                                                                           *
+ *-------------------------------------------------------------------------------------*/
+.title_wrap {width:100%; background:rgba(0,0,0,0.2); overflow:hidden;}
+.title {width:1500px; margin:0 auto; text-align:center; line-height:70px; font-family:'GmarketSans'; font-weight:500; color:#ffffff; font-size:26px; text-shadow:2px 0 3px rgba(0,0,0,0.3); transition:all 0.5s;}
+
+.s_title1 {border-left:1px solid #00e4ff; padding:5px 5px 5px 10px; font-family:'GmarketSans'; font-weight:500; color:#ffffff; font-size:20px; text-shadow:2px 0 3px rgba(0,0,0,0.3); transition:all 0.5s;}
+
+.contents_wrap{float:left; width:100%; margin:40px 0 0 0; padding:0 0 20px 0; transition:all 0.5s;}
+.contents_box {width:1500px; margin:0 auto;}
+.contents_box::after{content:''; display: block; clear: both;}
+
+.con_box00 {float:left; width:100%; margin:0 0 0 0;}
+.con_box05 {float:left; width:100%; margin:5px 0 0 0;}
+.con_box10 {float:left; width:100%; margin:10px 0 0 0;}
+.con_box20 {float:left; width:100%; margin:20px 0 0 0;}
+.con_box30 {float:left; width:100%; margin:30px 0 0 0;}
+.con_box40 {float:left; width:100%; margin:40px 0 0 0;}
+.con_box50 {float:left; width:100%; margin:50px 0 0 0;}
+.con_box60 {float:left; width:100%; margin:60px 0 0 0;}
+
+/* .game_list{float:left; width:100%;}
+.game_list li{float:left; margin:0 30px 30px 0; cursor:pointer;}
+.game_list li:nth-child(3n){margin:0 0 30px 0;}
+.game_list li a{display:block; transition:all 0.9s; background:#4b4b4b;}
+.game_list li a img{width:100%; transition:all 0.5s;}
+.game_list li:hover a{background:#0087ba;} */
+
+@media screen and (max-width:1400px) {
+	.title {width:100%; padding:0 10px; line-height:60px;}
+	
+	.contents_wrap{margin:20px 0 0 0;}
+	.contents_box {width:100%;padding:0 10px;}
+
+	/* .game_list li{width:33%; margin:0 0.5% 0.5% 0%;}
+	.game_list li:nth-child(3n){margin:0 0 0.5% 0;} */
+}
+
+@media screen and (max-width:768px) {
+	.contents_box {padding:0 5px;}
+	.title{line-height:50px; font-size:22px;}
+	
+	/* .game_list li{width:49%; margin:0 1% 1% 0%;}
+	.game_list li:nth-child(3n){margin:0 1% 1% 0%;}
+	.game_list li:nth-child(2n){margin:0 0 1% 0;} */
+}
+
+/*-------------------------------------------------------------------------------------*
+ *  Footer                                                                             *
+ *-------------------------------------------------------------------------------------*/
+.footer_wrap {float:left; width:100%; margin:0 0 0 0; padding:40px 0 36px 0; border-top:2px solid #009dd9; background:#404040; overflow:hidden;}
+.footer_box {width:1500px; margin:0 auto; text-align:center; color:#888888; font-size:12px; line-height:2.1; font-family:'GmarketSans';}
+.footer_customer{width: 100%; margin: 0 0 20px 0; text-align: center;}
+.footer_customer ul{display:inline-block; text-align:center;}
+.footer_customer li{float:left;}
+.footer_customer_font{display:inline-block; font-family:'GmarketSans'; font-weight:500; font-size:20px; color:#ffffff; padding:0 15px;}
+.footer_customer #domain_mobile img{display: none;}
+@media screen and (max-width:1440px) {
+	.footer_box {width:100%; padding:0 10px;}
+	.footer_box>img{width:80%;}
+	.footer_customer img{width:150px; transition:all 0.5s;}
+	.footer_customer #domain_mobile img{display:block; width:90%; margin: 5%;}
+	.footer_customer_font{font-size:16px; padding:0 20px;}
+}
+
+@media screen and (max-width:768px) {
+	.footer_box{font-size:10px;}
+	.footer_customer{margin:0 0 0 0;}
+	.footer_customer img{width:100px;}
+	.footer_customer #domain_mobile img{display:block; width:100%; margin: -5% 0 5% 0;}
+	.footer_customer_font{padding:0 10px;}
+}
+
+@media screen and (max-width:412px) {
+	.footer_customer ul{display:flex; justify-content: center;}
+}
+
+/*-------------------------------------------------------------------------------------*
+ *  Main                                                                               *
+ *-------------------------------------------------------------------------------------*/
+.main_game_wrap {float:left; width:100%; margin:30px 0 0 0; padding:0 0 40px 0;}
+.main_game_box {width:1500px; margin:0 auto;}
+
+/* 다음게임안내 */
+.main_game_title{float:left; width:100%; padding:10px 0 10px 0; border:1px solid #4d4d4d; display:flex; align-items: center; justify-content: center; transition:all 0.5s;}
+.game_title_l{display:flex; align-items:center;}
+.game_title_r{display:flex; align-items:center;}
+
+.l_next{font-family:'GmarketSans'; font-weight:500; font-size:16px; color:#ffffff; transition:all 0.5s;}
+.l_sports{margin:0 30px; text-align:center; transition:all 0.5s;}
+.l_sports img{width:30px; transition:all 0.5s;}
+.l_time{font-family:'GmarketSans'; font-weight:500; font-size:16px; color:#bcbcbc; transition:all 0.5s;}
+.l_time_font{color:#ffffff;}
+
+.team_logo img{width:36px; transition:all 0.5s;}
+.r_team_1{display:flex; align-items: center;}
+.r_team_2{display:flex; align-items: center;}
+.team_name{font-family:'GmarketSans'; font-weight:500; font-size:16px; color:#009dd9; padding:0 20px; transition:all 0.5s;}
+.r_vs{margin:0 30px; text-align:center; transition:all 0.5s;}
+.r_text{font-family:'GmarketSans'; font-weight:500; font-size:16px; color:#bcbcbc; transition:all 0.5s;}
+
+/* 메인스포츠 퀵버튼 */
+.main_game_choice{float:left; width:100%; margin:30px 0 0 0; font-family:'GmarketSans'; font-weight:300; font-size:18px; color:#ffffff; transition:all 0.5s;}
+
+.main_game_list{float:left; width:100%; margin:20px 0 0 0; transition:all 0.5s;}
+.main_game_list li{float:left; margin:0 30px 0 0; transition:all 0.1s;}
+.main_game_list li:nth-child(3n){margin:0 0 0 0;}
+.main_game_list li a{display:block; background:#3e3e3e; transition:all 0.9s;}
+.main_game_list li a img{width:100%; transition:all 0.5s;}
+.main_game_list li:hover a{background:#0087ba;}
+
+/* 오늘의핫경기 */
+.main_best_wrap{float:left; width:100%; padding:50px 0 30px 0; background:#333333;}
+.main_best_box{width:1500px; margin:0 auto;}
+.main_game_best_title{float:left; width:100%; margin:0 0 0 0; font-family:'GmarketSans'; font-weight:300; font-size:18px; color:#ffffff; transition:all 0.5s;}
+.best_title_right{float:right;}
+.arrow-prev,.arrow-next {position: relative; margin-right:5px; cursor:pointer;}
+
+.arrow-prev::after {
+    position: absolute;
+	left:-60px;
+    content: '';
+    width: 15px; /* 사이즈 */
+    height: 15px; /* 사이즈 */
+    border-top: 5px solid #cccccc; /* 선 두께 */
+    border-right: 5px solid #cccccc; /* 선 두께 */
+    transform: rotate(225deg); /* 각도 */
+	transition:all 0.5s;
+}
+.arrow-next::after {
+    position: absolute;
+	left:-20px;	
+    content: '';
+    width: 15px; /* 사이즈 */
+    height: 15px; /* 사이즈 */
+    border-top: 5px solid #cccccc; /* 선 두께 */
+    border-right: 5px solid #cccccc; /* 선 두께 */
+    transform: rotate(45deg); /* 각도 */
+	transition:all 0.5s;
+}
+.arrow-prev:hover::after,.arrow-next:hover::after{border-top:5px solid #0087ba; border-right:5px solid #0087ba;}
+
+.main_game_best{float:left; width:100%; margin:10px 0 0 0;}
+.game_best{float:left; width:480px; height:80px; margin:0 30px 20px 0; border:1px solid rgba(0,0,0,0); position:relative; transition:all 0.3s;}
+.game_best a{display:block; width:100%; height:100%;}
+.game_best:hover{border:1px solid #0087ba;}
+.game_best:nth-child(3n){margin:0 0 20px 0;}
+.game_best_l{float:left; width:18.75%; height:100%; background:#434343; display:flex; align-items:center; justify-content:center;transition:all 0.3s;}
+.game_best_l img{transition:all 0.3s;}
+.game_best_r{float:left; width:81.25%; height:100%; background:#4d4d4d; display:flex; align-items:center; justify-content:center;flex-direction: column; transition:all 0.3s;}
+
+.best_date{font-family:'GmarketSans'; font-weight:500; font-size:12px; color:#949494; transition:all 0.5s;}
+.best_match{display: flex; width:100%; margin:5px 0 0 0;}
+.bm_team_logo img{width:22px; transition:all 0.5s;}
+.bm_team_1{display:flex; align-items: center; width:45%; justify-content: flex-end;}
+.bm_team_2{display:flex; align-items: center; width:45%; justify-content: flex-start;}
+.bm_team_name{font-family:'GmarketSans'; font-weight:500; font-size:14px; color:#ffffff; padding:0 10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:all 0.5s;}
+.bm_vs{width:10%; text-align:center; transition:all 0.5s;}
+
+/* 메인게시판 */
+.main_board_wrap{float:left; width:100%; padding:50px 0 50px 0;}
+.main_board_box{width:1500px; margin:0 auto;}
+.board{float:left; width:480px; border-radius:0px; margin:0 30px 0 0;}
+.board:last-child{margin:0 0 0 0;}
+.board_title{font-family:'GmarketSans'; font-weight:500; font-size:20px; color:#ffffff; padding:0 0 10px 0;}
+.board_box{padding:30px 30px; height:250px; overflow:hidden; background:#3b3b3b;}
+.myTable{table-layout:fixed;}
+.board_box td{font-family:'GmarketSans'; font-weight:300; color:#bbbbbb; font-size:16px; line-height:40px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.board_box td:first-child{color:#9bcaff;}
+.board_font1{color:#009dd9; font-weight:700;}
+
+@media screen and (max-width:1580px) {
+	.main_game_box{width:100%; padding:0 10px 0 10px;}
+	.main_best_box{width:100%; padding:0 10px 0 10px;}
+	
+	.main_game_list li{width:32%; margin:0 2% 0 0;}
+	.main_game_list li:nth-child(3n){margin:0 0 0 0;}
+	
+	.game_best{width:32%; margin:0 2% 2% 0;}
+	.game_best:nth-child(3n){margin:0 0 2% 0;}
+	
+	.main_board_box{width:100%; padding:0 10px 0 10px;}
+	.board{width:32%; margin:0 2% 2% 0;}
+}
+
+@media screen and (max-width:1400px) {
+	.main_board_box{margin:0 auto 40px;}
+	.board_box{padding:20px 20px; height:220px;}
+	.board_box td{font-size:14px;}
+}
+
+@media screen and (max-width:1240px) {
+	.main_game_title{flex-direction: column;}
+	.game_title_l{width:100%;}
+	.game_title_r{margin:10px 0 0 0; width:100%;}
+	
+	.l_next{width:47%; display:flex; justify-content: flex-end;}
+	.l_time{width:47%; display:flex; justify-content: flex-start;}
+	.l_sports{width:6%; margin:0;}
+
+	.r_text{display:none;}
+
+	.r_team_1{width:47%; justify-content: flex-end;}
+	.r_team_2{width:47%; justify-content: flex-start;}
+	.team_name{padding:0 10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+	.r_vs{width:6%; margin:0;}
+	
+	.main_game_choice{font-size:16px;}
+	.main_game_list li{width:100%; margin:0 0 1% 0;}
+	.main_game_list li:nth-child(3n){margin:0 0 1% 0;}
+	
+	.main_best_wrap{padding:30px 0 20px 0;}
+	.game_best{width:49%; margin:0 2% 1% 0;}
+	.game_best:nth-child(3n){margin:0 2% 1% 0;}
+	.game_best:nth-child(2n){margin:0 0 1% 0;}
+
+	.main_game_best_title{font-size:16px;}
+	.arrow-prev::after {
+		left:-50px;
+		width: 10px; /* 사이즈 */
+		height: 10px; /* 사이즈 */
+	}
+	.arrow-next::after {
+		left:-20px;	
+		width: 10px; /* 사이즈 */
+		height: 10px; /* 사이즈 */
+	}
+	
+	.main_board_wrap{padding:30px 0 20px 0;}	
+	.board{width:49%;}
+	.board:nth-child(1){margin:0 0 2% 0;}
+	.board:first-child{width:100%;}
+}
+
+@media screen and (max-width:1023px) {	
+	.board_title{padding:0 0 5px 0; font-size:16px;}
+	
+}
+
+@media screen and (max-width:768px) {
+	.l_next{width:45%;}	
+	.l_time{width:45%;}	
+	.l_sports{width:10%;}
+	
+	.r_team_1{width:45%;}	
+	.r_team_2{width:45%;}	
+	.r_vs{width:10%;}
+	
+	.l_sports img{width:24px;}
+	.team_logo img{width:30px;}
+	.l_next{font-size:14px;}
+	.l_time{font-size:14px;}
+	.team_name{font-size:14px;}
+
+	.game_best_l{position:absolute; width:40px; height:40px; border-radius:0 0 5px 0; left:0; top:0;}
+	.game_best_l img{width:80%;}
+	.game_best_r{width:100%;}
+	.best_match{margin:10px 0 0 0;}
+	.bm_team_name{padding:0 5px; font-size:12px;}
+
+	.board{width:100%; margin: 0 0 4% 0;}
+	.board:nth-child(1){margin:0 0 4% 0;}
+	.board_box{padding:10px 10px; height:200px;}
+	.board_box td{line-height:36px; font-size:12px;}
+}
+
+@media screen and (max-width:512px) {
+	.l_next span{display:none;}
+	.l_sports{margin:0 10px;}
+	
+	.game_best{width:100%; margin:0 0 1% 0;}
+	.game_best:nth-child(3n){margin:0 0 1% 0;}
+	.game_best:nth-child(2n){margin:0 0 1% 0;}
+	
+}
+
+@media screen and (max-width:375px) {
+	.l_sports img{width:20px;}
+	.team_logo img{width:26px;}
+	
+	.team_name{padding:0 5px; font-size:12px;}
+
+}
+
+/*-------------------------------------------------------------------------------------*
+ *  banner                                                                             *
+ *-------------------------------------------------------------------------------------*/
+.banner_wrap{float:left; width:100%; padding:40px 0 50px; background:#4f4f51 url(../images/bg_banner.png) left 100% top no-repeat; transition:all 0.5s;}
+.banner_box{width:1500px; margin:0 auto;}
+
+@media screen and (max-width:1800px) {
+	.banner_wrap{background:#4f4f51 url(../images/bg_banner.png) left 1000px top no-repeat;}
+}
+
+@media screen and (max-width:1580px) {
+	.banner_wrap{background:#4f4f51 url(../images/bg_banner.png) left 700px top no-repeat;}
+	.banner_box{width:100%; padding:0 10px 0 10px;}
+}
+
+@media screen and (max-width:1240px) {
+	.banner_wrap{background:#4f4f51 url(../images/bg_banner.png) left 500px top no-repeat;}
+}
+
+@media screen and (max-width:898px) {
+	.banner_wrap{padding:30px 0 30px 0;}
+}
+/*-------------------------------------------------------------------------------------*
+ *  out login                                                                          *
+ *-------------------------------------------------------------------------------------*/
+.join_box{max-width:900px; margin:0 auto;}
+.join_input{background-color:#191919; border:1px solid #3c3c3c; padding:4px 0 4px 5px; color:#efefef; font-size:14px; border-radius:2px; height:34px; width:69%; transition:all 0.5s;}
+
+/*-------------------------------------------------------------------------------------*
+ *  레이어팝업                                                                         *
+ *-------------------------------------------------------------------------------------*/
+
+ 
+/*-------------------------------------------------------------------------------------*
+ *  모달창(팝업)                                                                       *
+ *-------------------------------------------------------------------------------------*/
+
+
+/*-------------------------------------------------------------------------------------*
+ *  특별한                                                                             *
+ *-------------------------------------------------------------------------------------*/
+/* footer_btn */
+.footer_btn{position:fixed; text-align:center; z-index:999; transition: all 1s ease; display:none;}
+.footer_btn img{width:56px;}
+.footer_btn1{bottom:3%; left:20px;}
+.footer_btn2{bottom:3%; left:80px;}
+
+
+.point_tip{float:right; font-size:14px;}
+
+/* go-top */
+.go-top {position:fixed; right:20px; bottom:-10%; display:block; width:40px; height:40px; line-height:40px; font-size:1.375rem; text-align:center; background:#343434; color:#009dd9; border-radius:2px; z-index:999; border:1px solid #222; transition:all 1s;}
+.go-top.show{bottom:20px;}
+
+
+.your-class_slide_pc{overflow:hidden; width:100%; max-width:1920px; margin:0 auto;}
+.class_slide_pc img{width:100% !important;}
+
+/* 툴팁 */
+.tooltip {clear: both; position: absolute; display: none; max-width: 400px; color: var(--bgpointcolor2); background:var(--bgcolor2); border-top:1px solid var(--sport-border-color1); border-left:1px solid var(--sport-border-color1); font-weight:500; border-radius:2px; box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.3); font-size: 12px; padding: 6px 6px 6px 6px;}
+.tooltip:after {border: solid; border-color: #fefefe transparent; border-width: 0 8px 8px 8px; top: -8px; content: none; right: 3px; left: auto; position: absolute;}
+
+
+@media screen and (max-width:1023px) {
+
+}
+
+@media screen and (max-width:768px) {
+	.footer_btn{display:block;}
+	/* For mobile phones: */
+	[class*="col-"] {
+		width: 100%;  padding:0 10px 0 10px;
+	}
+	.point_tip{width:100%}
+}
+
+/*-------------------------------------------------------------------------------------*
+ *  검색바                                                                             *
+ *-------------------------------------------------------------------------------------*/
+ .search {border-bottom:1px solid rgba(255, 255, 255, 0.1); padding:0 5px;}
+ .search ul{height:50px; display:flex; align-items:center; justify-content: space-between; gap:5px;}
+ .search ul li:first-child{flex:1 1 calc(100% - 55px);}
+ .search ul li{flex:0 0 55px;}
+ .search ul li .input_search{background-image: url('../images/icon_search.png'); background-size: 18px auto; background-position:8px 50%; background-repeat:no-repeat; background-color:#383838; padding: 0 10px 0 34px; width:100%; box-sizing:border-box; height:32px; border-radius:0px; color:#ffffff; font-size:12px; }
+ /* .search ul li {display:inline-block; line-height:30px; font-size:16px; color:#ffffff; letter-spacing:-1px;} */
+ /* input[type="text"].input_search {background-image: url('../images/icon_search.png'); background-size: 18px; background-position:8px; background-repeat:no-repeat; background-color:#383838; float: left; padding: 0 10px 0 34px; width:180px; height:32px; border-radius:3px; color:#ffffff; font-size:12px; } */
+ /* .input_search  {background-color:#5c5c5c; border:1px solid #4b4b4b; padding: 0 10px; width:180px; height:32px; border-radius:3px; color:#ffffff; font-size:12px; } */
+  
+ .search_btn {display:inline-block; text-align:center; border-radius:0px; color:#fff; font-size:12px; font-weight:500; background:var(--bgpointcolor2); width:55px; padding: 0 10px; line-height:32px; transition: opacity 1s; cursor: pointer;}
+ @media (hover: hover) {
+	/* .search_btn:hover {background:rgba(0,0,0,0.3); color:#00c0b6;} */
+	.search_btn:hover {opacity:.5;}
+ }
+
+
+ /* search ajax (classic) */
+ .search_ajax{display:flex; align-items:center; justify-content: space-between; gap:5px; padding:5px;}
+ .search_ajax #league_name_ajax{flex:1 1 calc(100% - 55px); height:32px; line-height:32px; background:url(../images/icon_search.png) 8px 50% no-repeat #383838; background-size:18px auto; padding:0 10px 0 34px; border-radius:0px; font-size:12px;}
+ .search_ajax #league_name_ajax_button{flex:0 0 55px; height:32px; line-height: 32px; color:#fff; background:var(--bgpointcolor2); border-radius:0px; transition:opacity 1s; cursor: pointer;}
+
+ @media (hover: hover) {
+	.search_ajax #league_name_ajax_button:hover{opacity:.5;}
+ }
+
+
+
+
+
+
+
+
+
+
+
+/*-------------------------------------------------------------------------------------*
+ *  메인 팝업                                                                            *
+ *-------------------------------------------------------------------------------------*/
+.popup_wrap {position: fixed; left:0; top:0; width: 100%; height: 100%; z-index: 1000; background-color: #00000090;}
+.popup_content { position:absolute; left:0; top:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; gap:.5rem;}
+.popup_content_box{}
+.popup_content_box.hide{display:none;}
+.popup_content_box img {max-width: 100%; width:500px; max-height:600px;}
+.popup_content_box .popup_button {display: flex; align-items: center; justify-content: space-between; background: #3a3a3a;}
+.popup_content_box .popup_button a {display: block; padding: 8px; color: #fff; font-size: 14px; text-decoration: none;}

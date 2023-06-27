@@ -1,0 +1,42 @@
+@charset "utf-8";
+
+/*  ysk 틀 */
+
+/* 롤링 삭제 */
+.product_banner {display: flex; width:1484px; height:244px; padding:0 0 0 0; position:relative; right: 2px;}
+.product_banner .item_banner {float: left; margin: 2px;}
+
+/* 롤링 배너 */
+.product_rolling1_wrap {float:left; width:1484px; height:120px; padding:0 0 0 0; position:relative; right:2px;} 
+.product_rolling1_play {margin:0px auto; width:1484px;}
+.product_rolling1_play ul li {float:left;  background:#204d83; cursor:pointer; color:#ffffff;}
+.product_rolling1_play ul li a {color:#ffffff; font-size:10px;}
+
+.owl-carousel .owl-wrapper{position: relative; height:100px;  -webkit-transform: translate3d(0px, 0px, 0px);}
+.owl-carousel .owl-wrapper-outer{ text-align:center; overflow: hidden; position: relative; width: 100%;}
+.owl-carousel .owl-item{float: left;}
+
+.item a img:hover {box-shadow:1px 3px 5px rgba(0,0,0,0.5);}
+
+/* ysk 롤링 점 */
+.owl-theme .owl-controls{text-align: center;}
+.owl-theme .owl-controls.clickable .owl-buttons div:hover{filter: Alpha(Opacity=100);/*IE7 fix*/ opacity: 1; text-decoration: none;}
+.owl-theme .owl-controls .owl-page{display: inline-block; zoom: 1; *display: inline;/*IE7 life-saver */}
+.owl-theme .owl-controls .owl-page span{
+	display: block;
+	width: 50px;
+	height: 3px;
+	margin: 5px 7px;
+	filter: Alpha(Opacity=30);/*IE7 fix*/
+	opacity: 0.3;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	background: #126e51;
+}
+
+.owl-theme .owl-controls .owl-page.active span,
+.owl-theme .owl-controls.clickable .owl-page:hover span{
+	filter: Alpha(Opacity=100);/*IE7 fix*/
+	opacity: 1;
+}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<util:properties id="global" location="classpath:props/globals.local.properties"></util:properties>
+    
+    <!-- 환경설정 기본정보를 globals.properties 에서 참조하도록 propertyConfigurer 설정  -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+    	<property name="searchSystemEnvironment" value="true" />
+        <property name="locations">
+            <list>
+				<value>classpath:props/globals.local.properties</value>
+            </list>
+        </property>
+    </bean>
+
+	<!-- ********************* Pagination ********************* -->
+<!--    <bean id="textRenderer" class="com.pagination.service.DefaultPaginationRenderer"/>-->
+<!--    <bean id="renewalRenderer" class="com.pagination.service.RenewalPaginationRenderer"/>-->
+<!--    <bean id="paginationManager" class="com.pagination.service.DefaultPaginationManager">-->
+<!--        <property name="rendererType">-->
+<!--            <map>-->
+<!--                <entry key="text" value-ref="textRenderer"/>-->
+<!--                <entry key="renewal" value-ref="renewalRenderer"/> -->
+<!--            </map>-->
+<!--        </property>-->
+<!--    </bean>-->
+	<!-- ********************* /Pagination ********************* -->
+
+	<!-- ********************* File upload ********************* -->
+<!--	<bean id="spring.RegularCommonsMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">-->
+<!--		<property name="maxUploadSize" value="100000000" />-->
+<!--		<property name="maxInMemorySize" value="100000000" />-->
+<!--	</bean>-->
+<!--	<alias name="spring.RegularCommonsMultipartResolver" alias="multipartResolver" />-->
+	<!-- ********************* /File upload ********************* -->
+	
+</beans>

@@ -1,0 +1,197 @@
+<?php
+include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
+
+include_once(_BASEPATH . '/common/_common_inc_class.php');
+include_once(_DAOPATH . '/class_Admin_Common_dao.php');
+include_once(_DAOPATH . '/class_Admin_Member_dao.php');
+
+$UTIL = new CommonUtil();
+
+
+if(0 != $_SESSION['u_business']){
+    die();
+}
+//////// login check start
+include_once(_BASEPATH . '/common/login_check.php');
+//////// login check end
+
+
+$MEMAdminDAO = new Admin_Member_DAO(_DB_NAME_WEB);
+$db_conn = $MEMAdminDAO->dbconnect();
+
+if ($db_conn) {
+
+
+
+    $p_data['page'] = trim(isset($_REQUEST['page']) ? $_REQUEST['page'] : 1);
+    if ($p_data['page'] < 1) {
+        $p_data['page'] = 1;
+    }
+
+
+    $p_data['num_per_page'] = trim(isset($_REQUEST['v_cnt']) ? $_REQUEST['v_cnt'] : 50);
+    if ($p_data['num_per_page'] < 1) {
+        $p_data['num_per_page'] = 50;
+    }
+
+    $p_data['page'] = $MEMAdminDAO->real_escape_string($p_data['page']);
+    $p_data['num_per_page'] = $MEMAdminDAO->real_escape_string($p_data['num_per_page']);
+
+
+    $p_data['sql'] = " SELECT SUM(cnt) as CNT FROM ( ";
+    $p_data['sql'] .= "  SELECT ip, agent_hash, COUNT(*) as cnt FROM ( ";
+    $p_data['sql'] .= "     SELECT ip, agent_hash, member_idx, idx from member_login_history ";
+    $p_data['sql'] .= "     GROUP BY ip, agent_hash, member_idx ORDER BY idx desc ";
+    $p_data['sql'] .= " ) a GROUP BY a.ip, a.agent_hash HAVING cnt > 1) c ";
+
+    $db_dataArrCnt = $MEMAdminDAO->getQueryData($p_data);
+    $total_cnt = $db_dataArrCnt[0]['CNT'];
+
+
+    $p_data['page_per_block'] = _B_BLOCK_COUNT;
+    $p_data['start'] = ($p_data['page'] - 1) * $p_data['num_per_page'];
+
+    $total_page = ceil($total_cnt / $p_data['num_per_page']);        // 페이지 수
+    $total_block = ceil($total_page / $p_data['page_per_block']);     // 총 블럭 수
+    $block = ceil($p_data['page'] / $p_data['page_per_block']); // 현재 블럭
+    $first_page = ($p_data['page_per_block'] * ($block - 1)) + 1;       // 첫번째 페이지
+    $last_page = $p_data['page_per_block'] * $block;       // 마지막 페이지
+
+    if ($block >= $total_block)
+        $last_page = $total_page;
+
+    if ($total_cnt > 0) {
+        $p_data['sql'] = " SELECT d.login_datetime, d.ip, e.id, e.nick_name, e.`level`, e.money, e.`status` FROM ( ";
+        $p_data['sql'] .= "    SELECT c.* FROM ( ";
+        $p_data['sql'] .= "         SELECT ip, agent_hash, COUNT(*) as cnt FROM ( ";
+        $p_data['sql'] .= "             SELECT ip, agent_hash, member_idx, idx from member_login_history ";
+        $p_data['sql'] .= "             GROUP BY ip, agent_hash, member_idx ORDER BY idx desc ";
+        $p_data['sql'] .= "         ) a GROUP BY a.ip, a.agent_hash HAVING cnt > 1 ";
+        $p_data['sql'] .= "    ) b LEFT JOIN member_login_history c ON b.ip=c.ip AND b.agent_hash = c.agent_hash ";
+        $p_data['sql'] .= "    GROUP BY c.ip, c.agent_hash, c.member_idx ";
+        $p_data['sql'] .= " ) d LEFT JOIN member e ON d.member_idx = e.idx  ";
+        $p_data['sql'] .= " ORDER BY d.login_datetime DESC ";
+        $p_data['sql'] .= " LIMIT " . $p_data['start'] . ", " . $p_data['num_per_page'] . " ";
+
+        $db_dataArr = $MEMAdminDAO->getQueryData($p_data);
+    }
+
+
+    $MEMAdminDAO->dbclose();
+}
+?>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="ko">
+    <!--<![endif]-->
+
+<?php
+include_once(_BASEPATH . '/common/head.php');
+?>
+    <script>
+        $(document).ready(function () {
+            App.init();
+            FormPlugins.init();
+
+            $('ul.tabs li').click(function () {
+                var tab_id = $(this).attr('data-tab');
+
+                $('ul.tabs li').removeClass('current');
+                $('.tab-content').removeClass('current');
+
+                $(this).addClass('current');
+                $("#" + tab_id).addClass('current');
+            })
+        });
+    </script>
+    <body>
+        <div class="wrap">
+<?php
+$menu_name = "mem_list_multi";
+
+include_once(_BASEPATH . '/common/left_menu.php');
+
+include_once(_BASEPATH . '/common/iframe_head_menu.php');
+?>
+            <!-- Contents -->
+            <div class="con_wrap">
+
+                <div class="title">
+                    <a href="">
+                        <i class="mte i_group mte-2x vam"></i>
+                        <h4>다계정 사용자 로그</h4>
+                    </a>
+                </div>
+
+                <!-- list -->
+                <div class="panel reserve">       
+                    <div class="tline">
+                        <table class="mlist">
+                            <tr>
+                                <th>No</th>
+                                <th>일자</th>
+                                <th>IP</th>
+                                <th>아이디</th>
+                                <th>닉네임</th>
+                                <th>레벨</th>
+                                <th>머니</th>
+                                <th>상태</th>
+
+                            </tr>
+<?php
+if ($total_cnt > 0) {
+    $i = 0;
+    if (!empty($db_dataArr)) {
+        foreach ($db_dataArr as $row) {
+            $num = $p_data['num_per_page'] * ($p_data['page'] - 1) + $i;
+
+            $db_status = "";
+            switch ($row['status']) {
+                case 1: $db_status = "사용중";
+                    break;
+                case 2: $db_status = "정지";
+                    break;
+                case 3: $db_status = "탈퇴";
+                    break;
+                case 11: $db_status = "대기";
+                    break;
+            }
+            ?>
+                                        <tr onmouseover="this.style.backgroundColor = '#FDF2E9';" onmouseout="this.style.backgroundColor = '#ffffff';">
+                                            <td><?= $total_cnt - $num ?></td>
+                                            <td><?= $row['login_datetime'] ?></td>
+                                            <td style='text-align:left'><?= $row['ip'] ?></td>
+                                            <td style='text-align:left'><?= $row['id'] ?></td>
+                                            <td style='text-align:left'><?= $row['nick_name'] ?></td>
+                                            <td><?= $row['level'] ?></td>
+                                            <td style='text-align:right'><?= number_format($row['money']) ?></td>
+                                            <td><?= $db_status ?></td>
+                                        </tr>
+                                        <?php
+                                        $i++;
+                                    }
+                                }
+                            } else {
+                                ?>
+                                <tr><td colspan="8">데이터가 없습니다.</td></tr>
+                                <?php
+                            }
+                            ?>
+
+                        </table>
+<?php
+$reqFile = basename($_SERVER['REQUEST_URI'], '?' . $_SERVER['QUERY_STRING']);
+$default_link = "$reqFile?idx=";
+include_once(_BASEPATH . '/common/page_num.php');
+?>                
+                    </div>
+                </div>
+                <!-- END list -->
+            </div>
+            <!-- END Contents -->
+        </div>
+<?php
+include_once(_BASEPATH . '/common/bottom.php');
+?> 
+    </body>
+</html>

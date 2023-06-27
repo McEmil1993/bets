@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- RequestMapping, ModelAttribute, SessionAttribute, RequestParam 등 MVC 어노테이션 사용 -->
+	<context:annotation-config/>
+	
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="classpath:statics/" />
+	<resources mapping="/images/**" location="classpath:statics/images/" />
+	<resources mapping="/video/**" location="classpath:statics/video/" />
+	<resources mapping="/css/**" location="classpath:statics/css/" />
+	<resources mapping="/js/**" location="classpath:statics/js/" />
+
+	<!-- 화면처리용 JSP 파일명의  prefix, suffix 처리에 대한 mvc 설정  -->
+	<beans:bean class="org.springframework.web.servlet.view.UrlBasedViewResolver"
+		p:order="1"
+	    p:viewClass="org.springframework.web.servlet.view.JstlView"
+	    p:prefix="/WEB-INF/views/" p:suffix=".jsp" />
+	
+	<beans:bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" >
+		<beans:property name="contentType" value="application/json;charset=UTF-8"/>
+	</beans:bean>
+
+	<!-- 서블릿컨네이너의 exception에 대한 오류 페이지를 연결하는 mvc 설정-->
+<!--	<beans:bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
+<!--	<beans:bean class="com.web.exception.resolver.CustomExceptionResolver">-->
+<!--		<beans:property name="defaultErrorView" value="error/error_400"/>-->
+<!--		<beans:property name="exceptionMappings">-->
+<!--			<beans:props>-->
+<!--				<beans:prop key="org.springframework.dao.DataAccessException">error/error_400</beans:prop>-->
+<!--				<beans:prop key="org.springframework.transaction.TransactionException">error/error_400</beans:prop>-->
+<!--				<beans:prop key="org.springframework.security.AccessDeniedException">error/error_404</beans:prop>-->
+<!--			</beans:props>-->
+<!--		</beans:property>-->
+<!--	</beans:bean>-->
+	
+	<!-- 패키지 내 Controller, Service, Repository 클래스의 auto detect를 위한 mvc 설정 -->
+	<context:component-scan base-package="com" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.context.annotation.Configuration"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	<mvc:interceptors>
+
+		<mvc:interceptor>
+			<mvc:mapping path="/debit" />
+			<mvc:mapping path="/buyin" />
+			<mvc:mapping path="/credit" />
+			<mvc:mapping path="/balance" />
+			<mvc:mapping path="/bonus" />
+			<beans:bean class="com.soas.interceptor.RestInterceptor" />
+		</mvc:interceptor>
+
+<!--		<mvc:interceptor>-->
+<!--			<mvc:mapping path="/**" />-->
+<!--			<mvc:exclude-mapping path="/**/*.jsp" />-->
+<!--			<mvc:exclude-mapping path="/css/**" />-->
+<!--			<mvc:exclude-mapping path="/js/**" />-->
+<!--			<mvc:exclude-mapping path="/images/**" />-->
+<!--			<mvc:exclude-mapping path="/video/**" />-->
+<!--			<mvc:exclude-mapping path="/error/**" />-->
+<!--			<mvc:exclude-mapping path="/common/**" />-->
+
+<!--			&lt;!&ndash; Main &ndash;&gt;-->
+<!--			<mvc:exclude-mapping path="/" />-->
+<!--			<mvc:exclude-mapping path="/modal/guide" />-->
+<!--			&lt;!&ndash; User &ndash;&gt;-->
+<!--			<mvc:exclude-mapping path="/modal/signup" />-->
+<!--			<mvc:exclude-mapping path="/modal/login" />-->
+<!--			<mvc:exclude-mapping path="/user/signup" />-->
+<!--			<mvc:exclude-mapping path="/user/direct/logout" />-->
+<!--			<mvc:exclude-mapping path="/user/check/duplicate/id" />-->
+<!--			<mvc:exclude-mapping path="/user/check/duplicate/nickname" />-->
+<!--			<mvc:exclude-mapping path="/user/apply/sms/auth" />-->
+<!--			<mvc:exclude-mapping path="/user/check/sms/auth" />-->
+<!--			<mvc:exclude-mapping path="/user/signup" />-->
+<!--			<mvc:exclude-mapping path="/api/v1/*" />-->
+
+<!--			<beans:bean class="com.soas.interceptor.UsersInterceptor" />-->
+<!--		</mvc:interceptor>-->
+		
+	</mvc:interceptors>
+	
+	<aop:aspectj-autoproxy proxy-target-class="true"/>
+	
+</beans:beans>

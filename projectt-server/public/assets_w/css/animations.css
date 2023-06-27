@@ -1,0 +1,171 @@
+@charset "utf-8";
+
+/*-------------------------------------------------------------------------------------*
+*    chosun 전용
+*-------------------------------------------------------------------------------------*/
+
+@keyframes puff-in-center {
+	0%		{ transform: scale(1.1); filter: blur(4px); opacity: 0.5; }
+	100%	{ transform: scale(1); filter: blur(0px); opacity: 1; }
+}
+
+@keyframes main-live-casino-effect {
+	0%		{ transform: translate(-50%, -50%) scale(1.1); filter: blur(4px); opacity: 0.5; }
+	100%	{ transform: translate(-50%, -50%) scale(1); filter: blur(0px); opacity: 1; }
+}
+
+@keyframes shake-horizontal {
+	0%,
+	100%	{ transform: translateX(0); }
+	50%		{ transform: translateX(20px); }
+}
+
+/* casino */
+@keyframes fade-in-tl {
+	0%		{transform: translateX(-20px) translateY(-20px); opacity: 0; filter: blur(8px); }
+	100%	{transform: translateX(0) translateY(0); opacity: 1; filter: blur(0px); }
+}
+
+
+@keyframes loading_spin {
+    0%		{transform: rotate(0deg);}
+    100%	{transform: rotate(360deg);}
+}
+
+
+@keyframes xAxis {
+	80%		{transform: scale(0.1); opacity: 0; filter: blur(4px);}
+}
+
+@keyframes shakeCart {
+	25%		{ transform: translateX(6px); }
+	50%		{ transform: translateX(-4px); }
+	75%		{ transform: translateX(2px); }
+	100%	{ transform: translateX(0); }
+}
+
+/* 미니게임 - 좌측 - 마감시간 효과 */
+@keyframes mini_left_title_box_font {
+    0%   {color:#009dd9;}
+    50%  {color:#ffffff;}
+    100%  {color:#009dd9;}
+}
+
+
+
+
+
+/*-------------------------------------------------------------------------------------*
+*  일반적인
+*-------------------------------------------------------------------------------------*/
+/* mouseover1 */
+.mouseover1{
+	animation-name: mouseover1;
+	animation-duration: 0.2s;
+	animation-timing-function: ease-out;
+	visibility: visible !important;
+}
+
+@keyframes mouseover1 {
+	0%		{ transform: scale(1.03); }		
+	100%	{ transform: scale(1); }
+}
+
+
+/* mouseover2 */
+.mouseover2{
+	animation-name: mouseover2;
+	animation-duration: 0.5s;
+	animation-timing-function: ease-out;
+	visibility: visible !important;	
+}
+
+@keyframes mouseover2 {
+	0%		{ transform: scale(1.07); opacity:0.1; }		
+	100%	{ transform: scale(1); opacity:1.0; }			
+}
+
+
+@keyframes mouseover03 {
+	0%		{ transform: scale(1.05); filter: blur(1px); }
+	100%	{ transform: scale(1); filter: blur(0px); }
+}
+
+
+
+
+/*-------------------------------------------------------------------------------------*
+*  레이어팝업 띄우는 스타일 시작
+*-------------------------------------------------------------------------------------*/
+/* 한개의 스타일 */
+.popup_style01 {animation-name: popup_style01; animation-duration: 1.1s; animation-timing-function: ease-out; transform-origin: 50% 0%;}
+@keyframes popup_style01 {
+	0%   {transform: scaleY(0.1);}
+	40%  {transform: scaleY(1.02);}
+	60%  {transform: scaleY(0.98);}
+	80%  {transform: scaleY(1.01);}
+	100% {transform: scaleY(0.98);}
+	80%  {transform: scaleY(1.01);}
+	100% {transform: scaleY(1);}
+}
+				
+/* 한개의 스타일 */
+.popup_style02 {animation-name: popup_style02; animation-duration: 0.8s; animation-timing-function: ease-in-out; visibility: visible !important;}
+@keyframes popup_style02 {
+	0%   {opacity: 0.0;}
+	100% {opacity: 1;}
+}
+
+/* 한개의 스타일 */
+.popup_style03 {animation-name: popup_style03; animation-duration: 1.0s; animation-timing-function: ease-out; transform-origin: 100% 0%;}
+@keyframes popup_style03 {
+	0%   {transform: scaleX(0.3);}
+	40%  {transform: scaleX(1.02);}
+	60%  {transform: scaleX(0.98);}
+	80%  {transform: scaleX(1.01);}
+	100% {transform: scaleX(0.98);}
+	80%  {transform: scaleX(1.01);}
+	100% {transform: scaleX(1);}
+}
+
+/* 한개의 스타일 */
+.popup_style04 {animation-name: popup_style04; animation-duration: 0.7s; animation-timing-function: ease; visibility: visible !important;}
+@keyframes popup_style04 {
+	0%   {transform: translateY(-300%);}
+	100% {transform: translateY(0%);}
+}
+
+/* 한개의 스타일 */
+.popup_style05 {animation-name: popup_style05; animation-duration: 0.5s; animation-timing-function: ease; visibility: visible !important;}
+@keyframes popup_style05 {
+	0%   {transform: translateY(-300%) scaleX(4.0);}
+	100% {transform: translateY(0%) scaleX(1);}
+}
+
+/* 한개의 스타일 */
+.popup_style06{animation-name: popup_style06; animation-duration: 1.1s; animation-timing-function: ease; visibility: visible !important;}
+@keyframes popup_style06 {
+	0%   {transform: translateY(-300%) scaleX(4.0);}
+	50%  {transform: translateY(2%) scaleX(1.3);}
+	100% {transform: translateY(0%) scaleX(1);}
+}
+
+
+
+/*-------------------------------------------------------------------------------------*
+*  게임 (큰이미지)
+*-------------------------------------------------------------------------------------*/
+/* game1 */
+.game1 {
+	animation-name: game1;
+	animation-duration: 0.3s;
+	animation-timing-function: ease-out;
+	animation-iteration-count:1;
+	animation-fill-mode: forwards;
+	visibility: visible !important;
+}
+@keyframes game1 {
+	0%   {transform:scale(1) scaleX(1);}		
+	50%  {transform:scale(1.03) scaleX(1.1); box-shadow:#fffc00 2px 2px 30px -1px;}		
+	100% {transform:scale(1.05) scaleX(1); box-shadow:#3e62e1 2px 2px 30px -1px;}			
+}

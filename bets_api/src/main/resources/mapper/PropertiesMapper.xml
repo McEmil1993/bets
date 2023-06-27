@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PropertiesMapper">
+
+
+    <select id="selectInspection" resultType="CustomMap">
+        SELECT GC.u_level AS level, GC.set_type AS type, GC.set_type_val AS value, GC.title AS title
+        FROM t_game_config GC
+        WHERE GC.set_type = #{type}
+        LIMIT 1
+    </select>
+
+
+    <select id="selectUserRollPer" resultType="CustomMap">
+        SELECT TGC.u_level AS level,
+               IFNULL(SUM(CASE WHEN TGC.set_type = 'rolling_self_per' THEN FORMAT(TGC.set_type_val, 2) END),
+                      0)   AS user_betting_percent,
+               IFNULL(SUM(CASE WHEN TGC.set_type = 'loss_self_per' THEN FORMAT(TGC.set_type_val, 2) END),
+                      0)   AS user_loss_percent,
+               IFNULL(SUM(CASE WHEN TGC.set_type = 'lose_self_per' THEN FORMAT(TGC.set_type_val, 2) END),
+                      0)   AS user_lose_percent
+        FROM t_game_config TGC
+        WHERE TGC.set_type IN ('lose_self_per', 'loss_self_per', 'rolling_self_per')
+          AND TGC.u_level = #{level}
+        GROUP BY TGC.u_level
+    </select>
+
+
+    <select id="selectApiKey" resultType="CustomMap">
+        SELECT DL.API_KEY
+        FROM TG_DMN_LINK DL
+        <where>
+            <if test="!@com.soas.util.CommonUtil@isEmpty(parentMemberIdx)">
+                AND DL.MBR_IDX = #{parentMemberIdx}
+            </if>
+            <if test="!@com.soas.util.CommonUtil@isEmpty(domain)">
+                AND DL.DMN_URL = #{domain}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

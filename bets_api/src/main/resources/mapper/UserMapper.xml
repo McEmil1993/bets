@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="UserMapper">
+
+
+    <select id="selectUser" resultType="CustomMap">
+        SELECT MBR.idx AS member_idx,
+        MBR.id,
+        MBR.password,
+        MBR.nick_name,
+        MBR.money,
+        MBR.point,
+        MBR.u_business,
+        MBR.status,
+        MBR.`call` AS phone_num,
+        MBR.level,
+        MBR.account_name,
+        MBR.account_bank,
+        MBR.account_number,
+        MBR.exchange_password,
+        MBR.recommend_member    AS parent_member_idx,
+        KPM.KP_NM               AS kp_name,
+        KPM.KP_ID               AS kp_id
+        FROM KP_MBR_INF KPM
+        LEFT JOIN member MBR
+        ON KPM.MBR_IDX = MBR.idx
+        WHERE 1 = 1
+        <if test="!@com.soas.util.CommonUtil@isEmpty(kpId)">
+            AND KPM.KP_ID = #{kpId}
+        </if>
+        <if test="!@com.soas.util.CommonUtil@isEmpty(memberIdx)">
+            AND MBR.idx = #{memberIdx}
+        </if>
+		FOR UPDATE;
+    </select>
+
+
+    <update id="updateUserMoney">
+        UPDATE member
+        SET  money = money + #{addMoney}
+        WHERE idx = #{memberIdx}
+    </update>
+
+	<select id="selectUserOdd" resultType="CustomMap">
+        SELECT MBR.idx AS member_idx,
+        MBR.id,
+        MBR.password,
+        MBR.nick_name,
+        MBR.money,
+        MBR.point,
+        MBR.u_business,
+        MBR.status,
+        MBR.`call` AS phone_num,
+        MBR.level,
+        MBR.account_name,
+        MBR.account_bank,
+        MBR.account_number,
+        MBR.exchange_password,
+        MBR.recommend_member    AS parent_member_idx
+        FROM member MBR
+        WHERE MBR.idx = #{memberIdx} 
+		FOR UPDATE;
+    </select>
+
+</mapper>

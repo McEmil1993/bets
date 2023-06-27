@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title> K-Win</title>
+    <meta name="viewport" content="width=1400,minimum-scale=0,maximum-scale=5">
+    <script src="http://code.jquery.com/jquery-1.12.1.min.js"></script><!--공통-->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="../assets/js/header.js" charset="utf-8"></script><!-- header -->
+    <script type="text/javascript" src="../assets/js/select.js" charset="utf-8"></script><!-- util_select -->
+    <script type="text/javascript" src="../assets/js/my_select.js"></script><!-- 내정보,스포츠,실시간,경기결과 select -->
+    <script type="text/javascript" src="../assets/js/visual_slider.js"></script><!-- VisualBanner, CasinoBanner -->
+    <script type="text/javascript" src="../assets/js/script.js"></script><!-- VisualBanner, CasinoBanner -->
+    <script type="text/javascript" src="../assets/js/multislider.js"></script><!-- contents_slider -->
+    <script type="text/javascript" src="../assets/js/tabulous.js"></script><!-- MainTab -->
+    <script type="text/javascript" src="../assets/js/accordion.js"></script><!-- sub_아코디언 -->
+    <script type="text/javascript" src="../assets/js/sub_tab.js"></script><!-- sub_tab -->
+    <script type="text/javascript" src="../assets/js/popup.js"></script><!-- popup -->
+    <script type="text/javascript" src="../assets/js/left_menu.js"></script><!-- left_menu -->
+    <script type="text/javascript" src="../assets/js/sports_acc.js"></script><!-- 스포츠아코디언, 베팅내역 아코디언 -->
+    <script type="text/javascript" src="../assets/js/vertical_tab.js"></script><!-- 세로탭 -->
+    <script type="text/javascript" src="../assets/js/table.js"></script><!-- main_table_slide -->
+    <script type="text/javascript" src="../assets/js/text_slide.js"></script><!-- text_slide -->
+    <script type="text/javascript" src="../assets/js/switch.js"></script><!-- switch -->
+    <script type="text/javascript" src="../assets/js/util.js"></script><!-- util -->
+    <script type="text/javascript" src="../assets_common/js/status_util.js?v=<?php echo date("YmdHis"); ?>"></script><!-- status_util -->
+    <link rel="stylesheet" defer href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="../assets/css/common.css" rel="stylesheet" type="text/css"><!--공통-->
+    <link href="../assets/css/layout.css" rel="stylesheet" type="text/css"><!--공통-->
+    <link href="../assets/css/main.css" rel="stylesheet" type="text/css"><!-- main -->
+    <link href="../assets/css/sub.css" rel="stylesheet" type="text/css"><!-- sub -->
+    <link href="../assets/css/game.css" rel="stylesheet" type="text/css"><!-- game -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <link rel="stylesheet" defer href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+</head>
+<body id="myAnchor">
+    <div id="contents_wrap">
+        <div class="game__board-wrap">
+            <div class="game__board-menu">
+                <ul>
+                    <li>
+                        <a href="#" class="board__menu-title">카지노</a>
+                        <ul>
+                            <li class="active"><a href="casino.html">AG게이밍</a></li>
+                            <li><a href="#">SEXY 게이밍</a></li>
+                            <li><a href="#">에볼루션 게이밍</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" class="board__menu-title">슬롯머신</a>
+                        <ul>
+                            <li><a href="#">라스베가스</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="game__board-list">
+                <ul>
+                    <li><a href="#" class="open__game">game01</a></li>
+                    <li><a href="#">game02</a></li>
+                    <li><a href="#">game03</a></li>
+                    <li><a href="#">game04</a></li>
+                    <li><a href="#">game05</a></li>
+                    <li><a href="#">game06</a></li>
+                    <li><a href="#">game07</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="game__iframe-popup">
+        <div class="game__iframe-wrap">
+            <h1>게임 타이틀이 들어가는 영역</h1>
+            <a href="#" class="btn close__game"><img src="../assets/images/popup_close.png" alt="닫기"></a>
+            <iframe src="" frameborder="0" width="100%" height="540px"></iframe>
+        </div>
+        <div class="dimm close__game"></div>
+    </div>
+
+    <script>
+        $(".open__game").on("click", function(){
+            $(".game__iframe-popup").show();
+        });
+        $(".close__game").on("click", function(){
+            $(".game__iframe-popup").hide();
+        });
+
+    </script>
+</body>
+</html>

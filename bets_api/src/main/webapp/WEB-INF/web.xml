@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter
+		</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- ********************* Multipart filter ********************* -->
+<!--	<filter>-->
+<!--		<filter-name>multipartFilter</filter-name>-->
+<!--		<filter-class>org.springframework.web.multipart.support.MultipartFilter-->
+<!--		</filter-class>-->
+<!--		<init-param>-->
+<!--			<param-name>multipartResolverBeanName</param-name>-->
+<!--			<param-value>multipartResolver</param-value>-->
+<!--		</init-param>-->
+<!--	</filter>-->
+<!--	<filter-mapping>-->
+<!--		<filter-name>multipartFilter</filter-name>-->
+<!--		<url-pattern>/*</url-pattern>-->
+<!--	</filter-mapping>-->
+	<!-- ********************* /Multipart filter ********************* -->
+
+	<!-- ********************* XSS filter ********************* -->
+<!--	<filter> <filter-name>XSS</filter-name> <filter-class>com.web.filter.CrossScriptingFilter</filter-class> -->
+<!--		</filter> <filter-mapping> <filter-name>XSS</filter-name> <url-pattern>/*</url-pattern> -->
+<!--	</filter-mapping>-->
+	<!-- ********************* /XSS filter ********************* -->
+
+	<!-- ********************* Redis ********************* -->
+<!--	<filter> <filter-name>springSessionRepositoryFilter</filter-name> <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class> -->
+<!--		</filter> <filter-mapping> <filter-name>springSessionRepositoryFilter</filter-name> -->
+<!--	<url-pattern>/*</url-pattern> </filter-mapping>-->
+<!--	<filter-mapping>-->
+<!--	    <filter-name>springSessionRepositoryFilter</filter-name>-->
+<!--	    <url-pattern>/*</url-pattern>-->
+<!--	</filter-mapping>-->
+	<!-- ********************* /Redis ********************* -->
+
+	<!-- ********************* Servlet ********************* -->
+	<servlet>
+		<servlet-name>appServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/appServlet/*.xml</param-value>
+		</init-param>
+		<!-- 404일 때 Exception Handler에게 Exception Throw -->
+		<init-param>
+			<param-name>throwExceptionIfNoHandlerFound</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>appServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	<!-- ********************* /Servlet ********************* -->
+
+	<!-- ********************* Context ********************* -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring/*context.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+	<!-- ********************* /Context ********************* -->
+
+	<!-- ********************* Security ********************* -->
+	<listener>
+		<listener-class> org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+	</listener>
+	<!-- <filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping> -->
+	<session-config>
+		<session-timeout>60</session-timeout>
+	</session-config>
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
+	<!-- ********************* /Security ********************* -->
+
+	<!-- ********************* Pagination ********************* -->
+<!--	<jsp-config>-->
+<!--		<taglib>-->
+<!--			<taglib-uri>http://soas.com/ui</taglib-uri>-->
+<!--			<taglib-location>/WEB-INF/tags/pagination.tld</taglib-location>-->
+<!--		</taglib>-->
+<!--		<jsp-property-group>-->
+<!--			<url-pattern>*.jsp</url-pattern>-->
+<!--			<trim-directive-whitespaces>true</trim-directive-whitespaces>-->
+<!--		</jsp-property-group>-->
+<!--	</jsp-config>-->
+	<!-- ********************* /Pagination ********************* -->
+
+</web-app>
