@@ -11,6 +11,7 @@ use App\Util\DateTimeUtil;
 use App\Models\MemberModel;
 use App\Entities\Member;
 use App\Util\Calculate;
+use App\Models\TGameConfigModel;
 
 class MiniGameController extends BaseController {
 
@@ -159,26 +160,91 @@ class MiniGameController extends BaseController {
     public function index() {
         //$viewRoot = strpos($_SERVER['REQUEST_URI'],'web/') > 0 ? 'web' : 'web';
         $id = session()->get('id');
-    	$chkMobile = CodeUtil::rtn_mobile_chk();
-    	$viewRoot = "PC" == $chkMobile ? 'web' : 'web';
+
+        $viewRoot = "PC" == $chkMobile ? 'web' : 'web';
         
-        $betType = isset($_REQUEST['betType']) ? $_REQUEST['betType'] : 3;
+    	$chkMobile = CodeUtil::rtn_mobile_chk();
+
+        if (false == session()->has('id') || !isset($id)) {
+            $url = base_url("/$viewRoot/index");
+            echo "<script>
+        	alert('로그인 후 이용해주세요.');
+        	window.location.href='$url';
+        	</script>";
+            return;
+        } 
+        
+        $MiniGameModel = new MiniGameModel();
+    	$viewRoot = "PC" == $chkMobile ? 'web' : 'web';
+        // mini_service_eos_powerball
+        $betType = isset($_GET['betType']) ? $_GET['betType'] : 3;
         $game = 'eospb5';
         $viewFile = 'mini_eos_power_ball';
         // close_time
         $sql_game_config = "SELECT set_type_val FROM t_game_config where set_type = 'mini_powerball_deadline'";
+        // mini_service_powerball
+        
+
         if(4 == $betType){
+            
             $game = 'pladder';
             $viewFile = 'mini_power_ladder';
             $sql_game_config = "SELECT set_type_val FROM t_game_config where set_type = 'mini_power_ladder_deadline'";
+
+         
+            $sql = "SELECT set_type, set_type_val FROM t_game_config WHERE set_type = 'mini_service_power_ladder' ";
+            $pw = $MiniGameModel->db->query($sql)->getResult();
+            if ('N' == $pw[0]->set_type_val && 9 != session()->get('level')) {
+                echo "<script>
+                alert('미니게임 점검중입니다.');
+                window.history.back();
+                </script>";
+                return;
+            }
+
         }else if(5 == $betType){
+            
             $game = 'kladder';
             $viewFile = 'mini_kino_ladder';
             $sql_game_config = "SELECT set_type_val FROM t_game_config where set_type = 'mini_kino_ladder_deadline'";
+
+            $sql = "SELECT set_type, set_type_val FROM t_game_config WHERE set_type = 'mini_service_kino_ladder' ";
+            $pw = $MiniGameModel->db->query($sql)->getResult();
+            if ('N' == $pw[0]->set_type_val && 9 != session()->get('level')) {
+                echo "<script>
+                alert('미니게임 점검중입니다.');
+                window.history.back();
+                </script>";
+                return;
+            }
+
+
         }else if(15 == $betType){
+
             $game = 'powerball';
             $viewFile = 'mini_power_ball';
             $sql_game_config = "SELECT set_type_val FROM t_game_config where set_type = 'mini_powerball_deadline'";
+
+            $sql = "SELECT set_type, set_type_val FROM t_game_config WHERE set_type = 'mini_service_powerball' ";
+            $pw = $MiniGameModel->db->query($sql)->getResult();
+            if ('N' == $pw[0]->set_type_val && 9 != session()->get('level')) {
+                echo "<script>
+                alert('미니게임 점검중입니다.');
+                window.history.back();
+                </script>";
+                return;
+            }
+            
+        }elseif($betType == 3){
+            $sql = "SELECT set_type, set_type_val FROM t_game_config WHERE set_type = 'mini_service_eos_powerball' ";
+            $pw = $MiniGameModel->db->query($sql)->getResult();
+            if ('N' == $pw[0]->set_type_val && 9 != session()->get('level')) {
+                echo "<script>
+                alert('미니게임 점검중입니다.');
+                window.history.back();
+                </script>";
+                return;
+            }
         }
     	
     	if (false == session()->has('member_idx')) {
@@ -201,6 +267,9 @@ class MiniGameController extends BaseController {
             return redirect()->to(base_url("/$viewRoot/index"));
         }
 
+
+
+
         if (0 < session()->get('tm_unread_cnt')) {
         	$url = base_url("/web/note");
             echo "<script>
@@ -210,7 +279,7 @@ class MiniGameController extends BaseController {
             return;
         }
 
-        $MiniGameModel = new MiniGameModel();
+        
         $game_config_result = $MiniGameModel->db->query($sql_game_config)->getResultArray();
         $close_time = $game_config_result[0]['set_type_val'];
         
@@ -260,6 +329,8 @@ class MiniGameController extends BaseController {
             'close_time' => $close_time
         ]);
     }
+
+    
 
     public function getCurrentRound() {
         $game = $_REQUEST['game'];
@@ -346,7 +417,7 @@ class MiniGameController extends BaseController {
     	if ('N' == $result_game_config[0]->set_type_val && 9 != session()->get('level')) {
     		$url = base_url("/");
     		echo "<script>
-    		alert('점검 중으로 관리자에게 문의바랍니다.');
+    		alert('가상축구 점검중입니다.');
     		window.location.href='$url';
     		</script>";
     		return;
@@ -584,15 +655,17 @@ class MiniGameController extends BaseController {
     public function premiumShip() {
     	$id = session()->get('id');
     	$chkMobile = CodeUtil::rtn_mobile_chk();
+
     	$viewRoot = "PC" == $chkMobile ? 'web' : 'web';
-    	
-    	if (false == session()->has('member_idx') || false == session()->has('level')) {
-            return redirect()->to(base_url("/$viewRoot/index"));
-    	}
-    	
-    	if ($id == NULL) {
-            return redirect()->to(base_url("/$viewRoot/index"));
-    	}
+        
+        if (false == session()->has('member_idx') || !isset($id) || false == session()->has('level')) {
+            $url = base_url("/$viewRoot/index");
+            echo "<script>
+        	alert('로그인 후 이용해주세요.');
+        	window.location.href='$url';
+        	</script>";
+            return;
+        }      
     	
     	if (0 < session()->get('tm_unread_cnt')) {
     		$url = base_url("/web/note");
@@ -619,7 +692,7 @@ class MiniGameController extends BaseController {
     	if ('N' == $result_game_config[0]->set_type_val && 9 != session()->get('level')) {
     		$url = base_url("/");
     		echo "<script>
-    		alert('점검 중으로 관리자에게 문의바랍니다.');
+    		alert('가상축구 점검중입니다.');
     		window.location.href='$url';
     		</script>";
     		return;
@@ -670,15 +743,26 @@ class MiniGameController extends BaseController {
     			'game_config' => $game_config,
     			'member_bet' => $member_bet,
     			'game_data' => $game_data,
+                'alert_message_login' => $alertlogin,
     	]);
     }
     
     // 수퍼리그
     public function superLeague() {
     	$id = session()->get('id');
-    	$chkMobile = CodeUtil::rtn_mobile_chk();
-    	
+
     	$viewRoot = "PC" == $chkMobile ? 'web' : 'web';
+
+        $chkMobile = CodeUtil::rtn_mobile_chk();
+
+        if (false == session()->has('id') || !isset($id)) {
+            $url = base_url("/$viewRoot/index");
+            echo "<script>
+        	alert('로그인 후 이용해주세요.');
+        	window.location.href='$url';
+        	</script>";
+            return;
+        } 
     	
     	if (false == session()->has('member_idx') || false == session()->has('level')) {
             return redirect()->to(base_url("/$viewRoot/index"));
@@ -712,7 +796,7 @@ class MiniGameController extends BaseController {
     	if ('N' == $result_game_config[0]->set_type_val && 9 != session()->get('level')) {
     		$url = base_url("/");
     		echo "<script>
-    		alert('점검 중으로 관리자에게 문의바랍니다.');
+    		alert('가상축구 점검중입니다.');
     		window.location.href='$url';
     		</script>";
     		return;
@@ -771,9 +855,19 @@ class MiniGameController extends BaseController {
     // 월드컵
     public function worldCup() {
     	$id = session()->get('id');
+
     	$chkMobile = CodeUtil::rtn_mobile_chk();
     	
     	$viewRoot = "PC" == $chkMobile ? 'web' : 'web';
+
+        if (false == session()->has('id') || !isset($id)) {
+            $url = base_url("/$viewRoot/index");
+            echo "<script>
+        	alert('로그인 후 이용해주세요.');
+        	window.location.href='$url';
+        	</script>";
+            return;
+        } 
     	
     	if (false == session()->has('member_idx') || false == session()->has('level')) {
             return redirect()->to(base_url("/$viewRoot/index"));
@@ -808,7 +902,7 @@ class MiniGameController extends BaseController {
     	if ('N' == $result_game_config[0]->set_type_val  && 9 != session()->get('level')) {
     		$url = base_url("/");
     		echo "<script>
-    		alert('점검 중으로 관리자에게 문의바랍니다.');
+    		alert('가상축구 점검중입니다.');
     		window.location.href='$url';
     		</script>";
     		return;
@@ -867,8 +961,19 @@ class MiniGameController extends BaseController {
     // 프리미어쉽
     public function euroCup() {
     	$id = session()->get('id');
+
     	$chkMobile = CodeUtil::rtn_mobile_chk();
+        
     	$viewRoot = "PC" == $chkMobile ? 'web' : 'web';
+
+        if (false == session()->has('id') || !isset($id)) {
+            $url = base_url("/$viewRoot/index");
+            echo "<script>
+        	alert('로그인 후 이용해주세요.');
+        	window.location.href='$url';
+        	</script>";
+            return;
+        } 
     	
     	if (false == session()->has('member_idx') || false == session()->has('level')) {
             return redirect()->to(base_url("/$viewRoot/index"));
@@ -903,7 +1008,7 @@ class MiniGameController extends BaseController {
     	if ('N' == $result_game_config[0]->set_type_val && 9 != session()->get('level')) {
     		$url = base_url("/");
     		echo "<script>
-    		alert('점검 중으로 관리자에게 문의바랍니다.');
+    		alert('가상축구 점검중입니다.');
     		window.location.href='$url';
     		</script>";
     		return;

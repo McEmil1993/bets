@@ -19,8 +19,14 @@
                 <?php
                     $db_buff = stripslashes( $list[0]['contents'] );
                     $db_content = nl2br(htmlspecialchars_decode($db_buff));
+                    $pdf_attachment = stripslashes( $list[0]['pdf_attachment'] );
                 ?>
-                <div class="view2"><?= $db_content ?></div>
+                <div class="view2">
+                    <p><?=$db_content?></p>
+                    <?php if($pdf_attachment): ?>
+                    <p><iframe src="<?=$pdf_attachment?>#toolbar=0&navpanes=0" width="100%" height="800px"></iframe></p>
+                    <?php endif ?>
+                </div>
             </div>
                 <?php 
 				if ($list[0]['member_idx'] > 0) {

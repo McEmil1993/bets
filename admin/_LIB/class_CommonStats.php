@@ -63,10 +63,6 @@ class CommonStats {
         $displayData['ob_total_hash_bet_money_color'] = "<font color='#444'>베팅</font>";
         $displayData['ob_total_hash_win_money_color'] = "<font color='#444'>당첨</font>";
         $displayData['ob_total_hash_lose_money_color'] = "<font color='#444'>차액</font>";
-        
-        $displayData['ob_total_holdem_bet_money_color'] = "<font color='#444'>베팅</font>";
-        $displayData['ob_total_holdem_win_money_color'] = "<font color='#444'>당첨</font>";
-        $displayData['ob_total_holdem_lose_money_color'] = "<font color='#444'>차액</font>";
 
         switch ($p_data['s_ob']) {
             case "ch_sum":
@@ -425,40 +421,6 @@ class CommonStats {
                     $displayData['ob_total_hash_lose_money_change'] = "desc";
                     $displayData['sql_orderby'] = " ORDER BY total_hash_lose_money ";
                     $displayData['ob_total_hash_lose_money_color'] = "<font color='#FD0000'>차액</font>";
-                }
-                break;
-                
-            // holdem
-            case "total_holdem_bet_money":
-                if ($p_data['s_ob_type'] == 'desc') {
-                    $displayData['sql_orderby'] = " ORDER BY total_holdem_bet_money DESC ";
-                    $displayData['ob_total_holdem_bet_money_color'] = "<font color='#0021FD'>베팅</font>";
-                } else {
-                    $displayData['ob_total_holdem_bet_money_change'] = "desc";
-                    $displayData['sql_orderby'] = " ORDER BY total_holdem_bet_money ";
-                    $displayData['ob_total_holdem_bet_money_color'] = "<font color='#FD0000'>베팅</font>";
-                }
-                break;
-
-            case "total_holdem_win_money":
-                if ($p_data['s_ob_type'] == 'desc') {
-                    $displayData['sql_orderby'] = " ORDER BY total_holdem_win_money DESC ";
-                    $displayData['ob_total_holdem_win_money_color'] = "<font color='#0021FD'>당첨</font>";
-                } else {
-                    $displayData['ob_total_holdem_win_money_change'] = "desc";
-                    $displayData['sql_orderby'] = " ORDER BY total_holdem_win_money ";
-                    $displayData['ob_total_holdem_win_money_color'] = "<font color='#FD0000'>당첨</font>";
-                }
-                break;
-
-            case "total_holdem_lose_money":
-                if ($p_data['s_ob_type'] == 'desc') {
-                    $displayData['sql_orderby'] = " ORDER BY total_holdem_lose_money DESC ";
-                    $displayData['ob_total_holdem_lose_money_color'] = "<font color='#0021FD'>차액</font>";
-                } else {
-                    $displayData['ob_total_holdem_lose_money_change'] = "desc";
-                    $displayData['sql_orderby'] = " ORDER BY total_holdem_lose_money ";
-                    $displayData['ob_total_holdem_lose_money_color'] = "<font color='#FD0000'>차액</font>";
                 }
                 break;
 

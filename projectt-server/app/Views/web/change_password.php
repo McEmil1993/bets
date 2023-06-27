@@ -12,7 +12,7 @@
 			<div class="tab_wrap">
 				<ul>
 					<li><a href="javascript:fnLoadingMove('/web/member_info')"><span class="tab">내정보</span></a></li>
-					<li><a href="javascript:fnLoadingMove('/web/change_password')"><span class="tabon">비밀번호변경</span></a></li>
+					<!-- <li><a href="javascript:fnLoadingMove('/web/change_password')"><span class="tabon">비밀번호변경</span></a></li> -->
 					<li><a href="javascript:fnLoadingMove('/web/recommend_member')"><span class="tab">추천회원리스트</span></a></li>
 					<li><a href="javascript:fnLoadingMove('/web/point_history')"><span class="tab">포인트내역</span></a></li>
 					<li><a href="javascript:fnLoadingMove('/web/note')"><span class="tab">쪽지함</span></a></li>
@@ -36,7 +36,7 @@
 				<div class="write_tr cf">
 					<div class="write_title">핸드폰 번호 입력</div>
 					<div class="write_basic">
-					<input class="input1 phone_num" value="<?= session()->get('call') ?>">
+					<input type="text" class="input1 phone_num" value="<?= session()->get('call') ?>">
 						<div class="write_basic_btn">
 							<a href="#"><span class="btn1_2 auth_request" onclick="requestAuthCode('<?= session()->get('member_idx') ?>')">인증번호발송</span></a>
 						</div>
@@ -71,6 +71,11 @@
 <script>
     let check_auth_code = false;
     $(document).ready(function(){
+        setTimeout(() => {
+            let number = $(".phone_num").val();
+            let addNum = "****"
+            $(".phone_num").val(number.slice(0,3)+addNum+number.slice(-4));
+        }, 100);
 
         // 인증확인
         $('.check_auth_code_btn').on('click', function () {

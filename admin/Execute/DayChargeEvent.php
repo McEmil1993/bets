@@ -90,10 +90,15 @@ class DayChargeEvent {
                     $a_comment = '노바지원';
                 } else if ('NOBLE' == SERVER) {
                     $a_comment = '노블지원';
+                }
+                else if ('BULLS' == SERVER) {
+                    $a_comment = '황소지원';
                 } 
                 
                 $a_comment .= '('.'충전'.$tg_count.'회 / ' . $tg_money.'만 이상)';
-                CommonUtil::log_point($model, $ukey, $member_idx, AC_DAY_CHRGE_EVENT_REWARD_POINT, 0, $reward, $before_point, $admin_id, $a_comment, 'P');
+                
+                $UTIL = new CommonUtil();
+                $UTIL->log_point($model, $ukey, $member_idx, DAY_CHRGE_EVENT_REWARD_POINT, 0, $reward, $before_point, $admin_id, $a_comment, 'P');
                 
             }
             

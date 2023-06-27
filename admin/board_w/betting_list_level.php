@@ -19,9 +19,6 @@ $BdsAdminDAO = new Admin_Bbs_DAO(_DB_NAME_WEB);
 $db_conn = $BdsAdminDAO->dbconnect();
 
 if($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$BdsAdminDAO)){
-        die();
-    }
     // 게시물 전체갯수
     $p_data['sql'] = " SELECT COUNT(*) AS CNT FROM base_rule";
     $db_dataArrCnt = $BdsAdminDAO->getQueryData($p_data);

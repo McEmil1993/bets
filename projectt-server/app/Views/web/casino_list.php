@@ -20,12 +20,11 @@
     }
     </style>
 
-    <div class="title_wrap">
-        <div class="title">라이브카지노</div>
-    </div>
+<div class="title_wrap"><div class="title">카지노</div></div>
 
-    <div id="contents_wrap" class="original_wrapper">
-        <div class="container casino__wrap">
+    <div id="contents_wrap" class="contents_wrap">
+        <!-- <div class="contents_box casino__wrap"> -->
+        <div class="contents_box">
             <div class="game_list">
                 <ul>
                     <?php foreach ($prodList as $key => $prod) {?>
@@ -66,7 +65,8 @@
 
 
     <div id="contents_wrap" class="sb_wrapper">
-        <div class="container casino__wrap">
+        <!-- <div class="container casino__wrap"> -->
+        <div class="container">
             <div class="game_list">
                 <ul></ul>
             </div>

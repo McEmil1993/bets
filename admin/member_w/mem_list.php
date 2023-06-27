@@ -290,7 +290,7 @@ if ($db_conn) {
 
     if ($total_cnt > 0) {
         $p_data['sql'] = "SELECT a.idx, a.id, a.nick_name, a.u_business, a.money, a.point, a.betting_p, a.is_recommend, a.call ";
-        $p_data['sql'] .= ", pt.id as p_id, pt.u_business as p_bu, ppt.id as pp_id, ppt.u_business as pp_bu, pppt.id as ppp_id, pppt.u_business as ppp_bu ";
+        $p_data['sql'] .= ", pt.id as p_id, pt.nick_name as p_nick_name, pt.u_business as p_bu, ppt.id as pp_id, ppt.u_business as pp_bu, pppt.id as ppp_id, pppt.u_business as ppp_bu ";
         $p_data['sql'] .= ", a.status, a.level, a.auto_level, a.last_login, a.MICRO, a.AG, a.recommend_code, a.recommend_member ";
         $p_data['sql'] .= ", a.account_number, a.account_name, a.account_bank, a.is_monitor, a.is_monitor_charge, a.is_monitor_security ";
         $p_data['sql'] .= ", a.is_monitor_bet, a.dis_id, a.dis_line_id, a.reg_time, a.g_money ";
@@ -389,7 +389,7 @@ if ($db_conn) {
             })
         });
     </script>
-    <script src="<?= _STATIC_COMMON_PATH ?>/js/admCommon.js?v=<?php echo date("YmdHis"); ?>"></script>
+    <script src="<?= _STATIC_COMMON_PATH ?>/js/admCommon.js"></script>
     <body>
         <form id="popForm" name="popForm" method="post">
             <input type="hidden" id="seq" name="seq">
@@ -422,6 +422,7 @@ if ($db_conn) {
                     <h5><a href="mem_list.php?srch_status=11">대기회원 (<?= number_format(true === isset($db_user_status_cnt[11]) ? $db_user_status_cnt[11] : 0) ?>)</a></h5>
                     <h5><a href="mem_list.php?srch_status=2">정지회원 (<?= empty($db_user_status_cnt[2]) ? '0' : number_format(true === isset($db_user_status_cnt[2]) ? $db_user_status_cnt[2] : 0) ?>)</a></h5>
                     <h5><a href="mem_list.php?srch_status=3">탈퇴회원 (<?= empty($db_user_status_cnt[3]) ? '0' : number_format(true === isset($db_user_status_cnt[3]) ? $db_user_status_cnt[3] : 0) ?>)</a></h5>
+
                     <div class="fr">
                         <span><a href="javascript:;" class="btn h30 btn_green btn__excel_down">전체회원 엑셀 다운로드</a></span> 
                     </div>
@@ -492,7 +493,7 @@ if ($db_conn) {
                             <?php  if(0 == $_SESSION['u_business']){?>
                                 <div class="fr">
                                     <span class="fl mr5" style="line-height:30px;">2차인증 비밀번호</span>
-                                    <span><input type="password" name="second_pass_input" id="second_pass_input" value="" maxlength="4" placeholder="2차 비밀번호 입력"></span>
+                                    <span><input type="password" name="second_pass" id="second_pass" value="" maxlength="6" placeholder="2차 비밀번호 입력"></span>
                                     <span><a href="javascript:;" class="btn__all_leave btn h30 btn_red ml5">일괄탈퇴</a></span> 
                                 </div>
                             <?php } else {?>
@@ -508,7 +509,7 @@ if ($db_conn) {
                                     <th colspan="5">가입 정보</th>
                                     <th colspan="4">머니/포인트</th>
                                     <th colspan="4">정산 정보</th>
-                                    <th colspan="1">상태 정보</th>
+                                    <th colspan="3">상태 정보</th>
                                     <th rowspan="2">관리</th>
                                 <?php } else {?>
                                     <th colspan="3">추천인</th>
@@ -535,11 +536,13 @@ if ($db_conn) {
                                 <th>아이디</th>
                                 <th>닉네임</th>
                                 <?php  if(0 == $_SESSION['u_business']){?>
+                                <th>계좌번호</th>
                                 <th>
                                     <a href="javascript:;" onClick="goOrderby('level', '<?= $ob_level_change ?>');"><?= $ob_level_color ?></a>
                                 </th>
                                  <?php } ?>
                                 <th>상태</th>
+                                <th>핸드폰</th>
                                 <th>
                                     <a href="javascript:;" onClick="goOrderby('money', '<?= $ob_money_change ?>');"><?= $ob_money_color ?></a>
                                 </th>
@@ -640,7 +643,7 @@ if ($db_conn) {
                                                 <td style='text-align:left'></td>
                                             <?php }else if(TOP_DISTRIBUTOR == $row['p_bu'] && 1 != $row['u_business']){ ?>
                                                 <td style='text-align:left'>
-                                                    <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['p_id'] ?>');"><?= $row['p_id'] ?></a>
+                                                    <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['p_id'] ?>');"><?= $row['p_nick_name'] ?></a>
                                                 </td>
                                                 <td style='text-align:left'>
                                                     <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['id'] ?>');"><?= $row['id'] ?></a>
@@ -669,7 +672,7 @@ if ($db_conn) {
                                             <?php }else{ ?>
                                                 <?php if(TOP_DISTRIBUTOR == $row['p_bu']){ ?>
                                                     <td style='text-align:left'>
-                                                        <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['p_id'] ?>');"><?= $row['p_id'] ?></a>
+                                                        <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['p_id'] ?>');"><?= $row['p_nick_name'] ?></a>
                                                     </td>
                                                     <td style='text-align:left'></td>
                                                     <td style='text-align:left'></td>
@@ -724,10 +727,15 @@ if ($db_conn) {
                                                     </td>
                                             <?php } ?>
                                             <?php  if(0 == $_SESSION['u_business']){?>
+                                            <td style='text-align:left'><?= $row['account_number'] ?></td>
                                             <td><?= $row['level'] ?></td>
                                             <?php } ?>
                                             <td><?= $db_status ?></td>
-                                     
+                                            <?php  if(0 == $_SESSION['u_business']){?>
+                                            <td><?= $row['call'] ?></td>
+                                            <?php } else {?>
+                                            <td><?= '--' ?></td>
+                                            <?php } ?>
                                             <td style='text-align:right'><?= number_format($row['money']) ?></td>
                                             <td style='text-align:right'><?= number_format($row['point']) ?></td>
                                             <td style='text-align:right'><?= number_format($row['g_money']) ?></td>
@@ -779,7 +787,6 @@ if ($db_conn) {
         </div>
         <?php
         include_once(_BASEPATH . '/common/bottom.php');
-        include_once(_BASEPATH . '/common/second_check_popup.php');
         ?> 
     </body>
     <!-- Sheet JS -->
@@ -789,7 +796,7 @@ if ($db_conn) {
     <script>
                 function addPoints(points,money,m_idx){
             var param_url = '/member_w/_set_userinfo_money.php';
-            var second_pass = $("#second_pass_input").val();
+            var second_pass = $("#second_pass").val();
 
             $.ajax({
     		type: 'post',
@@ -818,26 +825,15 @@ if ($db_conn) {
         }
         // 사용중인 맴버 엑셀 다운로드
 	$(document).on("click", ".btn__excel_down", function(e){
-            const second_password = $("#second_pass_input").val();
-            
-            const regExpEmpty = /\s/g;
-            if( second_password.length < 4 || regExpEmpty.test(second_password) ){
-                alert("2차 비밀번호를 확인해주세요");
-                $("#second_pass_input").focus();
-                return false;
-            }
-                
             // 1:talbe, 2:json, 3:array
             $.ajax({
                 type: 'post',
                 dataType: 'json',
                 url: '/member_w/_ajax_excel_member_list.php',
-                data: {'second_password':second_password},
+                data: {},
                 success: function (result) {
                     if (result['retCode'] == "1000") {
                         result_excel_file_download(result, excelDataType.JSON, 'member_list');
-                    } else if (result['retCode'] == "2002") {
-                        alert('2차인증 비밀번호가 틀렸습니다.');
                     }
                 },
                 error: function (request, status, error) {
@@ -928,7 +924,7 @@ if ($db_conn) {
                 
                 const regExpEmpty = /\s/g;
                 const checked = $('.checkbox__set-item:checked');
-                const password = $("#second_pass_input").val();
+                const password = $("#second_pass").val();
                 if ( checked.length < 1 ){
                     alert("삭제할 회원을 선택해주세요");
                     return false;
@@ -936,7 +932,7 @@ if ($db_conn) {
 
                 if( password.length < 4 || regExpEmpty.test(password) ){
                     alert("2차 비밀번호를 확인해주세요");
-                    $("#second_pass_input").focus();
+                    $("#second_pass").focus();
                     return false;
                 }
 
@@ -951,11 +947,17 @@ if ($db_conn) {
             checkUser.map((index, item) => { checkUser_data.push(item.value); });
             // console.log(checkUser_data);
 
+            //let request_data = {
+            //    'leave_users' : checkUser_data.join(","),
+            //    'second_password' : $("#second_pass").val(),
+            //};
+            //console.log('log : ' + checkUser_data.join(","));
+
             $.ajax({
                 url: "./_multi_leave_proc.php",
                 data: { 
                     'leave_users' : checkUser_data.join(","),
-                    'second_password' : $("#second_pass_input").val(),
+                    'second_password' : $("#second_pass").val(),
                 },  
                 method: "POST",
                 dataType : "json"
@@ -963,7 +965,7 @@ if ($db_conn) {
             .success(function(response) {
                 //console.log(response);
                 if(1000 == response['retCode']){
-                    $("#second_pass_input").val("");
+                    $("#second_pass").val("");
                     $('.checkbox__set-item').prop("checked", false);
                     alert("선택한 회원들의 탈퇴처리가 완료되었습니다.");
                     window.location.reload();

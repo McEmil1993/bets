@@ -18,9 +18,6 @@ $BdsAdminDAO = new Admin_Bbs_DAO(_DB_NAME_WEB);
 $db_conn = $BdsAdminDAO->dbconnect();
 
 if ($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$BdsAdminDAO)){
-        die();
-    }
     $idx = $BdsAdminDAO->real_escape_string($_GET['idx']);
     $p_data['sql'] = "SELECT * FROM join_message";
     $db_dataArr = $BdsAdminDAO->getQueryData($p_data);

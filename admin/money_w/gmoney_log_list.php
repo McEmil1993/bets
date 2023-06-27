@@ -80,10 +80,7 @@ $db_conn = $CASHAdminDAO->dbconnect();
 CommonUtil::logWrite("money log srch_basic : " . $srch_basic, "info");
 
 if($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$CASHAdminDAO)){
-        die();
-    }
-        
+    
     $p_data['sql'] = " SELECT count(*) as CNT ";
     $p_data['sql'] .= " FROM t_log_cash a LEFT JOIN member m ON a.member_idx=m.idx ";
     $p_data['sql'] .= " WHERE a.reg_time >= '".$p_data['db_srch_s_date']."' AND  a.reg_time <= '".$p_data['db_srch_e_date']."' ";
@@ -311,10 +308,10 @@ if($total_cnt > 0) {
                     <tr onmouseover="this.style.backgroundColor='#FDF2E9';" onmouseout="this.style.backgroundColor='#ffffff';">
                     	<td><?=$no?></td>
                     	<td style='text-align:left;'>
-                            <a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>');"><?=$db_id?></a>
+                            <a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>', '5');"><?=$db_id?></a>
                     	</td>
                         <td style='text-align:left;'>
-                            <a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>');"><?=$db_nick?></a>
+                            <a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>', '5');"><?=$db_nick?></a>
                         </td>
                         <td style='text-align:right;'><?=$db_money?></td>
                         <td style='text-align:right;'><?=number_format($be_r_money)?></td>

@@ -1,11 +1,9 @@
 <?php
 
 include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
-
 include_once(_BASEPATH . '/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH . '/class_Admin_Common_dao.php');
-
 include_once(_DAOPATH . '/class_Admin_Cash_dao.php');
 include_once(_LIBPATH . '/class_GameUtil.php');
 include_once(_LIBPATH . '/class_GameStatusUtil.php');
@@ -104,9 +102,7 @@ if ($db_conn) {
                         LEFT JOIN mini_game_bet AS m ON m.markets_id = b.ls_markets_id
                         LEFT JOIN member AS a ON b.member_idx = a.idx
                         LEFT JOIN mini_game AS g ON g.id = b.ls_fixture_id";
-    // $p_data['sql'] .= " WHERE (CASE WHEN b.member_idx IN($test_expt_member_idxs) THEN b.member_idx IN($test_expt_member_idxs) AND b.bet_status = 3 ELSE 1 = 1 END)";
-    $p_data['sql'] .= " WHERE (CASE WHEN b.member_idx IN(' " . $p_data['m_idx'] . "') THEN b.member_idx IN(' " . $p_data['m_idx'] . "') AND b.bet_status = 3 ELSE 1 = 1 END)";
-    $p_data['sql'] .= " AND b.member_idx = " . $p_data['m_idx'] . " ";
+    $p_data['sql'] .= " WHERE b.member_idx = " . $p_data['m_idx'] . " ";
     $p_data['sql'] .= ' order by b.create_dt desc';
     $p_data['sql'] .= " LIMIT 10 ";
     $p_data['sql'] .= ";";
@@ -122,7 +118,7 @@ $result['retData_1'] = $data_str;
 $data_str_2 = "
 <table class='mlist scroll_mlist'>
 <tr>
-<td width='10%' style='background-color:#6F6F6F;color:#fff'>게임종류</td> 
+<td width='10%' style='background-color:#6F6F6F;color:#fff'>게임종류</td>
 <td width='5%' style='background-color:#6F6F6F;color:#fff'>회차</td>
 <td width='10%' style='background-color:#6F6F6F;color:#fff'>경기번호</td>
 <td width='12%' style='background-color:#6F6F6F;color:#fff'>배팅진행내역</td>

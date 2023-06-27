@@ -24,6 +24,8 @@ use App\GamblePatch\KwinGmPt;
 use App\GamblePatch\BetGoGmPt;
 use App\GamblePatch\ChoSunGmPt;
 use App\GamblePatch\BetsGmPt;
+use App\GamblePatch\NobleGmPt;
+use App\GamblePatch\BullsGmPt;
 
 //use CodeIgniter\HTTP\RequestInterface;
 
@@ -44,6 +46,10 @@ class ClassicController extends BaseController {
             $this->gmPt = new ChoSunGmPt();
         } else if ('BETS' == config(App::class)->ServerName) {
             $this->gmPt = new BetsGmPt();
+        } else if ('NOBLE' == config(App::class)->ServerName) {
+            $this->gmPt = new NobleGmPt();
+        } else if ('BULLS' == config(App::class)->ServerName) {
+            $this->gmPt = new BullsGmPt();
         }
     }
 
@@ -185,7 +191,6 @@ class ClassicController extends BaseController {
         $sportsList[ICEHOCKEY] = array('id' => ICEHOCKEY, 'name' => '아이스 하키', 'count' => 0, 'order_index' => 4);
         $sportsList[ESPORTS] = array('id' => ESPORTS, 'name' => '이스포츠', 'count' => 0, 'order_index' => 5);
         $sportsList[UFC] = array('id' => UFC, 'name' => 'UFC', 'count' => 0, 'order_index' => 6);
-        $sportsList[TENNIS] = array('id' => TENNIS, 'name' => '테니스', 'count' => 0, 'order_index' => 7);
 
         $array_fix_all = [];
         $leaguesList = [];
@@ -319,8 +324,7 @@ class ClassicController extends BaseController {
     private function getAvgClassicAllCountQueryString($lSportsBetModel) {
         $getAvgClassicAllCountQueryString_start = time();
         $startTime = date("Y-m-d H:i:s", strtotime("+" . 1 . " minutes"));
-        //$endTime = date("Y-m-d H:i:s", strtotime("+" . 1 . " days"));
-        $endTime = date("Y-m-d H:i:s", strtotime("+" . 16 . " hours"));
+        $endTime = date("Y-m-d H:i:s", strtotime("+" . 1 . " days"));
 
         $bind_parame = array($startTime, $endTime);
         $sql = "SELECT 

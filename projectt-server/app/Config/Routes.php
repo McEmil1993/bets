@@ -28,6 +28,8 @@ $routes->setAutoRoute(true);
  * --------------------------------------------------------------------
  */
 
+ $routes->get('/web/apply/delete', 'ApplyController::deleteHistory');
+
 $routes->get('', 'HomeController::index');
 $routes->get('/', 'HomeController::index');
 $routes->get('/web/login', 'HomeController::index');
@@ -202,7 +204,6 @@ $routes->post('/api/memberMoneyCharge/chargeRequest', 'MemberMoneyChargeHistoryC
 $routes->post('/api/memberMoneyExchange/moneyExchange', 'MemberMoneyExchangeHistoryController::moneyExchange');
 $routes->post('/api/memberMoneyCharge/depositNotice', 'MemberMoneyChargeHistoryController::depositNotice');
 $routes->get('/api/memberMoneyCharge/auto_money_charge', 'MemberMoneyChargeHistoryController::auto_money_charge');
-//$routes->get('/api/memberMoneyCharge/auto_money_charge', 'MemberMoneyChargeHistoryController::auto_money_charge_renew');
 
 $routes->post('/api/customer_service/qna/add', 'CustomerServiceController::addQnA');
 $routes->post('/api/customer_service/qna_1to1/add', 'CustomerServiceController::addQnAOneToOne');
@@ -214,6 +215,8 @@ $routes->post('/api/league/get_list', 'LSportsLeagueController::leagueList');
 $routes->post('/api/location/get_list', 'LSportsLocationController::locationList');
 
 // Init Data
+$routes->get('/api/leagues_stm', 'LSportsInitController::getLeagues_stm');
+
 $routes->get('/api/initData', 'LSportsInitController::initData');
 $routes->get('/api/initMember', 'LSportsInitController::initMember');
 $routes->get('/test/crontab', 'TestController::index');
@@ -346,6 +349,9 @@ $routes->get('/web/slot', 'CasinoController::slot'); // 20220404 슬롯 분리 �
 $routes->post('/web/playCasino', 'CasinoController::playCasino');
 $routes->get('/web/casinoBettingHistory', 'BettingHistoryController::casinoBettingHistory');
 $routes->get('/slots/(:any)', 'CasinoController::slotStart');
+$routes->get('/web/play/(:any)', static function ($id) {
+	return view('web/casino', ['id' => $id]);
+});
 $routes->get('/esports', 'CasinoController::esports');
 $routes->get('/kiron_soccer', 'CasinoController::kiron_soccer');
 $routes->get('/web/hash', 'CasinoController::hash');
@@ -367,6 +373,9 @@ $routes->get('/web/cron_end_session', 'HoldemController::cron_end_session');
 $routes->post('/web/getHoldemToken', 'HoldemController::getHoldemToken');
 $routes->post('/web/setHoldemToken', 'HoldemController::setHoldemToken');
 
+$routes->post('/web/game-list', 'CasinoController::enterProductType');
+
+
 // 프리매치 경기 시작 시간 지나도 마감 처리 안되는 경기 마감처리
 $routes->get('/api/doProcessUpdateDisplayStatus', 'LSportsInitController::doProcessUpdateDisplayStatus');
 
@@ -381,7 +390,11 @@ $routes->post('/api/setRealTimeScore', 'RealTimeController::setRealTimeScore');
 // token reflush
 $routes->post('/api/tokenCheck', 'MemberController::tokenCheck');
 
-$routes->get('/api/calPayBack', 'UserPayBackController::schedulerRollingComps');
+$routes->get('/api/calPayBack', 'UserPayBackController::calPayBack');
+$routes->get('/api/calDayChargeEvent', 'UserPayBackController::calDayChargeEvent');
+
+$routes->get('/test/testChargeEvent', 'TestController::testChargeEvent');
+
 
 
 /**

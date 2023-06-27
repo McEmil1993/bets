@@ -131,7 +131,7 @@ a.b_wid{display:block}.h25{height:25px;padding:0 12px;box-sizing:border-box;font
 .btn_blu:active,.btn_blu:focus,.btn_blu:hover{background:#338dd9}
 .btn_green{background:#00ce61;color:#fff}
 .btn_green:active,.btn_green:focus,.btn_green:hover{background:#01b255}
-.btn_yellow{background:#fae345;color:#444}
+.btn_yellow{background:#fae345;color:#444;}
 .btn_yellow:active,.btn_yellow:focus,.btn_yellow:hover{background:#dfc933}
 .btn_sky{background:#49b6d6;color:#fff}
 .btn_sky:active,.btn_sky:focus,.btn_sky:hover{background:#3f9eba}

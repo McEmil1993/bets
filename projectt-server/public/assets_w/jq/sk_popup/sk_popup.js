@@ -12,7 +12,10 @@ $(document).ready(function () {
 	  transition: 'all 0.3s',
 	  scrolllock: true
 	});
-
+    $('#gm_pop1').popup({ // 카트
+      transition: 'all 0.3s',
+      scrolllock: true
+    });
 });
 
  

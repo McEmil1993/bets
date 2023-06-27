@@ -24,11 +24,6 @@ $level_rule_arr = array();
 $category_rule = array();
 
 if ($db_conn) {
-    
-        if(false === GameCode::checkAdminType($_SESSION,$BdsAdminDAO)){
-           die();
-        }
-    
     // base_rule
 	$p_data['sql'] = "SELECT COUNT(*) AS CNT FROM base_rule";
 	$db_dataArrCnt = $BdsAdminDAO->getQueryData($p_data);

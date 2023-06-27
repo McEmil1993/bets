@@ -1854,7 +1854,7 @@ const setSportsBackGroundColor = function(gameSportsId, fixture_id){
             break;
         case 48242:
         	// $("#fixture_row_"+fixture_id).css('backgroundColor','#704b0f');
-            $("#fixture_row_"+fixture_id).css('border-color','#a16c16');
+            $("#fixture_row_"+fixture_id).css('border-color','#66563c');
             break;
         case 154914:
         	// $("#fixture_row_"+fixture_id).css('backgroundColor','#0c595c');
@@ -1866,11 +1866,11 @@ const setSportsBackGroundColor = function(gameSportsId, fixture_id){
             break;
         case 35232:
         	// $("#fixture_row_"+fixture_id).css('backgroundColor','#362257');
-            $("#fixture_row_"+fixture_id).css('border-color','#523384');
+            $("#fixture_row_"+fixture_id).css('border-color','#4f455e');
             break;
         case 687890:
         	// $("#fixture_row_"+fixture_id).css('backgroundColor','#582241');
-            $("#fixture_row_"+fixture_id).css('border-color','#843361');
+            $("#fixture_row_"+fixture_id).css('border-color','#5e4553');
             break;
         case 154919:
             break;

@@ -75,11 +75,6 @@ $CASHAdminDAO = new Admin_Cash_DAO(_DB_NAME_WEB);
 $db_conn = $CASHAdminDAO->dbconnect();
 
 if($db_conn) {
-    
-    if(false === GameCode::checkAdminType($_SESSION,$CASHAdminDAO)){
-        die();
-    }
-    
     // 대총판, 총판 선택시 해당 총파소속 유저들을 가져와야 한다.
     if($p_data['u_business'] > 1){
         $p_data['sql'] = "SELECT id FROM member WHERE u_business = ".$p_data['u_business'];
@@ -155,6 +150,19 @@ if($db_conn) {
     // 총판 정보 읽어오기 
     $sql = "select id,name,low_id,high_id from business_type where id <> 1 order by id asc ";
     $db_dists = $CASHAdminDAO->getQueryData_pre($sql, []);
+
+    //Changing distributor id to distributor name
+    foreach($db_dataArr as $key => $row)
+    {
+        $dis_id = $row["dis_id"];
+        $new_query["sql"] = "select * from member where id = '$dis_id'";
+        $distributor_info = $CASHAdminDAO->getQueryData($new_query);
+        $db_dataArr[$key]["distributor_nickname"] = $distributor_info[0]["nick_name"];
+
+    }
+
+    $p_data['sql'] = " SELECT set_type_val FROM t_game_config where set_type in (?,?,?,?,?,?,?) ORDER BY idx ASC";
+    $db_bonus_option = $CASHAdminDAO->getQueryData_pre($p_data['sql'], ['first_charge','default_bonus','bonus_option_1','bonus_option_2','bonus_option_3','bonus_option_4','bonus_option_5']);
     
     $CASHAdminDAO->dbclose();
 }
@@ -327,6 +335,24 @@ if($total_cnt > 0) {
                 case 4: $status_style = ""; $status_str = "취소"; break;
                 case 11: $status_style = "style='background-color:#ef6963;'";$status_str = "관리자 취소"; break;
             }
+
+            $bonus_display   = "";
+
+            if ($row['bonus_option_idx'] == -1) {
+                $bonus_display = $db_bonus_option[0]['set_type_val'];
+            }elseif ($row['bonus_option_idx'] == 0) {
+                $bonus_display = $db_bonus_option[1]['set_type_val'];
+            }elseif ($row['bonus_option_idx'] == 1) {
+                $bonus_display = $db_bonus_option[2]['set_type_val'];
+            }elseif ($row['bonus_option_idx'] == 2) {
+                $bonus_display = $db_bonus_option[3]['set_type_val'];
+            }elseif ($row['bonus_option_idx'] == 3) {
+                $bonus_display = $db_bonus_option[4]['set_type_val'];
+            }elseif ($row['bonus_option_idx'] == 4) {
+                $bonus_display = $db_bonus_option[5]['set_type_val'];
+            }elseif ($row['bonus_option_idx'] == 5) {
+                $bonus_display = $db_bonus_option[6]['set_type_val'];
+            }
             
             // 총판이면 파란색표시
             $u_business = $row['u_business'];
@@ -385,13 +411,13 @@ if($total_cnt > 0) {
                     	</td>
                     	<td><?=$row['level']?></td>
                     	<td style='text-align:left;<?=$css_color_id?>'>
-                            <a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>');"><?=$UTIL->getMemberInfoColor($db_id, $row['info_change_dt'])?></a>
+                            <a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>', '2');"><?=$UTIL->getMemberInfoColor($db_id, $row['info_change_dt'], $row['is_monitor_charge'])?></a>
                     	</td>
                         <td style='text-align:left;<?=$css_color_id?>'>
-                        	<a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>');"><?=$UTIL->getMemberInfoColor($db_nick, $row['info_change_dt'])?></a>
+                        	<a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>', '2');"><?=$UTIL->getMemberInfoColor($db_nick, $row['info_change_dt'], $row['is_monitor_charge'])?></a>
                         </td>
-                        <td><?= $row['dis_id'] ?></td>
-                        <td style='text-align:left;'><?=$UTIL->getMemberInfoColor($row['account_name'], $row['info_change_dt'])?></td>
+                        <td><?= $row['distributor_nickname'] ?></td>
+                        <td style='text-align:left;'><?=$UTIL->getMemberInfoColor($row['account_name'], $row['info_change_dt'], $row['is_monitor_charge'])?></td>
                         <td style='text-align:left;'><?=$row['account_bank']?></td>
                         <td style=''><?=$db_account_number?></td>
                         <td style='text-align:right;'><?=number_format($row['money'])?></td>
@@ -405,25 +431,23 @@ if($total_cnt > 0) {
                         </td>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td colspan="13" style="text-align: left">
+                        <td colspan="13" style="text-align: left; line-height: 20px;">
                             <span>마지막충전: <b><?= number_format($row['charge_money']) ?></b></span>
-                            <span>시간: <b><?= $row['charge_date'] ?></b></span>
-                            <span>보너스옵션: <b><?= getBonusOptionName($row['bonus_option_idx']) ?></b></span>
-                            <span>이전보유머니: <b><?= number_format($row['result_money'] - $row['charge_money']) ?></b></span>
+                            <span class="ml10">시간: <b><?= $row['charge_date'] ?></b></span>
+                            <span class="ml10">보너스옵션: <b><?= $bonus_display ?></b></span>
+                            <span class="ml10">이전보유머니: <b><?= number_format($row['result_money'] - $row['charge_money']) ?></b></span>
+                            
+                            <br>
+
                             <span>프리매치 싱글: <b><?= number_format($row['sports_bet_s_money']) ?></b><b>(<?=$sports_s_per?>%)</b></span>
-                            <span>프리매치 다폴더: <b><?= number_format($row['sports_bet_d_money']) ?></b><b>(<?=$sports_d_per?>%)</b></span>
-                            <span>실시간 싱글: <b><?= number_format($row['real_bet_s_money']) ?></b><b>(<?=$real_s_per?>%)</b></span>
-                            <span>실시간 다폴더: <b><?= number_format($row['real_bet_d_money']) ?></b><b>(<?=$real_d_per?>%)</b></span>
-                            <span>클래식 싱글: <b><?= number_format($row['classic_bet_s_money']) ?></b><b>(<?=$classic_s_per?>%)</b></span>
-                            <span>클래식 다폴더: <b><?= number_format($row['classic_bet_d_money']) ?></b><b>(<?=$classic_d_per?>%)</b></span>
-                            <span>미니게임: <b><?= number_format($row['mini_bet_money']) ?></b><b>(<?=$mini_per?>%)</b></span>
-                            <span>카지노: <b><?= number_format($row['casino_bet_money']) ?></b><b>(<?=$casino_bet_per?>%)</b></span>
-                            <span>슬롯머신: <b><?= number_format($row['slot_bet_money']) ?></b><b>(<?=$slo_bet_per?>%)</b></span>
-                            <span>E스포츠/키론: <b><?= number_format($row['esports_bet_money']) ?></b><b>(<?=$esports_bet_per?>%)</b></span>
-                            <span>해쉬게임: <b><?= number_format($row['hash_bet_money']) ?></b><b>(<?=$hash_bet_per?>%)</b></span>
-                            <span>홀덤: <b><?= number_format($row['holdem_bet_money']) ?></b><b>(<?=$holdem_bet_per?>%)</b></span>
+                            <span class="ml10">프리매치 다폴더: <b><?= number_format($row['sports_bet_d_money']) ?></b><b>(<?=$sports_d_per?>%)</b></span>
+                            <span class="ml10">실시간 싱글: <b><?= number_format($row['real_bet_s_money']) ?></b><b>(<?=$real_s_per?>%)</b></span>
+                            <span class="ml10">실시간 다폴더: <b><?= number_format($row['real_bet_d_money']) ?></b><b>(<?=$real_d_per?>%)</b></span>
+                            <span class="ml10">카지노: <b><?= number_format($row['casino_bet_money']) ?></b><b>(<?=$casino_bet_per?>%)</b></span>
+                            <span class="ml10">미니게임: <b><?= number_format($row['mini_bet_money']) ?></b><b>(<?=$mini_per?>%)</b></span>
+                            <span class="ml10">해쉬게임: <b><?= number_format($row['hash_bet_money']) ?></b><b>(<?=$hash_bet_per?>%)</b></span>
+                            <span class="ml10">슬롯머신: <b><?= number_format($row['slot_bet_money']) ?></b><b>(<?=$slo_bet_per?>%)</b></span>
+                            <span class="ml10">E스포츠: <b><?= number_format($row['esports_bet_money']) ?></b><b>(<?=$esports_bet_per?>%)</b></span>
                         </td>
                     </tr>
 <?php        
@@ -611,7 +635,10 @@ function setMoney(mkind,setidx=0) {
     	    url: param_url,
     	    data:{'mkind':mkind,'mtype':setidx,'chkval':chkboxval},
     	    success: function (data) {
-    	    	
+    	    	console.log(data['retCode'])
+                if(data['retCode'] == "200"){
+    	    		window.location.reload();
+    			}
     	    	if(data['retCode'] == "1000"){
     	    		window.location.reload();
     			}

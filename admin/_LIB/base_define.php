@@ -1,29 +1,29 @@
 <?php
-        define('_DB_IP', '210.175.73.245');
-        define('_DB_PORT', '3306');
+        define('_DB_IP', '54.250.249.165');
+        define('_DB_PORT', '2380');
 	//define('_DB_PORT', '3306');
 
-	define('_DB_USER_ADMIN', 'betsdev');
-	define('_DB_PASS_ADMIN', 'Mh9aCd5DslUWHujP');
-	define('_DB_NAME_ADMIN', 'BETGO_ADMIN');
-	define('_DB_NAME_WEB', 'mydb_bets');
-	define('_DB_USER_WEB', 'betsdev');
-	define('_DB_PASS_WEB', 'Mh9aCd5DslUWHujP');
+	define('_DB_USER_ADMIN', 'nobledev');
+	define('_DB_PASS_ADMIN', 'wXaQANRTJg1hE640');
+	define('_DB_NAME_ADMIN', 'BULLS_ADMIN');
+	define('_DB_NAME_WEB', 'mydb_bulls');
+	define('_DB_USER_WEB', 'nobledev');
+	define('_DB_PASS_WEB', 'wXaQANRTJg1hE640');
         
         
         
 	//define('_DB_LOG_IP', '54.250.249.165');
-        define('_DB_LOG_IP', '210.175.73.245');
-        define('_DB_LOG_PORT', '3306');
+        define('_DB_LOG_IP', '54.250.249.165');
+        define('_DB_LOG_PORT', '2380');
 	//define('_DB_LOG_PORT', '3306');
 
-	define('_DB_USER_LOG', 'betsdev');
-	define('_DB_PASS_LOG', 'Mh9aCd5DslUWHujP');
-	define('_DB_NAME_LOG_DB', 'log_db_bets');
+	define('_DB_USER_LOG', 'nobledev');
+	define('_DB_PASS_LOG', 'wXaQANRTJg1hE640');
+	define('_DB_NAME_LOG_DB', 'log_db');
         
         // image server
-        define('IMAGE_TEMP_PATH', 'D:/svn/project-t/admin/log');
-        define('IMAGE_PATH', 'dev_bets');
+        define('IMAGE_TEMP_PATH', '/var/www/bulls/admin/log');
+        define('IMAGE_PATH', 'dev_bulls');
 	define('IMAGE_SERVER_URL', 'https://imghubserver.com');
         define('IMAGE_SERVER_UPLOAD_URL', 'https://imghubserver.com/receiver.php');
         define('IMAGE_SERVER_DELETE_URL', 'https://imghubserver.com/delete.php');
@@ -32,10 +32,11 @@
         define('INITDATA_PRE_URL', 'http://210.175.73.161:20003/admin/change_provider_refundRate');
         define('INITDATA_REAL_URL', 'http://210.175.73.161:20002/admin/change_provider_refundRate');
         
-        define('SERVER', 'BETS');
+        // define('SERVER', 'BETS');
+        define('SERVER', 'BULLS');
         
         // title
-        define('TITLE', 'BETS-ADMIN(DEV)');
+        define('TITLE', 'BULLS-ADMIN(DEV)');
         define ('IS_HASH','ON');
         define ('IS_ESPORTS_KEYRON','OFF');
         
@@ -51,4 +52,12 @@
         
         define ('IS_EOS_POWERBALL','ON');
         define ('IS_POWERBALL','ON');
+
+        define ('REDIS_IP','54.250.249.165');
+        define ('REDIS_PORT',6379);
+        define ('REDIS_PASSWORD','');
+        define ('REDIS_DATABASE',1);
+        define ('REDIS_EXPIRE',0);
+
+        define ('IS_HOLDEM','ON');
 ?>

@@ -42,13 +42,13 @@ define('GAME_DB_HOST', '210.175.73.245');
 define('GAME_DB_ID', 'betsdev');
 define('GAME_DB_PASSWORD', 'Mh9aCd5DslUWHujP');
 define('GAME_DB_PORT', 3306);
-define('GAME_DB_DATABASE', 'mydb_bets');
+define('GAME_DB_DATABASE', 'mydb_noble');
 
 define('LOG_DB_HOST', '210.175.73.245');
 define('LOG_DB_ID', 'betsdev');
 define('LOG_DB_PASSWORD', 'Mh9aCd5DslUWHujP');
 define('LOG_DB_PORT', 3306);
-define('LOG_DB_DATABASE', 'mydb_bets');
+define('LOG_DB_DATABASE', 'mydb_noble');
 
 define('MAIN_DB_HOST', '210.175.73.245');
 define('MAIN_DB_ID', 'betsdev');

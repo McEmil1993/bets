@@ -159,16 +159,152 @@ class LSportsInitController extends BaseController {
     }
 
     public function getLeagues() {
-        $pullOperations = new PullOperations('ODD', $this->logger);
-        $locations = $pullOperations->getLeagues();
-        if (false == isset($locations) || null == $locations)
-            return;
-        $this->logger->debug("getLeagues count : " . count($locations));
 
+        try {
+            $pullOperations = new PullOperations('ODD', $this->logger);
+
+            $locations = $pullOperations->getLeagues();
+            
+            if (false == isset($locations) || null == $locations){
+                $this->logger->info("getLeagues empty : ");
+               return;
+            }
+            
+            $count = 0;
+            $arr = array();
+
+            foreach ($locations->League as $object) {
+                $arr[] = $object->{'@attributes'};
+            }
+           
+            
+
+            $this->logger->debug("getLeagues count : " . count($arr));
+    
+            $sql = array(); // 스포츠
+            $sqlReal = array(); // 실시간
+            if (count($arr) > 0) {
+                foreach ($arr as $item) {
+                    $name = addslashes($item->Name);
+                    $insertSql = '('
+                            . $item->Id . ', '
+                            . 1 . ', "'
+                            . $name . '", '
+                            . $item->LocationId . ', '
+                            . $item->SportId . ', "'
+                            . $item->Season . '", "'
+                            . 'ko")';
+                    array_push($sql, $insertSql);
+    
+                    // 실시간
+                    $insertSql = '('
+                            . $item->Id . ', '
+                            . 2 . ', "'
+                            . $name . '", '
+                            . $item->LocationId . ', '
+                            . $item->SportId . ', "'
+                            . $item->Season . '", "'
+                            . 'ko")';
+                    array_push($sqlReal, $insertSql);
+                }
+               
+            }
+    
+            $lSportsLeaguesModel = new LSportsLeaguesModel();
+    
+            if (count($sql) > 0) {
+                try {
+                    //$lSportsLeaguesModel->db->transStart();
+                    $lSportsLeaguesModel->db->query(
+                            'INSERT INTO `lsports_leagues` ('
+                            . 'id, '
+                            . 'bet_type, '
+                            . 'name, '
+                            . 'location_id, '
+                            . 'sport_id, '
+                            . 'season, '
+                            . 'lang) VALUES '
+                            . implode(',', $sql)
+                            . ' ON DUPLICATE KEY UPDATE '
+                            . 'name = VALUES(name), '
+                            . 'location_id = VALUES(location_id), '
+                            . 'sport_id = VALUES(sport_id), '
+                            . 'season = VALUES(season), '
+                            . 'lang = VALUES(lang)'
+                    );
+                   
+                    //$lSportsLeaguesModel->db->transComplete();
+                } catch (\mysqli_sql_exception $e) {
+                    $query_str = (string) $lSportsLeaguesModel->getLastQuery();
+                    $this->logger->error("- getViewOrderedFixtures error query_string : " . $query_str);
+                    //$lSportsLeaguesModel->db->transRollback();
+                    return;
+                }
+            }
+    
+            if (count($sqlReal) > 0) {
+                try {
+                    //$lSportsLeaguesModel->db->transStart();
+                    $lSportsLeaguesModel->db->query(
+                            'INSERT INTO `lsports_leagues` ('
+                            . 'id, '
+                            . 'bet_type, '
+                            . 'name, '
+                            . 'location_id, '
+                            . 'sport_id, '
+                            . 'season, '
+                            . 'lang) VALUES '
+                            . implode(',', $sqlReal)
+                            . ' ON DUPLICATE KEY UPDATE '
+                            . 'name = VALUES(name), '
+                            . 'location_id = VALUES(location_id), '
+                            . 'sport_id = VALUES(sport_id), '
+                            . 'season = VALUES(season), '
+                            . 'lang = VALUES(lang)'
+                    );
+                   
+                    //$lSportsLeaguesModel->db->transComplete();
+                } catch (\mysqli_sql_exception $e) {
+                    $query_str = (string) $lSportsLeaguesModel->getLastQuery();
+                    $this->logger->error("- getViewOrderedFixtures error query_string : " . $query_str);
+                    //$lSportsLeaguesModel->db->transRollback();
+                    return;
+                }
+            }
+
+
+        }
+        catch (Exception $e) {
+            echo $e->getMessage();
+        }
+        catch (InvalidArgumentException $e) {
+            echo $e->getMessage();
+        }
+       
+    }
+
+
+    public function getLeagues_stm() {
+        $pullOperations = new PullOperations('STM', $this->logger);
+        $locations = $pullOperations->getLeagues_stm();
+        if (false == isset($locations) || null == $locations){
+             $this->logger->info("getLeagues_stm empty : ");
+            //  echo "Leagues_stm Empty!";
+            return;
+        }
+        // $count = 0;
+
+        // echo json_encode($locations);
+
+        foreach($locations as $key ){ $count = count($key); }
+       
+       
+        $this->logger->info("getLeagues_stm count : " . $count);
+        // echo " Leagues_stm getLeagues count!". $count;
         $sql = array(); // 스포츠
         $sqlReal = array(); // 실시간
-        if (count($locations) > 0) {
-            foreach ($locations as $item) {
+        if ($count > 0) {
+            foreach ($locations->Leagues as $item) {
                 $name = addslashes($item->Name);
                 $insertSql = '('
                         . $item->Id . ', '
@@ -216,7 +352,7 @@ class LSportsInitController extends BaseController {
                         . 'lang = VALUES(lang)'
                 );
                 //$lSportsLeaguesModel->db->transComplete();
-            } catch (\mysqli_sql_exception $e) {
+            } catch (\Exception $e) {
                 $query_str = (string) $lSportsLeaguesModel->getLastQuery();
                 $this->logger->error("- getViewOrderedFixtures error query_string : " . $query_str);
                 //$lSportsLeaguesModel->db->transRollback();
@@ -245,7 +381,7 @@ class LSportsInitController extends BaseController {
                         . 'lang = VALUES(lang)'
                 );
                 //$lSportsLeaguesModel->db->transComplete();
-            } catch (\mysqli_sql_exception $e) {
+            } catch (\Exception $e) {
                 $query_str = (string) $lSportsLeaguesModel->getLastQuery();
                 $this->logger->error("- getViewOrderedFixtures error query_string : " . $query_str);
                 //$lSportsLeaguesModel->db->transRollback();

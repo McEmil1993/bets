@@ -18,6 +18,8 @@ use App\GamblePatch\GambelGmPt;
 use App\GamblePatch\KwinGmPt;
 use App\GamblePatch\ChoSunGmPt;
 use App\GamblePatch\BetsGmPt;
+use App\GamblePatch\NobleGmPt;
+use App\GamblePatch\BullsGmPt;
 
 class BetDataUtil {
 
@@ -199,9 +201,7 @@ class BetDataUtil {
                 $main_key = $mergeBet['fixture_id'].'_'.'1'.'_';
             } else if (ESPORTS == $mergeBet['fixture_sport_id']) {
                 $main_key = $mergeBet['fixture_id']. '_'.'52'.'_';
-            } else if (TENNIS == $mergeBet['fixture_sport_id']) {
-                $main_key = $mergeBet['fixture_id']. '_'.'52'.'_';
-            } 
+            }
 
             $main_betObject = $returnBets[$main_key];
             //$logger->info('checkHandiPlus overtime  ==>' . json_encode($main_betObject));
@@ -241,6 +241,8 @@ class BetDataUtil {
         if (!isset($bets) || 0 == count($bets))
             return $returnBets;
 
+        //$arr_over = array(2, 11, 21, 28, 30, 31, 77, 101, 102, 153, 155, 214, 220, 221);
+        //$arr_handi = array(3, 53, 64, 95, 281, 342, 866, 1558);
         $arr_check_market = array(2, 3, 11, 21, 28, 30, 31, 53, 64, 77, 95, 101, 102, 153, 155, 214, 220, 221, 281, 342, 866, 1558);
         $check_over_under_arr = [];
         $arr_check_handi_soccer_expecpt = [];
@@ -257,22 +259,26 @@ class BetDataUtil {
             }
 
             if (6 == $mergeBet['markets_id'] || 9 == $mergeBet['markets_id']) {
-                if ($mergeBet['limit_bet_price'] < $bet->bet_price && $bet->bet_price < $mergeBet['max_bet_price'] && 1 == $bet->bet_status) {
-                    $mergeBet['bet_data'][$bet->bet_name] = array('bet_id' => $bet->bet_id, 'bet_name' => $bet->bet_name, 'bet_price' => $bet->bet_price, 'bet_status' => $bet->bet_status
-                        , 'bet_line' => $bet->bet_line, 'bet_base_line' => $bet->bet_base_line, 'last_update' => $bet->last_update,'update_dt' => $bet->update_dt);
+                if ($mergeBet['limit_bet_price'] < $bet->bet_price && 1 == $bet->bet_status) {
+                    if ((0 < $mergeBet['max_bet_price'] && $bet->bet_price < $mergeBet['max_bet_price']) || 0 == $mergeBet['max_bet_price']) {
+                        if ($bet->bet_name != "Any Other Score") {
+                            $mergeBet['bet_data'][$bet->bet_name] = array('bet_id' => $bet->bet_id, 'bet_name' => $bet->bet_name, 'bet_price' => $bet->bet_price, 'bet_status' => $bet->bet_status
+                                , 'bet_line' => $bet->bet_line, 'bet_base_line' => $bet->bet_base_line, 'last_update' => $bet->last_update, 'update_dt' => $bet->update_dt);
+                        }
+                    }
                 }
             } else {
 
                 $mergeBet['bet_data'][$bet->bet_name] = array('bet_id' => $bet->bet_id, 'bet_name' => $bet->bet_name, 'bet_price' => $bet->bet_price, 'bet_status' => $bet->bet_status
-                    , 'bet_start_price' => $bet->bet_start_price, 'bet_line' => $bet->bet_line, 'bet_base_line' => $bet->bet_base_line, 'last_update' => $bet->last_update,'update_dt' => $bet->update_dt);
+                    , 'bet_start_price' => $bet->bet_start_price, 'bet_line' => $bet->bet_line, 'bet_base_line' => $bet->bet_base_line, 'last_update' => $bet->last_update, 'update_dt' => $bet->update_dt);
             }
 
             // 축구 경기만 따로 정리한다.
-            if (SOCCER == $bet->fixture_sport_id && ('1' == $bet->bet_name || '2' == $bet->bet_name) && 2.15 <= $bet->bet_price && $bet->bet_price <= 2.55) {
-                if (false == in_array($bet->fixture_id, $arr_check_handi_soccer_expecpt)) {
-                    $arr_check_handi_soccer_expecpt[] = $bet->fixture_id;
-                }
-            }
+            /* if (SOCCER == $bet->fixture_sport_id && ('1' == $bet->bet_name || '2' == $bet->bet_name) && 2.15 <= $bet->bet_price && $bet->bet_price <= 2.55) {
+              if (false == in_array($bet->fixture_id, $arr_check_handi_soccer_expecpt)) {
+              $arr_check_handi_soccer_expecpt[] = $bet->fixture_id;
+              }
+              } */
 
             $returnBets[$key] = $mergeBet;
         }
@@ -296,40 +302,31 @@ class BetDataUtil {
             // 제공되지 않는 리그의 마켓은 프론트에서 제외된다.
             if (1 != $mergeBet['markets_id'] && true == in_array($mergeBet['fixture_league_id'], $arrLeague)) {
                 unset($returnBets[$bet_key]);
-                //$logger->error('1 mergeAvgBetData fixture_id : '.$mergeBet['fixture_id'].' markets_id : '.$mergeBet['markets_id']);
                 continue;
             }
 
             // base_line 값이 문제가 있다 역시 프론트에서 제외된다.
             if ((false === isset($mergeBet['bet_base_line']) || true === empty($mergeBet['bet_base_line'])) && true == in_array($mergeBet['markets_id'], $arr_check_market)) {
                 unset($returnBets[$bet_key]);
-                //$logger->error('2 mergeAvgBetData fixture_id : '.$mergeBet['fixture_id'].' bet_base_line : '.$mergeBet['bet_base_line'].' markets_id : '.$mergeBet['markets_id']);
                 continue;
             }
 
             // 핸디캡 배당사 제외 루틴
             // 축구 승무패(마켓아이디 1) 의 승,패 배당이 2.15 ~ 2.55 사이일 경우  핸디캡,핸디캡연장포함일경우 아래 기준점은 프론트에서 제외된다
             $arr_bet_base_line = explode(" ", $mergeBet['bet_base_line']);
-            if (true == in_array($mergeBet['fixture_id'], $arr_check_handi_soccer_expecpt) && (3 == $mergeBet['markets_id'] || 342 == $mergeBet['markets_id'])) {
-                if ('0.5' == $arr_bet_base_line[0] || '-0.5' == $arr_bet_base_line[0]) {
-                    unset($returnBets[$bet_key]);
-                    $logger->info('3mergeAvgBetData fixture_id : '.$mergeBet['fixture_id'].' markets_id : '.$mergeBet['markets_id'].' line : '.__LINE__);
-                    continue;
-                }
-            } else if (BASKETBALL == $mergeBet['fixture_sport_id'] && (3 == $mergeBet['markets_id'] || 342 == $mergeBet['markets_id'])) {// 농구 아래 기준점 프론트 제외
+
+            /* if (true == in_array($mergeBet['fixture_id'], $arr_check_handi_soccer_expecpt) && (3 == $mergeBet['markets_id'] || 342 == $mergeBet['markets_id'])) {
+              if ('0.5' == $arr_bet_base_line[0] || '-0.5' == $arr_bet_base_line[0]) {
+              unset($returnBets[$bet_key]);
+              continue;
+              }
+              } else */ if (BASKETBALL == $mergeBet['fixture_sport_id'] && (3 == $mergeBet['markets_id'] || 342 == $mergeBet['markets_id'])) {// 농구 아래 기준점 프론트 제외
                 if ('0.0' == $arr_bet_base_line[0] || '0.5' == $arr_bet_base_line[0] || '-0.5' == $arr_bet_base_line[0] || '1.0' == $arr_bet_base_line[0] || '-1.0' == $arr_bet_base_line[0] || '1.5' == $arr_bet_base_line[0] || '-1.5' == $arr_bet_base_line[0]) {
-                    $logger->info('4mergeAvgBetData fixture_id : '.$mergeBet['fixture_id'].' markets_id : '.$mergeBet['markets_id'].' line : '.__LINE__);
                     unset($returnBets[$bet_key]);
                     continue;
                 }
             } else if (VOLLEYBALL == $mergeBet['fixture_sport_id'] && 1558 == $mergeBet['markets_id']) {// 배구 아래 기준점 프론트 제외
                 if ('0.0' == $arr_bet_base_line[0] || '0.5' == $arr_bet_base_line[0] || '-0.5' == $arr_bet_base_line[0] || '1.0' == $arr_bet_base_line[0] || '-1.0' == $arr_bet_base_line[0] || '1.5' == $arr_bet_base_line[0] || '-1.5' == $arr_bet_base_line[0]) {
-                    unset($returnBets[$bet_key]);
-                    $logger->info('5mergeAvgBetData fixture_id : '.$mergeBet['fixture_id'].' markets_id : '.$mergeBet['markets_id'].' line : '.__LINE__);
-                    continue;
-                }
-            } else if (VOLLEYBALL == $mergeBet['fixture_sport_id'] && 866 == $mergeBet['markets_id']) {// 배구 아래 기준점 프론트 제외
-                if ('0.0' == $arr_bet_base_line[0] || '0.5' == $arr_bet_base_line[0] || '-0.5' == $arr_bet_base_line[0]) {
                     unset($returnBets[$bet_key]);
                     continue;
                 }
@@ -338,39 +335,40 @@ class BetDataUtil {
             } else if (ICEHOCKEY == $mergeBet['fixture_sport_id'] && 342 == $mergeBet['markets_id']) {// 아이스 하키 아래 기준점 프론트 제외
                 if ('0.0' == $arr_bet_base_line[0] || '0.5' == $arr_bet_base_line[0] || '-0.5' == $arr_bet_base_line[0] || '1.0' == $arr_bet_base_line[0] || '-1.0' == $arr_bet_base_line[0]) {
                     unset($returnBets[$bet_key]);
-                    $logger->info('6mergeAvgBetData fixture_id : '.$mergeBet['fixture_id'].' markets_id : '.$mergeBet['markets_id'].' line : '.__LINE__);
                     continue;
                 }
-            } else if (BASEBALL == $mergeBet['fixture_sport_id'] && 342 == $mergeBet['markets_id']) {// 야구 기준점은 프리매치만 제외한다
-                if ('0.0' == $arr_bet_base_line[0] || '-0.5' == $arr_bet_base_line[0] || '0.5' == $arr_bet_base_line[0]) {
+            } else if (SOCCER == $mergeBet['fixture_sport_id'] && 3 == $mergeBet['markets_id']) {// 축구 아래 기준점 프론트 제외  // 위에 승무패 기준점 제외로 인해 else if 문에 포함이 되면 안된다.
+                //$logger->info('arr_bet_base_line ==>' . $arr_bet_base_line[0]);
+
+                if ('0.0' == $arr_bet_base_line[0] || '1.0' == $arr_bet_base_line[0] || '-1.0' == $arr_bet_base_line[0] || '2.0' == $arr_bet_base_line[0] || '-2.0' == $arr_bet_base_line[0] || '3.0' == $arr_bet_base_line[0] || '-3.0' == $arr_bet_base_line[0] || '4.0' == $arr_bet_base_line[0] || '-4.0' == $arr_bet_base_line[0]) {
                     unset($returnBets[$bet_key]);
                     continue;
                 }
-            } else if (BASEBALL == $mergeBet['fixture_sport_id'] && 281 == $mergeBet['markets_id']) {// 야구는 0 기준점만 허용한다.
-                if ('0.0' != $arr_bet_base_line[0]) {
+            } else if (BASEBALL == $mergeBet['fixture_sport_id'] && (236 == $mergeBet['markets_id'] /* || 281 == $mergeBet['markets_id'] */ || 342 == $mergeBet['markets_id'])) {// 야구 기준점은 프리매치만 제외한다
+                if ('0.0' == $arr_bet_base_line[0] || '0.5' == $arr_bet_base_line[0] || '-0.5' == $arr_bet_base_line[0]) {
                     unset($returnBets[$bet_key]);
                     continue;
                 }
             }
 
+
             // 최소,최대 값 기준 조건에 맞지 않으면 프론트에서 제외된다.
             foreach ($mergeBet['bet_data'] as $key => $value) {
 
-                 // 핸디캡 일경우 정배 배당에서는 플핸 제외를 해야한다.
-                if(true == BetDataUtil::checkHandiPlus($returnBets, $mergeBet,$value,$bet_key,$logger)){
+                // 핸디캡 일경우 정배 배당에서는 플핸 제외를 해야한다.
+                if (true == BetDataUtil::checkHandiPlus($returnBets, $mergeBet, $value, $bet_key, $logger)) {
                     unset($returnBets[$bet_key]);
                     break;
                 }
-                
+
                 if (0 < $mergeBet['limit_bet_price'] && $value['bet_price'] < $mergeBet['limit_bet_price']) {
                     unset($returnBets[$bet_key]);
-                    //$logger->info('7mergeAvgBetData limit fixture_id : '.$mergeBet['fixture_id'].' markets_id : '.$mergeBet['markets_id'].' line : '.__LINE__);
                     break;
                 }
 
                 if (0 < $mergeBet['max_bet_price'] && $mergeBet['max_bet_price'] < $value['bet_price']) {
                     unset($returnBets[$bet_key]);
-                    //$logger->info('8mergeAvgBetData max fixture_id : '.$mergeBet['fixture_id'].' markets_id : '.$mergeBet['markets_id'].' line : '.__LINE__);
+
                     break;
                 }
 
@@ -378,19 +376,15 @@ class BetDataUtil {
                 $count = count($mergeBet['bet_data']);
                 if (2 != $count && true == in_array($mergeBet['markets_id'], $arr_check_market_2)) {
                     unset($returnBets[$bet_key]);
-                    $logger->info('9mergeAvgBetData fixture_id : '.$mergeBet['fixture_id'].' markets_id : '.$mergeBet['markets_id'].' line : '.__LINE__);
                     break;
                 } else if (3 != $count && true == in_array($mergeBet['markets_id'], $arr_check_market_3)) {
                     unset($returnBets[$bet_key]);
-                    $logger->info('10mergeAvgBetData fixture_id : '.$mergeBet['fixture_id'].' markets_id : '.$mergeBet['markets_id'].' line : '.__LINE__);
                     break;
                 } else if (5 != $count && true == in_array($mergeBet['markets_id'], $arr_check_market_5)) {
                     unset($returnBets[$bet_key]);
-                    $logger->info('11mergeAvgBetData fixture_id : '.$mergeBet['fixture_id'].' markets_id : '.$mergeBet['markets_id'].' line : '.__LINE__);
                     break;
                 } else if (6 != $count && true == in_array($mergeBet['markets_id'], $arr_check_market_6)) {
                     unset($returnBets[$bet_key]);
-                    $logger->info('12mergeAvgBetData fixture_id : '.$mergeBet['fixture_id'].' markets_id : '.$mergeBet['markets_id'].' line : '.__LINE__);
                     break;
                 }
 
@@ -400,11 +394,11 @@ class BetDataUtil {
                     $lastUpdateDate = date("Y-m-d H:i:s", strtotime($value['last_update'] . '+9 hours'));
                     $currentDate = date('Y-m-d H:i:s');
                     $gapMinute = (int) ((strtotime($currentDate) - strtotime($lastUpdateDate)) / MINUTE);
-                    
-                    if($gapMinute < DELAY_BETTING_LIMIT && $checkFixtureDate < $currentDate){
+
+                    if ($gapMinute < DELAY_BETTING_LIMIT && $checkFixtureDate < $currentDate) {
                         continue;
                     }
-                    
+
                     //if ($gapMinute > 30 && $currentDate < $checkFixtureDate) {
                     unset($returnBets[$bet_key]);
                     $logger->debug('mergeAvgBetData overtime  ==>' . json_encode($mergeBet));
@@ -470,15 +464,7 @@ class BetDataUtil {
                 continue;
             }
 
-           $arr_bet_base_line = explode(" ", $mergeBet['bet_base_line']);
             // 핸디캡 배당사 제외 루틴
-           if (BASEBALL == $mergeBet['fixture_sport_id'] && 342 == $mergeBet['markets_id']) {// 야구는 0 기준점만 제외한다.
-                if ('0.0' == $arr_bet_base_line[0] || '0.5' == $arr_bet_base_line[0] || '-0.5' == $arr_bet_base_line[0]) {
-                    unset($returnBets[$bet_key]);
-                    continue;
-                }
-            }
-            
             // 축구 승무패(마켓아이디 1) 의 승,패 배당이 2.15 ~ 2.55 사이일 경우  핸디캡,핸디캡연장포함일경우 아래 기준점은 프론트에서 제외된다
             /* $arr_bet_base_line = explode(" ", $mergeBet['bet_base_line']);
               if (true == in_array($mergeBet['fixture_id'], $arr_check_handi_soccer_expecpt) && (3 == $mergeBet['markets_id'] || 342 == $mergeBet['markets_id'])) {
@@ -638,8 +624,7 @@ class BetDataUtil {
                 $is_main = true;
             } else if ((BASKETBALL == $bet['fixture_sport_id'] || BASEBALL == $bet['fixture_sport_id']) && 226 == $bet['markets_id']) {
                 $is_main = true;
-            } else if ((VOLLEYBALL == $bet['fixture_sport_id'] || UFC == $bet['fixture_sport_id'] 
-                    || ESPORTS == $bet['fixture_sport_id'] || TENNIS == $bet['fixture_sport_id']) && 52 == $bet['markets_id']) {
+            } else if ((VOLLEYBALL == $bet['fixture_sport_id'] || UFC == $bet['fixture_sport_id'] || ESPORTS == $bet['fixture_sport_id']) && 52 == $bet['markets_id']) {
                 $is_main = true;
             }
 
@@ -786,13 +771,7 @@ class BetDataUtil {
                     unset($returnBets[$bet_key]);
                     continue;
                 }
-            }  else if (BASEBALL == $mergeBet['fixture_sport_id'] && 342 == $mergeBet['markets_id']) {// 야구 기준점은 프리매치만 제외한다
-                if ('0.0' == $arr_bet_base_line[0] || '-0.5' == $arr_bet_base_line[0] || '0.5' == $arr_bet_base_line[0]) {
-                    unset($returnBets[$bet_key]);
-                    continue;
-                }
             }
-
 
             foreach ($mergeBet['bet_data'] as $key => $value) {
 
@@ -914,7 +893,6 @@ class BetDataUtil {
             'markets_id' => $bet->markets_id,
             'markets_name' => $bet->name,
             'markets_name_origin' => $bet->name,
-            'markets_display_name' => $bet->markets_display_name,
             'start_date' => date("H:i", strtotime($bet->fixture_start_date)),
             'fixture_start_date' => $bet->fixture_start_date,
             'fixture_sport_id' => $bet->fixture_sport_id,
@@ -1280,28 +1258,23 @@ class BetDataUtil {
         $period_1p = [Q1_12, Q1_F_KILL, Q1_F_DG];
         $period_2p = [Q2_12];
         $period_3p = [Q3_12];
-        $period_4p = [Q4_12];
-        $period_5p = [Q5_12];
         $period_full = [OVER_UNDER, WL];
 
-        if (true == in_array($mergeBet['markets_id'], $period_1p) && 1 == $data_object->Scoreboard->CurrentPeriod) {
+        if (true == in_array($mergeBet['markets_id'], $period_1p) && 1 != $data_object->Scoreboard->CurrentPeriod) {
+            return BET_END;
+        } else if (true == in_array($mergeBet['markets_id'], $period_2p) && 80 != $data_object->Scoreboard->CurrentPeriod && 2 != $data_object->Scoreboard->CurrentPeriod) {
+            return BET_END;
+        } else if (true == in_array($mergeBet['markets_id'], $period_3p) && 80 != $data_object->Scoreboard->CurrentPeriod && 3 != $data_object->Scoreboard->CurrentPeriod) {
+            return BET_END;
+        } else if (true == in_array($mergeBet['markets_id'], $period_full) && 80 != $data_object->Scoreboard->CurrentPeriod && $data_object->Scoreboard->CurrentPeriod < 5) {
             return $mergeBet['bet_status'];
-        } else if (true == in_array($mergeBet['markets_id'], $period_2p) && BREAK_TIME != $data_object->Scoreboard->CurrentPeriod && 2 == $data_object->Scoreboard->CurrentPeriod) {
-            return $mergeBet['bet_status'];
-        } else if (true == in_array($mergeBet['markets_id'], $period_3p) && BREAK_TIME != $data_object->Scoreboard->CurrentPeriod && 3 ==  $data_object->Scoreboard->CurrentPeriod) {
-            return $mergeBet['bet_status'];
-        } else if (true == in_array($mergeBet['markets_id'], $period_4p) && BREAK_TIME != $data_object->Scoreboard->CurrentPeriod && 4 ==  $data_object->Scoreboard->CurrentPeriod) {
-            return $mergeBet['bet_status'];
-        } else if (true == in_array($mergeBet['markets_id'], $period_5p) && BREAK_TIME != $data_object->Scoreboard->CurrentPeriod && 5 ==  $data_object->Scoreboard->CurrentPeriod) {
-            return $mergeBet['bet_status'];
-        } else if (true == in_array($mergeBet['markets_id'], $period_full) && BREAK_TIME != $data_object->Scoreboard->CurrentPeriod && $data_object->Scoreboard->CurrentPeriod < 6) {
-            return $mergeBet['bet_status'];
-        } else if (BREAK_TIME == $data_object->Scoreboard->CurrentPeriod || $data_object->Scoreboard->CurrentPeriod < $period_id) {
+        } else if (80 == $data_object->Scoreboard->CurrentPeriod || $data_object->Scoreboard->CurrentPeriod < $period_id) {
             return $mergeBet['bet_status'];
         }
 
         return BET_CLOSE;
     }
+
 
     public static function checkDisplayMarkets($mergeBet, $logger) {
         // 축구 
@@ -3484,4 +3457,747 @@ class BetDataUtil {
 
         return array($bet_status, $value['bet_price']);
     }
+
+    public static function doResultProcessing($bet_type, $logger) {
+        $memberBetDetailModel = new MemberBetDetailModel();
+
+        try {
+            $memberBetDetailModel->db->transStart();
+
+            $arrMbBetResult = $memberBetDetailModel->SelectMemberBetResultProcessing($bet_type); // 1인값이 있는지 체크한다.
+
+
+            if (true == empty($arrMbBetResult) || !isset($arrMbBetResult) || 0 === count($arrMbBetResult)) {
+                $memberBetDetailModel->db->transComplete();
+                return;
+            }
+
+            $sql = "SELECT set_type, set_type_val FROM t_game_config WHERE set_type = 'test_expt'";
+            $result_game_config = $memberBetDetailModel->db->query($sql)->getResult();
+            $test_expt_member_idxs = $result_game_config[0]->set_type_val;
+
+            $arr_expt_ids = explode(',', $test_expt_member_idxs);
+
+            $arr_mk_expt_idx = array(2, 3, 28, 52, 226, 342);
+            /* $arr_mk_expt_idx = array(2,3,11,21,28
+              ,30,31,52,53,63
+              ,64,77,95,101,102
+              ,153,155,220,221,226
+              ,236,281,342); */
+
+            // member_bet.bet_status 1 : 정산전,3 : 정산 완료,5 : 취소
+            // member_bet_detail.bet_status 1 : 정산전, 2 : 적중 ,4 : 낙첨 ,5 : 취소 ,6: 적특
+            // 정산 안된 데이터만 가져온다. 
+
+            $arr_in_st_mk = array(6, 9, 22, 23, 16, 95, 472, 1328, 1327, 1832, 2402, 1677);
+            //$arr_in_e_st_st_mk = array(52, 202);
+            $arr_in_e_st_st_mk = array(); // 이스포츠는 수동정산이다 
+            $arr_in_real_st_mk = array(1, 2, 13, 17, 28, 52, 101, 102, 220, 221, 226, 342, 464);    // 실시간 연장포함 마켓,12 2nd Half Including Overtime
+
+            foreach ($arrMbBetResult as $value) {
+
+                if (ESPORTS == $value['fixture_sport_id'])
+                    continue; // 이스포츠 경기는 자동정산에서 제외한다.
+                $bet_status = 1;
+                //$value['result_extra'] = 0;
+                $bet_price = $value['bet_price'];
+
+                list($bet_status, $bet_price, $value['live_results_p1'], $value['live_results_p2']) = BetDataUtil::getBetStatus($value, $logger); // 2,4,6중 하나의 값을 갖는다.
+                //$value['result_extra'] = json_decode($value['livescore']);
+
+                if (1 == $bet_status)
+                    continue;
+
+                if ((2 == $bet_type && false == in_array($value['ls_markets_id'], $arr_in_real_st_mk)) ||
+                        (1 == $bet_type && true == in_array($value['ls_markets_id'], $arr_in_st_mk)) ||
+                        (1 == $bet_type && ESPORTS == $value['fixture_sport_id'] && true == in_array($value['ls_markets_id'], $arr_in_e_st_st_mk))
+                ) {
+                    switch ($value['bet_settlement']) {
+
+                        case -1: // 취소
+                            $bet_status = 1; // 취소된 경기는 수동정산처리를 하자 .
+                            break;
+
+                        case 0: // 경기중
+                            if (2 == $bet_type && 1 != $bet_status) {
+                                break;
+                            }
+                            $bet_status = 1;
+                            break;
+                        case 1: // 낙첨
+                            if (4 != $bet_status) {
+                                $bet_status = 1;
+                                break;
+                            }
+
+                            $bet_status = 4;
+                            break;
+                        case 2: // 적중
+                            if (2 != $bet_status) {
+                                $bet_status = 1;
+                                break;
+                            }
+
+                            $bet_status = 2;
+                            break;
+                        case 3: // 적특
+                            $bet_status = 6;
+                            break;
+                        default :
+                            $bet_status = 1;
+                            break;
+                    }
+                }
+
+                if (1 == $bet_status)
+                    continue;
+
+                //$logger->info('doResultProcessing market_id : ' . $value['ls_markets_id'] . ' bet_status :' . $bet_status . ' bet_price: ' . $bet_price . " idx :" . $value['idx']);
+                if (true === isset($value['live_results_p1']) && true === isset($value['live_results_p2'])) {
+                    $array_result_score = array('live_results_p1' => $value['live_results_p1'], 'live_results_p2' => $value['live_results_p2']);
+                    $array_result_score = json_encode($array_result_score);
+                } else {
+                    $array_result_score = '';
+                }
+
+                //$logger->info('doResultProcessing array_result_score : ' . json_encode($array_result_score) . ' bet_price : ' . $bet_price);
+
+                if (4 == $bet_status && true == in_array($value['member_idx'], $arr_expt_ids) && true == in_array($value['ls_markets_id'], $arr_mk_expt_idx) && 1 == $bet_type && '' != $value['other_ls_bet_id'] && false == empty($value['other_ls_bet_id']) && 0 != $value['other_ls_bet_id'] && '' != $value['other_bet_price'] && false == empty($value['other_bet_price']) && 0 != $value['other_bet_price'] && '' != $value['other_bet_name'] && false == empty($value['other_bet_name'])
+                ) {
+                    $bet_status = 2;
+                    $memberBetDetailModel->UpdateOtherMemberBetDetail($value, $bet_status, $array_result_score); // member_bet_detail 
+                    // 
+                    if (0 == $memberBetDetailModel->CheckRemainMemberBetDetail($test_expt_member_idxs)) {
+                        $sql = "update set set_type_val = 0 FROM t_game_config WHERE set_type = 'test_expt'";
+                        $memberBetDetailModel->db->query($sql);
+                    }
+                  
+                } else {
+                    $memberBetDetailModel->UpdateMemberBetDetail($value['idx'], $bet_status, $array_result_score); // member_bet_detail             }
+                }
+
+                //$memberBetDetailModel->UpdateMemberBetDetail($value['idx'], $bet_status, $array_result_score); // member_bet_detail             }
+            }
+
+            $memberBetDetailModel->db->transComplete();
+        } catch (\mysqli_sql_exception $e) {
+            $logger->error('doResultProcessing [MYSQL EXCEPTION] message (code) : ' . $e->getMessage() . ' (' . $e->getCode() . ')');
+            $logger->error('::::::::::::::: doTotalCalculate query : ' . $memberBetDetailModel->getLastQuery());
+            $memberBetDetailModel->db->transRollback();
+        } catch (\Exception $e) {
+            $logger->error('::::::::::::::: error doResultProcessing Exception (code) : ' . $e->getMessage() . ' (' . $e->getCode() . ')');
+            $logger->info(':::::::::::::::  error doResultProcessing ls_fixture_id : ' . $value['ls_fixture_id'] . ' idx ' . $value['idx'] . ' ls_markets_id ' . $value['ls_markets_id']);
+            $logger->error('::::::::::::::: error doResultProcessing query : ' . $memberBetDetailModel->getLastQuery());
+            $memberBetDetailModel->db->transRollback();
+            return;
+        } catch (\ReflectionException $e) {
+            $logger->error('::::::::::::::: doResultProcessing ReflectionException : ' . $e);
+            $memberBetDetailModel->db->transRollback();
+        }
+    }
+
+    // 수동적특한 배당은 자동 정산시 해당유저한테 배팅금액을 돌려준다.
+    public static function renew_doTotalCalculate($bet_type, $logger) {
+        $memberModel = new MemberModel();
+        $memberBetModel = new MemberBetModel();
+        $memberBetDetailModel = new MemberBetDetailModel();
+        $tLogCashModel = new TLogCashModel();
+        try {
+            $logger->info("renew_doTotalCalculate start type ==> " . $bet_type);
+
+            $gmPt = null;
+            if ('K-Win' == config(App::class)->ServerName) {
+                $gmPt = new KwinGmPt();
+            } else if ('Gamble' == config(App::class)->ServerName) {
+                $gmPt = new GambelGmPt();
+            } else if ('BetGo' == config(App::class)->ServerName) {
+                $gmPt = new BetGoGmPt();
+            } else if ('CHOSUN' == config(App::class)->ServerName) {
+                $gmPt = new ChoSunGmPt();
+            } else if ('BETS' == config(App::class)->ServerName) {
+                $gmPt = new BetsGmPt();
+            } else if ('NOBLE' == config(App::class)->ServerName) {
+                $gmPt = new NobleGmPt();
+            } else if ('BULLS' == config(App::class)->ServerName) {
+                $gmPt = new BullsGmPt();
+            }
+
+            $arr_config = $gmPt->getConfigData();
+
+            $memberBetDetailModel->db->transStart();
+            $sql = "SELECT member.money,member_bet.* FROM member_bet 
+                    left join member on member.idx = member_bet.member_idx
+                    WHERE member_bet.bet_status = 1 AND member_bet.bet_type = $bet_type";
+            $arrResult = $memberBetDetailModel->db->query($sql)->getResultArray();
+
+            if (true == empty($arrResult) || !isset($arrResult) || 0 === count($arrResult)) {
+                $memberBetDetailModel->db->transComplete();
+                //$logger->debug("************************empty****************************");
+                return;
+            }
+
+            foreach ($arrResult as $valueMbBet) {
+
+                $bet_idx = $valueMbBet['idx'];
+                $member_idx = $valueMbBet['member_idx'];
+                $total_bet_money = $valueMbBet['total_bet_money'];
+                $folder_type = $valueMbBet['folder_type'];
+                $bonus_price = $valueMbBet['bonus_price'];
+                $item_idx = true === isset($valueMbBet['item_idx']) && false === empty($valueMbBet['item_idx']) ? $valueMbBet['item_idx'] : 0;
+
+                $resultDetailBet = $memberBetDetailModel->SelectMemberBetDetail($bet_idx);
+                if (false === isset($resultDetailBet) || true === empty($resultDetailBet) || 1 != $resultDetailBet[0]['mb_bet_status'])
+                    continue;
+
+                $bet_total_count = count($resultDetailBet);
+
+                list($retval, $total_bet_price, $win_limit_price_count, $win_count, $lose_count) = $gmPt->checkGameResult($resultDetailBet, $arr_config, $bet_total_count, $logger);
+
+                if (1 == $bet_type) {
+                    $a_comment = 'prematch ==>';
+                } else if (2 == $bet_type) {
+                    $a_comment = 'inplay ==>';
+                }
+
+                // 처리한 데이터
+                //$sql = "SELECT money FROM member WHERE idx = ? for update ";
+                //$arrResultMbBet = $memberBetDetailModel->db->query($sql, [$member_idx])->getResultArray();
+                //$money = $arrResultMbBet[0]['money'];
+                $money = $valueMbBet['money'];
+                $ukey = md5($member_idx . strtotime('now'));
+
+                if (0 < $lose_count) { // 낙첨처리 
+                    $gmPt->doLose($valueMbBet, $resultDetailBet, $ukey, $money, $bet_total_count, $win_count, $lose_count, $a_comment, $bet_type
+                            , $memberModel, $tLogCashModel, $memberBetModel, $logger);
+                    // 
+                    continue;
+                }
+
+                if (false == $retval) {
+                    continue;
+                }
+
+                list($total_bet_price, $bonus_price) = $gmPt->calBonusPrice($total_bet_price, $bonus_price, $folder_type, $win_limit_price_count, $arr_config);
+
+                $gm_bonus = $gmPt->useItemAllocation($memberBetModel, $ukey, $member_idx, $bet_idx, $item_idx, $total_bet_price, $logger);
+
+                $total_bet_price = $total_bet_price + $gm_bonus;
+                $take_money = sprintf('%0.2f', $total_bet_price * $total_bet_money);
+
+                // 해당 데이터를 업데이트 한다.
+                // member 의 머니 업데이트를 해줘야 한다.
+                //if ($take_money > 0) {
+                $p_data['sql'] = "update member set money = money + ? where idx = ? ";
+                $memberModel->db->query($p_data['sql'], [$take_money, $member_idx]);
+                //}
+
+                $memberBetModel->UpdateMemberBetBonus($bet_idx, 3, $take_money, $bonus_price, $item_idx, 0, 0, $gm_bonus);
+
+                if (0 < $gm_bonus) {
+                    $a_comment .= "배당패치 적중";
+                    $tLogCashModel->insertCashLog_mem_idx($ukey, $member_idx, AC_GM_ALLOCATION_MONEY, $bet_idx, $take_money, $money, 'P', $a_comment);
+                } else {
+                    $a_comment .= " 적중";
+                    $tLogCashModel->insertCashLog_mem_idx($ukey, $member_idx, 7, $bet_idx, $take_money, $money, 'P', $a_comment);
+                }
+            }
+
+            $logger->info("renew_doTotalCalculate end");
+            $memberBetDetailModel->db->transComplete();
+        } catch (\mysqli_sql_exception $e) {
+            $logger->error('renew_doTotalCalculate [MYSQL EXCEPTION] message (code) : ' . $e->getMessage() . ' (' . $e->getCode() . ')');
+            $logger->error('::::::::::::::: renew_doTotalCalculate query : ' . $memberBetDetailModel->getLastQuery());
+            $memberBetDetailModel->db->transRollback();
+        }
+    }
+
+    // 미니게임 정산(테이블 변경)
+    public static function doMiniTotalCalculate_renew($logger) {
+        //$logger->error(" doMiniTotalCalculate_renew start: ");
+        $memberModel = new MemberModel();
+        //$memberBetModel = new MemberBetModel();
+        $MiniGameMemberBetModel = new MiniGameMemberBetModel();
+        $tLogCashModel = new TLogCashModel();
+        $sql = "SELECT 
+              mini_mb_bt.idx as mb_bt_idx,
+              mini_mb_bt.member_idx,
+              mini_mb_bt.bet_type,
+              mini_mb_bt.bet_status as mb_bt_bet_status,
+              mini_mb_bt.total_bet_money,
+              mini_mb_bt.idx,
+              mini_mb_bt.ls_fixture_id,
+              mini_mb_bt.ls_markets_id,
+              mini_mb_bt.ls_markets_name,
+              mini_mb_bt.bet_status as mb_bt_dt_bet_status,
+              mini_mb_bt.bet_price,
+              mini_mb_bt.create_dt,
+              game.result,
+              game.result_score,
+              game.game,
+              mb.money
+      	    FROM mini_game_member_bet as mini_mb_bt
+            LEFT JOIN mini_game as game ON mini_mb_bt.ls_fixture_id = game.id
+            LEFT JOIN member as mb ON mb.idx = mini_mb_bt.member_idx
+          WHERE 
+            mini_mb_bt.bet_status = 1
+            AND mini_mb_bt.bet_type IN (3,4,5,6,15)
+            AND mini_mb_bt.bet_type = game.bet_type AND game.result is not null
+            group by mini_mb_bt.idx";
+
+        //$logger->debug('doMiniTotalCalculate : ' . $sql);
+        try {
+            $MiniGameMemberBetModel->db->transStart();
+            $arrResult = $MiniGameMemberBetModel->db->query($sql)->getResultArray();
+
+            if (true == empty($arrResult) || !isset($arrResult) || 0 === count($arrResult)) {
+                $MiniGameMemberBetModel->db->transComplete();
+                return;
+            }
+
+            // mb_bt_idx 
+            foreach ($arrResult as $key => $value) {
+                // 이미 처리되었다.
+
+                if (null == $value['result'])
+                    continue;
+
+                $data_object = json_decode($value['result']);
+                if ($value['result_score'] != '') {
+                    $data_object = json_decode($value['result_score']);
+                }
+
+                list($bet_status, $bet_price) = BetDataUtil::getMiniBetStatus($value, $data_object, $logger); // 2,4,6중 하나의 값을 갖는다.
+                if (1 === $bet_status)
+                    continue;
+
+                // 해당 데이터를 업데이트 한다.
+                $result_score = '';
+                $member_idx = $value['member_idx'];
+
+                $ukey = md5($member_idx . strtotime('now'));
+                if ($bet_status === 4) { // 낙첨시 주는 포인트 lose_self_per,lose_recomm_per
+                    //$memberModel->log_lose_bet_bonus_point($member_idx, $value['total_bet_money']);
+                    $MiniGameMemberBetModel->UpdateMemberMiniGameBet($value['mb_bt_idx'], 3, 0);
+
+                    $a_comment = "정산 낙첨 [" . $value['game'] . "] " . $value['ls_fixture_id'] . " " . $value['ls_markets_name'] . " ";
+
+                    $a_comment = addslashes($a_comment);
+
+                    $tLogCashModel->insertCashLog_mem_idx($ukey, $member_idx, 7, $value['mb_bt_idx'], 0, $value['money'], 'R', $a_comment);
+                    continue;
+                }
+
+                // 결과가 다 반영안됐다 
+                // 1, 2, 3, 7, 52, 101, 102 => 승무패,오버언더,핸디캡,더블찬스,승패,홈팀 오버언더,원정팀 오버언더
+                $take_money = round($value['bet_price'], 2) * $value['total_bet_money'];
+
+                // 해당 데이터를 업데이트 한다.
+                $MiniGameMemberBetModel->UpdateMemberMiniGameBet($value['mb_bt_idx'], 3, $take_money);
+
+                // member 의 머니 업데이트를 해줘야 한다.
+                if ($take_money > 0) {
+                    $p_data['sql'] = "update member set money = money + $take_money where idx = $member_idx";
+                    $memberModel->db->query($p_data['sql']);
+                    //$logger->debug($p_data['sql']);
+                }
+
+                /* 1:충전,2:환전,3:베팅,4:베팅취소,5:포인트전환(추가),6:포인트차감,10:포인트충전,7:베팅결과처리,8:이벤트충전,9:이벤트차감,101:충전요청,102:환전요청,103:계좌조회,
+                 * 111:충전요청취소,112:환전요청취소,113:충전취소,114:환전취소,121:관리자충전,122:관리자회수,123:관리자 포인트 충전, 124:관리자 포인트 회수,998:데이터복구,999:기타 
+                 */
+                $a_comment = "정산 적중 [" . $value['game'] . "] " . $value['ls_fixture_id'] . " " . $value['ls_markets_name'] . " ";
+
+                if (6 === $value['bet_type']) {
+                    $a_comment .= $data_object->home . " VS " . $data_object->away;
+                }
+
+                $a_comment = addslashes($a_comment);
+
+                $tLogCashModel->insertCashLog_mem_idx($ukey, $member_idx, 7, $value['mb_bt_idx'], $take_money, $value['money'], 'P', $a_comment);
+                //$totalMemberCashModel = new TotalMemberCashModel();
+                //$totalMemberCashModel->insertBetTakeMoneyUpdate($value['create_dt'], $value['member_idx'], $value['bet_type'], '', $value['total_bet_money'], $take_money, $logger);
+            }
+            $MiniGameMemberBetModel->db->transComplete();
+        } catch (\mysqli_sql_exception $e) {
+            $logger->error('doMiniTotalCalculate [MYSQL EXCEPTION] message (code) : ' . $e->getMessage() . ' (' . $e->getCode() . ')');
+            $logger->error('::::::::::::::: doMiniTotalCalculate memberBetDetailModel query : ' . $memberBetDetailModel->getLastQuery());
+            $memberBetDetailModel->db->transRollback();
+        }
+    }
+
+    public static function distributorCalculate($logger, $db_srch_s_date, $db_srch_e_date) {
+        // 날짜 차이가 하루이상이면 에러처리한다.
+        $check_s_date = date_create($db_srch_s_date);
+        $check_e_date = date_create($db_srch_e_date);
+        $diff = date_diff($check_e_date, $check_s_date);
+        if ($diff->days > 1) {
+            $logger->critical('------------- distributorCalculate empty shopConfig diff->days ==>' . $diff->days);
+            return;
+        }
+
+        $memberModel = new MemberModel();
+
+        // 정산 요율 값을 얻어온다. kwin,asbet
+        // 설정 안된 총판도 값은 넣어준다.
+        $sql = Calculate::getDistShopInfo();
+        $result_shop = $memberModel->db->query($sql)->getResultArray();
+
+        $shopConfig = [];
+        // 총판 member_idx 값으로 배열 정렬
+        foreach ($result_shop as $key => $value) {
+            $shopConfig = Calculate::initShopCalculateResult($shopConfig, $value, $logger);
+        }
+
+        // 정산 제외 유저 정보 가져오기(미니게임 정산에서 해당 유저 제외)
+        $excluded_member_idx = 0;
+
+        // 충전 환전
+        $add_where = " GROUP BY up_dt,dis_id";
+        $sql = Calculate::chExMadeQuery($add_where, $logger);
+        $db_dataArr = $memberModel->db->query($sql, [$db_srch_s_date, $db_srch_e_date, $db_srch_s_date, $db_srch_e_date])->getResultArray();
+        $logger->info('------------- distributorCalculate ch_ex sql ==>' . $memberModel->getLastQuery());
+        //$logger->debug('------------- distributorCalculate ch_ex db_dataArr ==>' . json_encode($db_dataArr));
+        // 총판별 정산
+        $moneyInfo = array();
+        $db_dataArr = true === isset($db_dataArr) ? $db_dataArr : [];
+        // dis_idx 값으로 정렬
+        foreach ($db_dataArr as $row) {
+            $dis_idx = $row['dis_idx'];
+            $moneyInfo[$dis_idx]['dis_idx'] = $dis_idx;
+            $moneyInfo[$dis_idx]['up_dt'] = $row['up_dt'];
+            $moneyInfo[$dis_idx]['dis_id'] = $row['dis_id'];
+
+            if ($row['stype'] == 'ch') {
+                $moneyInfo[$dis_idx]['ch_val'] = $row['s_money'];
+            } elseif ($row['stype'] == 'ex') {
+                $moneyInfo[$dis_idx]['ex_val'] = $row['s_money'];
+            }
+        }
+
+        $logger->info('------------- distributorCalculate ch_ex moneyInfo ==>' . json_encode($moneyInfo));
+
+        // 죽장
+        if (false === empty($moneyInfo) && true === isset($moneyInfo) && count($moneyInfo) > 0) {
+            // dis_idx 값으로 정렬해서 모든 총판의 입출 죽장금을 누적한다.
+            foreach ($moneyInfo as $key => $value) {
+                $dis_idx = $value['dis_idx'];
+
+                if (!isset($shopConfig[$dis_idx])) {
+                    $logger->critical('------------- distributorCalculate empty ex_ch shopConfig idx ==>' . $dis_idx);
+                    continue;
+                }
+
+                $shopConfig[$dis_idx]['ch_val'] = null != $value['ch_val'] ? $value['ch_val'] : 0;
+                $shopConfig[$dis_idx]['ex_val'] = null != $value['ex_val'] ? $value['ex_val'] : 0;
+
+                // 베팅롤링 정산
+                if ($shopConfig[$dis_idx]['pre_s_fee'] > 0) {
+                    $profit_pre_s_fee = ($shopConfig[$dis_idx]['ch_val'] - $shopConfig[$dis_idx]['ex_val']) * ($shopConfig[$dis_idx]['pre_s_fee'] * 0.01);
+                    $shopConfig[$dis_idx]['total_point'] += $profit_pre_s_fee;
+                }
+
+                $recommend_member = $shopConfig[$dis_idx]['recommend_member'];
+                Calculate::calBetType($shopConfig, $dis_idx, 'pre_s_fee', 'pt_pre_s_fee', $recommend_member, $shopConfig[$dis_idx]['ch_val'] - $shopConfig[$dis_idx]['ex_val']);
+                Calculate::calLowBetType($shopConfig, $dis_idx, 'pre_s_fee', 'pt_pre_s_fee', $recommend_member, $shopConfig[$dis_idx]['ch_val'] - $shopConfig[$dis_idx]['ex_val']);
+            }
+
+            $logger->info('------------- distributorCalculate ch_ex shopConfig ==>' . json_encode($shopConfig));
+        }
+
+        // 스포츠,실시간 싱글,멀티 베팅금,당첨금 날짜별,총판별로 가져온다.
+        $add_where = " GROUP BY cr_dt,dis_idx";
+        $sql = Calculate::sportsRealBetMadeQuery($add_where, $logger);
+        $result_sp_rl_bet = $memberModel->db->query($sql, [$db_srch_s_date, $db_srch_e_date])->getResultArray();
+        $logger->info('------------- distributorCalculate sports_real_bet sql ==>' . $sql);
+        $logger->info('------------- distributorCalculate sports_real_bet db_dataArr ==>' . json_encode($result_sp_rl_bet));
+
+        if (false == empty($result_sp_rl_bet) && true == isset($result_sp_rl_bet) && count($result_sp_rl_bet) > 0) {
+            foreach ($result_sp_rl_bet as $key => $bet_data) {
+                $dis_idx = $bet_data['dis_idx'];
+                if (!isset($shopConfig[$dis_idx])) {
+                    $logger->critical('------------- distributorCalculate empty sp_re_bet shopConfig idx ==>' . $dis_idx);
+                    continue;
+                }
+
+                $shopConfig = Calculate::calSportsRealBet($shopConfig, $dis_idx, $bet_data, $logger);
+            }
+            $logger->info('------------- distributorCalculate calSportsRealBet shopConfig ==>' . json_encode($shopConfig));
+        }
+
+        // 미니게임 베팅 금액을 날짜별,총판별로 가져온다.
+        $add_where = " GROUP BY cr_dt, dis_id";
+        $sql = Calculate::miniGameBetMadeQuery($add_where, $logger);
+        $result_mini_bet = $memberModel->db->query($sql, [$db_srch_s_date, $db_srch_e_date, $excluded_member_idx])->getResultArray();
+
+        $logger->debug('------------- distributorCalculate mini_bet sql ==>' . $sql);
+        $logger->debug('------------- distributorCalculate mini_bet db_dataArr ==>' . json_encode($result_mini_bet));
+
+        if (false == empty($result_mini_bet) && true == isset($result_mini_bet) && count($result_mini_bet) > 0) {
+
+            foreach ($result_mini_bet as $key => $mini_bet_data) {
+                $dis_idx = $mini_bet_data['dis_idx'];
+                if (!isset($shopConfig[$dis_idx])) {
+                    $logger->critical('------------- distributorCalculate empty mini_bet shopConfig idx ==>' . $dis_idx);
+                    continue;
+                }
+
+                $profit_mini_fee = 0;
+                // 베팅롤링 정산
+                if ($shopConfig[$dis_idx]['bet_mini_fee'] > 0) {
+                    $profit_mini_fee = $mini_bet_data['mini_bet_sum'] * ($shopConfig[$dis_idx]['bet_mini_fee'] * 0.01);
+                    $shopConfig[$dis_idx]['total_point'] += $profit_mini_fee;
+                }
+
+                $shopConfig[$dis_idx]['mini_bet_sum'] = $mini_bet_data['mini_bet_sum'];
+                $shopConfig[$dis_idx]['mini_bet_take'] = $mini_bet_data['mini_bet_take'];
+
+                $recommend_member = $shopConfig[$dis_idx]['recommend_member'];
+                Calculate::calBetType($shopConfig, $dis_idx, 'bet_mini_fee', 'pt_bet_mini_fee', $recommend_member, $mini_bet_data['mini_bet_sum']);
+                Calculate::calLowBetType($shopConfig, $dis_idx, 'bet_mini_fee', 'pt_bet_mini_fee', $recommend_member, $mini_bet_data['mini_bet_sum']);
+            }
+
+            $logger->info('------------- distributorCalculate minigame shopConfig ==>' . json_encode($shopConfig));
+        }
+
+        // 카지노
+        $where = " GROUP BY DATE(CBH.MOD_DTM),PRT.idx";
+        $sql = Calculate::doCasinoByDistQuery($where);
+        $casino_result = $memberModel->db->query($sql, [$db_srch_s_date, $db_srch_e_date])->getResultArray();
+        foreach ($casino_result as $casino) {
+            if (!isset($shopConfig[$casino['dis_idx']])) {
+                $logger->critical('------------- distributorCalculate empty doCasinoByDistQuery shopConfig idx ==>' . $casino['dis_idx']);
+                continue;
+            }
+            $dis_idx = $casino['dis_idx'];
+            $profit_bet_money_fee = 0;
+            // 베팅롤링 정산
+            if ($shopConfig[$dis_idx]['bet_casino_fee'] > 0) {
+                $profit_bet_money_fee = $casino['total_bet_money'] * ($shopConfig[$dis_idx]['bet_casino_fee'] * 0.01);
+                $shopConfig[$dis_idx]['total_point'] += $profit_bet_money_fee;
+            }
+            $shopConfig[$dis_idx]['total_casino_bet_money'] += $casino['total_bet_money'];
+            $shopConfig[$dis_idx]['casino_bet_take'] += $casino['total_win_money'];
+
+            $recommend_member = $shopConfig[$dis_idx]['recommend_member'];
+            Calculate::calBetType($shopConfig, $dis_idx, 'bet_casino_fee', 'pt_bet_casino_fee', $recommend_member, $casino['total_bet_money']);
+            Calculate::calLowBetType($shopConfig, $dis_idx, 'bet_casino_fee', 'pt_bet_casino_fee', $recommend_member, $casino['total_bet_money']);
+        }
+        $logger->info('------------- distributorCalculate casino shopConfig ==>' . json_encode($shopConfig));
+        // 슬롯
+        $sql = Calculate::doSlotByDistQuery($db_srch_s_date, $db_srch_e_date, $where);
+        $slot_result = $memberModel->db->query($sql, [$db_srch_s_date, $db_srch_e_date])->getResultArray();
+        foreach ($slot_result as $slot) {
+            if (!isset($shopConfig[$slot['dis_idx']])) {
+                $logger->critical('------------- distributorCalculate empty doSlotByDistQuery shopConfig idx ==>' . $slot['dis_idx']);
+                continue;
+            }
+            $dis_idx = $slot['dis_idx'];
+            $profit_bet_money_fee = 0;
+            // 베팅롤링 정산
+            if ($shopConfig[$dis_idx]['bet_slot_fee'] > 0) {
+                $profit_bet_money_fee = $slot['total_bet_money'] * ($shopConfig[$dis_idx]['bet_slot_fee'] * 0.01);
+                $shopConfig[$dis_idx]['total_point'] += $profit_bet_money_fee;
+            }
+
+            $shopConfig[$dis_idx]['total_slot_bet_money'] += $slot['total_bet_money'];
+            $shopConfig[$dis_idx]['slot_bet_take'] += $slot['total_win_money'];
+
+            $recommend_member = $shopConfig[$dis_idx]['recommend_member'];
+            Calculate::calBetType($shopConfig, $dis_idx, 'bet_slot_fee', 'pt_bet_slot_fee', $recommend_member, $slot['total_bet_money']);
+            Calculate::calLowBetType($shopConfig, $dis_idx, 'bet_slot_fee', 'pt_bet_slot_fee', $recommend_member, $slot['total_bet_money']);
+        }
+        $logger->info('------------- distributorCalculate slot shopConfig ==>' . json_encode($shopConfig));
+
+        /*         * ********** 이스포츠 / 키론 / 해시 *********** */
+        $sql = Calculate::doEsptByDistQuery($db_srch_s_date, $db_srch_e_date, $where);
+        $espt_result = $memberModel->db->query($sql, [$db_srch_s_date, $db_srch_e_date])->getResultArray();
+        foreach ($espt_result as $espt) {
+            if (!isset($shopConfig[$espt['dis_idx']])) {
+                $logger->critical('------------- distributorCalculate empty doEsptByDistQuery shopConfig idx ==>' . $espt['dis_idx']);
+                continue;
+            }
+
+            $dis_idx = $espt['dis_idx'];
+
+            $profit_bet_money_fee = 0;
+            // 베팅롤링 정산
+            if ($shopConfig[$dis_idx]['bet_esports_fee'] > 0) {
+                $profit_bet_money_fee = $espt['total_bet_money'] * ($shopConfig[$dis_idx]['bet_esports_fee'] * 0.01);
+                $shopConfig[$dis_idx]['total_point'] += $profit_bet_money_fee;
+            }
+            $shopConfig[$dis_idx]['total_espt_bet_money'] += $espt['total_bet_money'];
+            $shopConfig[$dis_idx]['espt_bet_take'] += $espt['total_win_money'];
+
+            $recommend_member = $shopConfig[$dis_idx]['recommend_member'];
+            Calculate::calBetType($shopConfig, $dis_idx, 'bet_esports_fee', 'pt_bet_esports_fee', $recommend_member, $espt['total_bet_money']);
+            Calculate::calLowBetType($shopConfig, $dis_idx, 'bet_esports_fee', 'pt_bet_esports_fee', $recommend_member, $espt['total_bet_money']);
+        }
+        $logger->info('------------- distributorCalculate esports shopConfig ==>' . json_encode($shopConfig));
+
+        $sql = Calculate::doHashByDistQuery($db_srch_s_date, $db_srch_e_date, $where);
+        $hash_result = $memberModel->db->query($sql, [$db_srch_s_date, $db_srch_e_date])->getResultArray();
+        foreach ($hash_result as $hash) {
+            if (!isset($shopConfig[$hash['dis_idx']])) {
+                $logger->critical('------------- distributorCalculate empty doEsptByDistQuery shopConfig idx ==>' . $hash['dis_idx']);
+                continue;
+            }
+            $dis_idx = $hash['dis_idx'];
+            $profit_bet_money_fee = 0;
+            // 베팅롤링 정산
+            if ($shopConfig[$dis_idx]['bet_hash_fee'] > 0) {
+                $profit_bet_money_fee = $hash['total_bet_money'] * ($shopConfig[$dis_idx]['bet_hash_fee'] * 0.01);
+                $shopConfig[$dis_idx]['total_point'] += $profit_bet_money_fee;
+            }
+
+            $shopConfig[$dis_idx]['total_hash_bet_money'] += $hash['total_bet_money'];
+            $shopConfig[$dis_idx]['hash_bet_take'] += $hash['total_win_money'];
+
+            $recommend_member = $shopConfig[$dis_idx]['recommend_member'];
+            Calculate::calBetType($shopConfig, $dis_idx, 'bet_hash_fee', 'pt_bet_hash_fee', $recommend_member, $hash['total_bet_money']);
+            Calculate::calLowBetType($shopConfig, $dis_idx, 'bet_hash_fee', 'pt_bet_hash_fee', $recommend_member, $hash['total_bet_money']);
+        }
+        /*         * ********** 이스포츠 / 키론 / 해시 *********** */
+
+
+        $logger->info('------------- distributorCalculate hash shopConfig ==>' . json_encode($shopConfig));
+        return $shopConfig;
+    }
+
+    public static function distributorCalculatePoint($logger, $shopConfig, $db_srch_s_date) {
+        if (true === empty($shopConfig) || false === isset($shopConfig) || count($shopConfig) <= 0) {
+            $logger->critical('------------- distributorCalculatePoint empty shopConfig db_srch_s_date ==>' . $db_srch_s_date);
+            return;
+        }
+
+        $tLogCashModel = new TLogCashModel();
+        $shopIdxs = array_keys($shopConfig);
+        $shopIdxs = implode(',', $shopIdxs);
+
+        $arrShopInfo = array();
+        $arrShopCalculateInfo = array();
+        $sql = "select idx, point from member where idx in ($shopIdxs);";
+        $result = $tLogCashModel->db->query($sql)->getResultArray();
+        foreach ($result as $key => $value) {
+            $arrShopInfo[$value['idx']] = $value['point'];
+        }
+
+        foreach ($shopConfig as $key => $value) {
+            $total_point = true === isset($value['total_point']) ? $value['total_point'] : 0;
+            $low_total_point = true === isset($value['low_total_point']) ? $value['low_total_point'] : 0;
+            // $arrShopInfo 해당 key의 데이터가 있는지 확인한다.
+            if (false === isset($arrShopInfo[$key])) {
+                $logger->critical('------------- distributorCalculatePoint empty arrShopInfo key ==>' . $key . ' arrShopInfo ==>' . json_encode($arrShopInfo));
+                continue;
+            }
+
+            $sum_total_point = $total_point + $low_total_point;
+
+            $b_point = $arrShopInfo[$key];
+            $a_point = $b_point + $sum_total_point;
+
+            $sql = "update member set point = point + ? where idx = ?";
+            $result = $tLogCashModel->db->query($sql, [$sum_total_point, $key]);
+
+            $ukey = md5($key . strtotime('now'));
+            $tLogCashModel->insertCashLog_3($ukey, $key, 301, 0, 0, 0, $sum_total_point, $b_point, $a_point, 'P');
+
+            $ch_val = true === isset($value['ch_val']) && false === empty($value['ch_val']) ? $value['ch_val'] : 0;
+            $ex_val = true === isset($value['ex_val']) && false === empty($value['ex_val']) ? $value['ex_val'] : 0;
+
+            $pre_bet_sum_s = true === isset($value['pre_bet_sum_s']) ? $value['pre_bet_sum_s'] : 0;
+            $pre_bet_sum_d_2 = true === isset($value['pre_bet_sum_d_2']) ? $value['pre_bet_sum_d_2'] : 0;
+            $pre_bet_sum_d_3 = true === isset($value['pre_bet_sum_d_3']) ? $value['pre_bet_sum_d_3'] : 0;
+            $pre_bet_sum_d_4 = true === isset($value['pre_bet_sum_d_4']) ? $value['pre_bet_sum_d_4'] : 0;
+            $pre_bet_sum_d_5_more = true === isset($value['pre_bet_sum_d_5_more']) ? $value['pre_bet_sum_d_5_more'] : 0;
+
+            $real_bet_sum_s = true === isset($value['real_bet_sum_s']) ? $value['real_bet_sum_s'] : 0;
+            $real_bet_sum_d = true === isset($value['real_bet_sum_d']) ? $value['real_bet_sum_d'] : 0;
+            $mini_bet_sum = true === isset($value['mini_bet_sum']) ? $value['mini_bet_sum'] : 0;
+
+            // 카지노,슬롯 
+            $total_casino_bet_money = true === isset($value['total_casino_bet_money']) ? $value['total_casino_bet_money'] : 0;
+            $total_slot_bet_money = true === isset($value['total_slot_bet_money']) ? $value['total_slot_bet_money'] : 0;
+
+            // 이스포츠, 해시
+            $total_espt_bet_money = true === isset($value['total_espt_bet_money']) ? $value['total_espt_bet_money'] : 0;
+            $total_hash_bet_money = true === isset($value['total_hash_bet_money']) ? $value['total_hash_bet_money'] : 0;
+
+            $bet_pre_s_fee = true === isset($value['bet_pre_s_fee']) ? $value['bet_pre_s_fee'] : 0;
+            $bet_pre_d_2_fee = true === isset($value['bet_pre_d_2_fee']) ? $value['bet_pre_d_2_fee'] : 0;
+            $bet_pre_d_3_fee = true === isset($value['bet_pre_d_3_fee']) ? $value['bet_pre_d_3_fee'] : 0;
+            $bet_pre_d_4_fee = true === isset($value['bet_pre_d_4_fee']) ? $value['bet_pre_d_4_fee'] : 0;
+            $bet_pre_d_5_more_fee = true === isset($value['bet_pre_d_5_more_fee']) ? $value['bet_pre_d_5_more_fee'] : 0;
+
+            // 실시간
+            $bet_real_s_fee = true === isset($value['bet_real_s_fee']) ? $value['bet_real_s_fee'] : 0;
+            $bet_real_d_fee = true === isset($value['bet_real_d_fee']) ? $value['bet_real_d_fee'] : 0;
+
+            // 미니게임
+            $bet_mini_fee = true === isset($value['bet_mini_fee']) ? $value['bet_mini_fee'] : 0;
+
+            // 죽장
+            $pre_s_fee = true === isset($value['pre_s_fee']) ? $value['pre_s_fee'] : 0;
+
+            // 카지노,슬롯 
+            $bet_casino_fee = true === isset($value['bet_casino_fee']) ? $value['bet_casino_fee'] : 0;
+            $bet_slot_fee = true === isset($value['bet_slot_fee']) ? $value['bet_slot_fee'] : 0;
+
+            // 이스포츠, 해시
+            $bet_espt_fee = true === isset($value['bet_esports_fee']) ? $value['bet_esports_fee'] : 0;
+            $bet_hash_fee = true === isset($value['bet_hash_fee']) ? $value['bet_hash_fee'] : 0;
+
+            // 당첨금액 
+            $pre_bet_take_s = true === isset($value['pre_bet_take_s']) ? $value['pre_bet_take_s'] : 0;
+            $pre_bet_take_d_2 = true === isset($value['pre_bet_take_d_2']) ? $value['pre_bet_take_d_2'] : 0;
+            $pre_bet_take_d_3 = true === isset($value['pre_bet_take_d_3']) ? $value['pre_bet_take_d_3'] : 0;
+            $pre_bet_take_d_4 = true === isset($value['pre_bet_take_d_4']) ? $value['pre_bet_take_d_4'] : 0;
+            $pre_bet_take_d_5_more = true === isset($value['pre_bet_take_d_5_more']) ? $value['pre_bet_take_d_5_more'] : 0;
+            $real_bet_take_s = true === isset($value['real_bet_take_s']) ? $value['real_bet_take_s'] : 0;
+            $real_bet_take_d = true === isset($value['real_bet_take_d']) ? $value['real_bet_take_d'] : 0;
+            $mini_bet_take = true === isset($value['mini_bet_take']) ? $value['mini_bet_take'] : 0;
+            $casino_bet_take = true === isset($value['casino_bet_take']) ? $value['casino_bet_take'] : 0;
+            $slot_bet_take = true === isset($value['slot_bet_take']) ? $value['slot_bet_take'] : 0;
+            $hash_bet_take = true === isset($value['hash_bet_take']) ? $value['hash_bet_take'] : 0;
+            $espt_bet_take = true === isset($value['espt_bet_take']) ? $value['espt_bet_take'] : 0;
+
+            // 클래식 배팅,당첨금액 
+            $pre_classic_bet_sum_s = true === isset($value['pre_classic_bet_sum_s']) ? $value['pre_classic_bet_sum_s'] : 0;
+            $pre_classic_bet_sum_d = true === isset($value['pre_classic_bet_sum_d']) ? $value['pre_classic_bet_sum_d'] : 0;
+            $pre_classic_bet_take_s = true === isset($value['pre_classic_bet_take_s']) ? $value['pre_classic_bet_take_s'] : 0;
+            $pre_classic_bet_take_d = true === isset($value['pre_classic_bet_take_d']) ? $value['pre_classic_bet_take_d'] : 0;
+
+            $values = "($key, now(), '$db_srch_s_date', $total_point,$low_total_point, $b_point, $a_point, $ch_val, $ex_val,"
+                    . "$pre_bet_sum_s, $pre_bet_sum_d_2,$pre_bet_sum_d_3,$pre_bet_sum_d_4,$pre_bet_sum_d_5_more,"
+                    . "$real_bet_sum_s, $real_bet_sum_d, $mini_bet_sum,$total_casino_bet_money,$total_slot_bet_money,"
+                    . "$bet_pre_s_fee,$bet_real_s_fee, $bet_real_d_fee, $bet_mini_fee, $pre_s_fee,$bet_casino_fee,$bet_slot_fee,"
+                    . "$total_espt_bet_money,$total_hash_bet_money,$bet_espt_fee,$bet_hash_fee,"
+                    . "$pre_bet_take_s,$pre_bet_take_d_2,$pre_bet_take_d_3,$pre_bet_take_d_4,$pre_bet_take_d_5_more,"
+                    . "$real_bet_take_s,$real_bet_take_d,$mini_bet_take,$casino_bet_take,$slot_bet_take,$hash_bet_take,$espt_bet_take,"
+                    . "$bet_pre_d_2_fee,$bet_pre_d_3_fee,$bet_pre_d_4_fee,$bet_pre_d_5_more_fee,"
+                    . "$pre_classic_bet_sum_s,$pre_classic_bet_take_s,$pre_classic_bet_sum_d,$pre_classic_bet_take_d )";
+
+            array_push($arrShopCalculateInfo, $values);
+        }
+
+        // 정산 데이터 업데이트
+        if (count($arrShopCalculateInfo) > 0) {
+            try {
+                $tLogCashModel->db->query(
+                        "INSERT INTO `shop_calculate_result`
+                        (member_idx, `create_dt`, `calculate_dt`, `calculate_point`,`low_calculate_point`, `be_point`, `af_point`, `ch_val`, `ex_val`, 
+                        `pre_bet_sum_s`, `pre_bet_sum_d_2`, `pre_bet_sum_d_3`, `pre_bet_sum_d_4`, `pre_bet_sum_d_5_more`, 
+                        `real_bet_sum_s`, `real_bet_sum_d`, `mini_bet_sum`, `total_casino_bet_money`,`total_slot_bet_money`, 
+                        `bet_pre_s_fee`,`bet_real_s_fee`, `bet_real_d_fee`, `bet_mini_fee`, `pre_s_fee`,`bet_casino_fee`,`bet_slot_fee`, 
+                        `total_espt_bet_money`, `total_hash_bet_money`, `bet_espt_fee`, `bet_hash_fee`,
+                         pre_bet_take_s,pre_bet_take_d_2,pre_bet_take_d_3,pre_bet_take_d_4,pre_bet_take_d_5_more,
+                         real_bet_take_s,real_bet_take_d,mini_bet_take,casino_bet_take,slot_bet_take,hash_bet_take,espt_bet_take,
+                         bet_pre_d_2_fee,bet_pre_d_3_fee,bet_pre_d_4_fee,bet_pre_d_5_more_fee,
+                         pre_classic_bet_sum_s,pre_classic_bet_take_s,pre_classic_bet_sum_d,pre_classic_bet_take_d) VALUES " . implode(',', $arrShopCalculateInfo));
+            } catch (\mysqli_sql_exception $e) {
+                $logger->critical('distributorCalculatePoint [MYSQL EXCEPTION] message (code) : ' . $e->getMessage() . ' (' . $e->getCode() . ')');
+                $logger->critical('::::::::::::::: distributorCalculatePoint query : ' . $tLogCashModel->getLastQuery());
+            }
+        }
+    }
+
+
 }

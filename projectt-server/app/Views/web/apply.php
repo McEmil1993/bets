@@ -21,18 +21,15 @@
             <div class="info_wrap">
                 <div class="info2">충전방법 및 주의사항</div>              
                 <div class="info3">
-                    <span class="info_num">1</span>&nbsp; 입금계좌요청란에 <span class="font05">로그인 비밀번호를 입력 후 확인을 누르시면 해당 페이지내에 입금 계좌 확인</span>이 가능합니다.<br>
-                    <span class="info_num">2</span>&nbsp; 입금하실 때에는 인터넷뱅킹, 스마트뱅킹, 무통장입금 등의 방법을 이용하시면 입금이 가능합니다.<br>
-                    <span class="info_num">3</span>&nbsp; <span class="font05">수표 입금 시 충전 불가 및 이용제재</span> 되오니 주의 하시길 바랍니다.<br>
-                    <span class="info_num">4</span>&nbsp; 입금자명과 송금하시는 통장의 예금주(통장명의자)명이 동일해야 즉시 충전처리가 가능하며, 예금주명이 상이할 경우 충전이 불가합니다.<br>
-                    <span class="info_num">5</span>&nbsp; 보안상 충전 계좌는 수시로 변경될 수 있으며, 구계좌 입금시 확인 및 충전처리 불가합니다. <span class="font05">반드시 입금 계좌 확인 후 입금</span>해 주시기 바랍니다.<br>
-                    <span class="info_num">6</span>&nbsp; 본인명의가 아닌 <span class="font05">타명의에서 예금주명 변경으로 입금시</span> 악성이용으로 간주되며 반환 불가 또는 즉시 탈퇴처리 됩니다. <br>
-                    <span class="info_num">7</span>&nbsp; <span class="font05">토스/핀크/카카오페이/케이뱅크/증권계좌/저축은행/하나은행</span> 계좌는 사용이 불가합니다.  (간편송금은 피해주시기 바라며 , 송금시 입금 확인시간까지 오랜시간이 지연 될 수 있습니다.) <br>
-                    <span class="info_num">8</span>&nbsp; 최소 충전 금액은 <span class="font05">10,000원 부터 충전 신청 가능하며,</span> 천단위 충전은 불가능하므로 만원단위로 입금 부탁드립니다. <br>
-                    <span class="info_num">9</span>&nbsp; 충전시 입금 계좌 확인 하지않고 <span class="font05">변경전 계좌로 입금</span>하여 불이익 당하는 일이 없도록 주의 부탁드립니다. <br>
-                    <span class="info_num">10</span>&nbsp; <span class="font05">입금을 먼저 하신 후 충전신청</span>을 해주시면 빠른충전이 가능합니다. <br>
-                    <span class="info_num font06">★</span>&nbsp; <span class="font06"> 1회 충전 최대 금액 500만원</span> <br>
-                    <span class="info_num font06">★</span>&nbsp; <span class="font06"> 500만원 이상 충전시 여러번에 나누어서 입금해주시기 바랍니다.</span>
+                    <span class="info_num">★</span>&nbsp; <span> 최소 충전 금액은 <span class="font05">10,000원 </span>신청가능 , 천단위 이용불가</span> <br>
+                    <span class="info_num">★</span>&nbsp; <span> 1회 충전 최대 금액은 <span class="font05">5,000,000원</span> 입니다. [해당금액 이상 이용을 원할 시 분할입금 부탁드립니다.]</span> <br>
+                    <span class="info_num">★</span>&nbsp; <span> [실시간] 전용계좌 발급으로 항시 변경이 될 수 있습니다.</span> <br>
+                    <span class="info_num">★</span>&nbsp; <span> 본인명의가 아닌 타 명의 입금시 충전 처리 불가</span> <br>
+                    <span class="info_num">★</span>&nbsp; <span> 자세한 사항은 공지사항 확인 바랍니다.</span> <br>
+                    <span class="info_num">★</span>&nbsp; <span> 신규 이용 시 선택충전 선택 항목이 없으면 [이벤트] 확인 입금 후 고객센터로 참여 문의 바랍니다.</span> <br>
+                    <span class="info_num font06">※ &nbsp; 충전 방법 안내</span><br>
+                    <span class="font05">&nbsp;&nbsp;&nbsp;&nbsp; 1. 로그인 비밀번호 입력 후 [전용계좌] 확인</span> <br>
+                    <span class="font05">&nbsp;&nbsp;&nbsp;&nbsp; 2. 원하는 보너스 선택+입금금액 신청</span> <br>
                 </div>
             </div>
         </div>
@@ -52,7 +49,7 @@
                 <div class="write_tr cf">
 					<div class="write_title">입금계좌정보</div>
 					<div class="write_basic">
-                        <span><input type="text" class="input1 input_deposit_name" style="margin: 0 10px 10px 0;" placeholder="예금주" readonly></span>
+                        <span><input type="text" class="input1 input_deposit_name" style="margin: 0 10px 0 0;" placeholder="예금주" readonly></span>
                         <span><input type="text" class="input1 input_deposit_number" placeholder="계좌번호" readonly></span>
                         
                         <span class="bonus_text">보너스포인트</span>
@@ -67,7 +64,7 @@
                                         case $member->getRegFirstCharge() == '0':
                                             //가입첫충
                                             echo intval($reg_first_charge)." % &nbsp;&nbsp;&nbsp;";
-                                            echo "<span class='font03'>최대보너스</span> ".number_format($charge_max_money)." 원";
+                                            echo "<span class='font03'>최대보너스</span> ".$charge_max_money." 원";
                                             break;
                                         case $member->getIsExchange() == '1':
                                             //환전여부
@@ -114,6 +111,33 @@
                                 <label for="charge_point_3">보너스포인트 <span class="font05"><?=$displayBonus2?></span> 최대보너스 <span class="font05"><?=$displayMaxBonus2?></span>&nbsp;<span class="font06"><?=$bonus_infos[0]['bonus_2_desc']?></span></label>
                             </div>
                             <?php } ?>
+
+                            <?php if('ON' == $bonus_infos[0]['bonus_3_flag']){
+                                list($displayBonus3, $displayMaxBonus3) = StatusUtil::getBonusPoint($is_charge_first_per, $charge_types, 3);
+                            ?>
+                            <div class="radio__item">
+                                <input name="charge_point_yn" id="charge_point_4" type="radio" value="3">
+                                <label for="charge_point_4">보너스포인트 <span class="font05"><?=$displayBonus3?></span> 최대보너스 <span class="font05"><?=$displayMaxBonus3?></span>&nbsp;<span class="font06"><?=$bonus_infos[0]['bonus_3_desc']?></span></label>
+                            </div>
+                            <?php } ?>
+                        
+                            <?php if('ON' == $bonus_infos[0]['bonus_4_flag']){
+                                list($displayBonus4, $displayMaxBonus4) = StatusUtil::getBonusPoint($is_charge_first_per, $charge_types, 4);
+                            ?>
+                            <div class="radio__item">
+                                <input name="charge_point_yn" id="charge_point_5" type="radio" value="4">
+                                <label for="charge_point_5">보너스포인트 <span class="font05"><?=$displayBonus4?></span> 최대보너스 <span class="font05"><?=$displayMaxBonus4?></span>&nbsp;<span class="font06"><?=$bonus_infos[0]['bonus_4_desc']?></span></label>
+                            </div>
+                            <?php } ?>
+                        
+                            <?php if('ON' == $bonus_infos[0]['bonus_5_flag']){
+                                list($displayBonus5, $displayMaxBonus5) = StatusUtil::getBonusPoint($is_charge_first_per, $charge_types, 5);
+                            ?>
+                            <div class="radio__item">
+                                <input name="charge_point_yn" id="charge_point_6" type="radio" value="5">
+                                <label for="charge_point_6">보너스포인트 <span class="font05"><?=$displayBonus5?></span> 최대보너스 <span class="font05"><?=$displayMaxBonus5?></span>&nbsp;<span class="font06"><?=$bonus_infos[0]['bonus_5_desc']?></span></label>
+                            </div>
+                            <?php } ?>
                         </div>
                         <?php }else{ ?>
                         <div>
@@ -128,7 +152,7 @@
                 <div class="write_tr cf">
                     <div class="write_title">충전금액</div>
                     <div class="write_basic">
-                        <input class="input1 input_charge_money">
+                        <input class="input1 input_charge_money" oninput="numberOnly(this)">
                         <div class="write_basic_btn">
                             <a href="javascript:void(0);"><span class="btn1_2" onclick="addMoney(10000, 'charge')">1만원</span></a>
                             <a href="javascript:void(0);"><span class="btn1_2" onclick="addMoney(30000, 'charge')">3만원</span></a>
@@ -165,8 +189,14 @@
     let level = <?=$level?>;
     let displayBonus = '<?=$displayBonus?>';
     let displayBonus2 = '<?=$displayBonus2?>';
+    let displayBonus3 = '<?=$displayBonus3?>';
+    let displayBonus4 = '<?=$displayBonus4?>';
+    let displayBonus5 = '<?=$displayBonus5?>';
     let displayMaxBonus = '<?=$displayMaxBonus?>';
     let displayMaxBonus2 = '<?=$displayMaxBonus2?>';
+    let displayMaxBonus3 = '<?=$displayMaxBonus3?>';
+    let displayMaxBonus4 = '<?=$displayMaxBonus4?>';
+    let displayMaxBonus5 = '<?=$displayMaxBonus5?>';
 
     $(document).ready(function () {
         $('.deposit_account').attr('style', 'display: none;');
@@ -317,9 +347,16 @@
             $('#bonus_display').html('<span class="font05">0 %</span>');
         }else if(1 == valueCheck){
             $('#bonus_display').html('<span class="font05">'+displayBonus+'</span>&nbsp;'+'&nbsp;<span class="font03">최대보너스</span>&nbsp;'+'&nbsp;<span class="font05">'+displayMaxBonus+'원</span>');
-        }else{
+        }else if(2 == valueCheck){
             $('#bonus_display').html('<span class="font05">'+displayBonus2+'</span>&nbsp;'+'&nbsp;<span class="font03">최대보너스</span>&nbsp;'+'&nbsp;<span class="font05">'+displayMaxBonus2+'원</span>');
+        }else if(3 == valueCheck){
+            $('#bonus_display').html('<span class="font05">'+displayBonus3+'</span>&nbsp;'+'&nbsp;<span class="font03">최대보너스</span>&nbsp;'+'&nbsp;<span class="font05">'+displayMaxBonus3+'원</span>');
+        }else if(4 == valueCheck){
+            $('#bonus_display').html('<span class="font05">'+displayBonus4+'</span>&nbsp;'+'&nbsp;<span class="font03">최대보너스</span>&nbsp;'+'&nbsp;<span class="font05">'+displayMaxBonus4+'원</span>');
+        }else if(5 == valueCheck){
+            $('#bonus_display').html('<span class="font05">'+displayBonus5+'</span>&nbsp;'+'&nbsp;<span class="font03">최대보너스</span>&nbsp;'+'&nbsp;<span class="font05">'+displayMaxBonus5+'원</span>');
         }
+        
     });
 </script>
 </body>

@@ -19,9 +19,6 @@ $MEMAdminDAO = new Admin_Bbs_DAO(_DB_NAME_WEB);
 $db_conn = $MEMAdminDAO->dbconnect();
 
 if($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$MEMAdminDAO)){
-        die();
-    }
     $p_data['idx'] = trim(isset($_REQUEST['idx']) ? $MEMAdminDAO->real_escape_string($_REQUEST['idx']) : 0);
     $p_data['status'] = trim(isset($_REQUEST['status']) ? $MEMAdminDAO->real_escape_string($_REQUEST['status']) : 0);
     
@@ -123,7 +120,7 @@ include_once(_BASEPATH.'/common/iframe_head_menu.php');
                                 <input id="saveName" name="saveName" type=hidden value=''>
                                 <input type="file" onchange="setThumbnail(event);" id="uploadfile" name="uploadfile" accept="image/*">
                             </form>
-                            <span style="margin-right: 920px;color: red;">※이벤트 썸네일 : 가로 340px / 세로 170px</span>
+                            <span style="margin-right: 920px;color: red;">※이벤트 썸네일 : 가로 470px / 세로 150px</span>
                         </td>
                     </tr>
                     <tr>
@@ -149,7 +146,7 @@ include_once(_BASEPATH.'/common/iframe_head_menu.php');
                         </td>
                     </tr>
                 </table>                
-				이벤트 썸네일 : 가로 340px / 세로 170px
+				이벤트 썸네일 : 가로 470px / 세로 150px
 				<br>
 				내용 이미지 : 가로 800px 이하 / 세로 2000px 이하
                 <div style="height: 20px"></div>

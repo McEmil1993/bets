@@ -17,9 +17,6 @@ $MEMAdminDAO = new Admin_Member_DAO(_DB_NAME_WEB);
 $db_conn = $MEMAdminDAO->dbconnect();
 
 if($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$MEMAdminDAO)){
-        die();
-    }
     $p_data['sql'] = "select * from inspection where idx = 1";
     $arr_config = $MEMAdminDAO->getQueryData($p_data);
     $arr_config = $arr_config[0];

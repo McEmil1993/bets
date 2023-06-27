@@ -198,7 +198,7 @@ class BaseGmPt {
         }
 
         $str_sql_config = "SELECT set_type, set_type_val FROM t_game_config WHERE set_type IN('service_bonus_folder','odds_3_folder_bonus','odds_4_folder_bonus','odds_5_folder_bonus'"
-                . ",'inplay_status','inplay_no_betting_list','service_sports','service_real','odds_6_folder_bonus','odds_7_folder_bonus','limit_folder_bonus','service_classic')"; // 머지 대상 아님 
+                . ",'inplay_status','inplay_no_betting_list','service_sports','service_real','odds_6_folder_bonus','odds_7_folder_bonus','limit_folder_bonus')"; // 머지 대상 아님 
 
         $arr_config_result = $tgcModel->db->query($str_sql_config)->getResultArray();
 

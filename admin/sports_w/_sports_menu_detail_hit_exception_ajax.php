@@ -6,7 +6,7 @@ header('Expires: 0'); // Proxies.
 header('Content-Type: json; charset=UTF-8');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
 include_once(_BASEPATH . '/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH . '/class_Admin_Common_dao.php');
 include_once(_LIBPATH . '/class_Code.php');
 include_once(_DAOPATH . '/class_Admin_LSports_Bet_dao.php');
@@ -110,7 +110,7 @@ try {
     $result['retCode'] = FAIL_DB_SQL_EXCEPTION;
     $result['retMsg'] = FAIL_DB_SQL_EXCEPTION_MSG;
 } catch (\Exception $e) {
-    $UTIL->logWrite("[_sports_menu_detail_hit_exception_ajax] [error -2]", "error");
+    $UTIL->logWrite("[_sports_menu_detail_hit_exception_ajax] [error -2]". $e, "error");
     $result['retCode'] = FAIL_EXCEPTION;
     $result['retMsg'] = FAIL_EXCEPTION_MSG;
 } catch (\ReflectionException $e) {

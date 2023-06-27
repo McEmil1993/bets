@@ -40,9 +40,6 @@ $MEMAdminDAO = new Admin_LSports_Bet_DAO(_DB_NAME_WEB);
 $db_conn = $MEMAdminDAO->dbconnect();
 
 if ($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$MEMAdminDAO)){
-        die();
-    }
     $p_data_config['sql'] = "select u_level, set_type, set_type_val from t_game_config ";
     $p_data_config['sql'] .= " where set_type = 'inplay_status' ";
     $retData = $MEMAdminDAO->getQueryData($p_data_config);

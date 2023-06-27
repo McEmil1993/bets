@@ -28,9 +28,6 @@ $MEMAdminDAO = new Admin_Member_DAO(_DB_NAME_WEB);
 $db_conn = $MEMAdminDAO->dbconnect();
 
 if($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$MEMAdminDAO)){
-        die();
-    }
     //mysqli_report(MYSQLI_REPORT_ALL & ~MYSQLI_REPORT_INDEX);
     $p_data['sql'] = " SELECT COUNT(*) AS CNT FROM t_domain_code ";
     

@@ -35,10 +35,10 @@
                 <div class="scroll_h_inner">
                     <div class="bet_history_tr">
                         <div class="bet_history_title title3">일자</div>
-                        <div class="bet_history_title title3">회차</div>
+                        <div class="bet_history_title title3 mini_none">회차</div>
                         <div class="bet_history_title title3">베팅금액</div>
                         <div class="bet_history_title title3">당첨금</div>
-                        <div class="bet_history_title title3">수수료</div>
+                        <div class="bet_history_title title3 mini_none">수수료</div>
                         <div class="bet_history_title title3">결과</div>
                     </div>
 
@@ -63,10 +63,10 @@
                         <!-- 그룹1 -->
                         <div class="bet_history_tr">
                             <div class="bet_history_td td3"><?=$row['REG_DTM']?></div>
-                            <div class="bet_history_td td3"><?=$row['GAME_NUM']?></div>
-                            <div class="bet_history_td td3"><?=number_format($row['BET_MONEY'])?></div>
-                            <div class="bet_history_td td3"><?=number_format($row['WIN_MONEY'])?></div>
-                            <div class="bet_history_td td3"><?=number_format(floor($row['FEE']))?></div>
+                            <div class="bet_history_td td3 mini_none"><?=$row['GAME_NUM']?> 회</div>
+                            <div class="bet_history_td td3"><?=number_format($row['BET_MONEY'])?> 원</div>
+                            <div class="bet_history_td td3"><span class="font06"><?=number_format($row['WIN_MONEY'])?> 원</span></div>
+                            <div class="bet_history_td td3 mini_none"><?=number_format(floor($row['FEE']))?> 원</div>
                             <div class="bet_history_td td3"><span class="<?=$betStatusColor ?>"><?=$betStatus?></span></div>
                         </div>
                         <!-- 그룹1끝 -->

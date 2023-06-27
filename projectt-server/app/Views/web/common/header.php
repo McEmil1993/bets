@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
-    <title>벳츠(BETS)</title>
+    <title>황소(BULLS)</title>
     <link rel="shortcut icon" href="/assets_w/images/favicon.ico?v=<?php echo date("YmdHis"); ?>">
 
 

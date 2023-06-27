@@ -126,7 +126,7 @@ include_once(_BASEPATH.'/common/head.php');
 
         <!-- list -->
         <div class="panel reserve">
-            <span style="color:red">주의 이미지 파일명은 icon_game종목번호.png로 해주셔야 합니다.</span>
+            <!-- <span style="color:red">주의 이미지 파일명은 icon_game종목번호.png로 해주셔야 합니다.</span> -->
             <iframe id="iframe1" name="iframe1" style="display:none"></iframe>
             <div class="panel_tit">
                 <div class="search_form fl">
@@ -197,10 +197,12 @@ include_once(_BASEPATH.'/common/head.php');
                             <form id="thumbnail_fm_<?=$item['idx']?>" method="post" action="../common/image_send.php" enctype="multipart/form-data" target="iframe1">
                                 <div class="image_container_<?=$item['idx']?> w40"></div>
                                 <input name="savePath" type=hidden value='/<?=IMAGE_PATH?>/sports'>
-                                <input type="file" onchange="setThumbnail(event, <?=$item['idx']?>);" id="uploadfile" style="width: 100%" name="uploadfile" accept="image/*">
+                                <input name="newfileName" type=hidden value='icon_game<?=$item['id']?>.png'>
+                                <input type="file" onchange="setThumbnail(event, <?=$item['idx']?>, <?=$item['id']?>);" id="uploadfile" style="width: 100%" name="uploadfile" accept="image/*">
                             </form>
                         </td>
-                        <td><img class="prev_img w40" src="<?=IMAGE_SERVER_URL.'/'.IMAGE_PATH.'/sports/icon_game'.$item['id'].'.png'?>" onerror="this.style.display='none'"></td>
+                        <td>
+                            <img class="prev_img w40" src="<?php echo ($item['image_path'] != '')? IMAGE_SERVER_URL.'/'.IMAGE_PATH.'/sports/'.$item['image_path'] : IMAGE_SERVER_URL.'/'.IMAGE_PATH.'/sports/icon_game'.$item['id'].'.png'; ?>" onerror="this.style.display='none'"></td>
                         <!--<td><input id="input_refund_rate_current_<?=$item['idx']?>" type="number" class="" style="width: 100%; color:<?=$color?>" placeholder="" value="<?=$item['input_refund_rate']?>" readonly/></td>
                         <td><input id="input_refund_rate_<?=$item['idx']?>" type="number" class="" style="width: 100%; color:<?=$color?>" placeholder="" value="<?=$item['input_refund_rate']?>"/></td>-->
                         <td>
@@ -320,53 +322,50 @@ include_once(_BASEPATH.'/common/head.php');
     
     // 종목 수정
     function fn_update_menu3(idx, id) {
+       
+            
         if(idx == image_check){
-            //alert("파일을 첨부해 주세요.");
+            
             $("#thumbnail_fm_"+idx).submit();
-            let file_name = $('#update_name_'+idx).val();
-            let check_name = 'icon_game' + id + '.png';
-            console.log(file_name);
-            if(file_name !== check_name){
-                alert("파일명은 icon_game종목ID.png로 해주셔야 합니다.");
-                return;
-            }
+            
+            
         }
-
+        let file_name = $('#update_name_'+idx).val();
         var name = $('#name_'+idx).val();
         var isUse = $("#is_use_"+idx+" option:selected").val();
-        
-	var str_msg = '수정 하시겠습니까?';
-	var result = confirm(str_msg);
-	if (result){
-		$.ajax({
-			type: 'post',
-			dataType: 'json',
-			url: '/sports_w/_sports_manager_prc_update.php',
-			data:{'idx':idx, 'name':name, 'isUse':isUse},
-			success: function (result) {
-				if(result['retCode'] == "1000"){
-					alert('수정하였습니다.');
-					window.location.reload();
-					return;
-				}else{
-					alert(result['retMsg']);
-					return;
-				}
-			},
-			error: function (request, status, error) {
-				alert('수정에 실패하였습니다.');
-				return;
-			}
-		});
-	}
-	else {
-		return;
-	}
+            
+        var str_msg = '수정 하시겠습니까?';
+        var result = confirm(str_msg);
+        if (result){
+            $.ajax({
+                type: 'post',
+                dataType: 'json',
+                url: '/sports_w/_sports_manager_prc_update.php',
+                data:{'idx':idx, 'name':name, 'isUse':isUse,'file_name': file_name},
+                success: function (result) {
+                    if(result['retCode'] == "1000"){
+                        alert('수정하였습니다.');
+                        window.location.reload();
+                        return;
+                    }else{
+                        alert(result['retMsg']);
+                        return;
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('수정에 실패하였습니다.');
+                    return;
+                }
+            });
+        }
+        else {
+            return;
+        }
     }
     // 이미지 썸네일 추가 ADD KSG 
-    function setThumbnail(event, idx) {
+    function setThumbnail(event, idx,id) {
         var reader = new FileReader();
-        $('#update_name_'+idx).val(event.target.files[0].name);
+        $('#update_name_'+idx).val('icon_game'+id+'.png');
         reader.onload = function(event) {
             var img = document.createElement("img");
             img.setAttribute("src", event.target.result);
@@ -375,6 +374,8 @@ include_once(_BASEPATH.'/common/head.php');
         };
         
         reader.readAsDataURL(event.target.files[0]);
+
+
     }
 </script>
 <?php

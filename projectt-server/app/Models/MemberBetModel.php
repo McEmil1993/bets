@@ -62,7 +62,7 @@ class MemberBetModel extends Model {
             'is_classic' =>$isClassic
         ];
         try {
-            //$this->db->transStart();
+            $this->db->transStart();
 
             $fiModel = new LSportsFixturesModel();
 
@@ -108,20 +108,17 @@ class MemberBetModel extends Model {
 
             # 회원 정보 수정
             $memberModel = new MemberModel();
-            //$memberModel->memberChangeMoney($member->getIdx(), (int) $member->getMoney() - (int) $totalMoney);
-            $memberModel->memberChangeMoney($member->getIdx(), - (int) $totalMoney);
-
-            # 베팅금 누적
-            // $memberModel->memberChangeBet($member->getIdx(), (int) $totalMoney);
-
+            $memberModel->memberChangeMoney($member->getIdx(), (int) $member->getMoney() - (int) $totalMoney);
+            
             # 최종 배팅 시간
             $memberModel->updateBettingDate($member->getIdx());
             
-            //$this->db->transComplete();
+         
+            $this->db->transComplete();
 
             return $insertBetIdx;
         } catch (\mysqli_sql_exception $e) {
-            //$this->db->transRollback();
+            $this->db->transRollback();
             return 0;
         }
     }
@@ -157,7 +154,7 @@ class MemberBetModel extends Model {
                 LEFT JOIN member_bet as mb_bet ON bet_detail.bet_idx = mb_bet.idx
                 LEFT JOIN member  ON member.idx = mb_bet.member_idx
                 LEFT JOIN lsports_fixtures as fix on bet_detail.ls_fixture_id = fix.fixture_id AND bet_detail.bet_type = fix.bet_type
-                WHERE bet_detail.bet_idx = ? AND mb_bet.bet_status = 1 for update ";
+                WHERE bet_detail.bet_idx = ? ";
     
         return $this->db->query($sql,[$idx])->getResultArray();
     }

@@ -71,9 +71,6 @@ $CASHAdminDAO = new Admin_Cash_DAO(_DB_NAME_WEB);
 $db_conn = $CASHAdminDAO->dbconnect();
 
 if ($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$CASHAdminDAO)){
-        die();
-    }
     // 입금계좌 정보
     $p_data['sql'] = "SELECT bank_id, account_name, account_number, account_bank FROM account_level_list WHERE idx > 0";
     $result = $CASHAdminDAO->getQueryData($p_data);
@@ -128,6 +125,18 @@ if ($db_conn) {
 
         $db_dataArr = $CASHAdminDAO->getQueryData($p_data);
     }
+
+    foreach ($db_dataArr as $key => $row) {
+        $dis_id = $row['dis_id'];
+        $p_data_1["sql"] = "SELECT nick_name FROM member WHERE id = '$dis_id'";
+        $dist_info = $CASHAdminDAO->getQueryData($p_data_1);
+        $db_dataArr[$key]["dis_nick_name"] = $dist_info[0]["nick_name"];
+    }
+
+    $p_data['sql'] = " SELECT set_type_val FROM t_game_config where set_type in (?,?,?,?,?,?,?) ORDER BY idx ASC";
+    $db_bonus_option = $CASHAdminDAO->getQueryData_pre($p_data['sql'], ['first_charge','default_bonus','bonus_option_1','bonus_option_2','bonus_option_3','bonus_option_4','bonus_option_5']);
+    
+
 
     // 총판 정보 읽어오기 
     $sql = "select id,name,low_id,high_id from business_type where id <> 1 order by id asc ";
@@ -315,8 +324,8 @@ if ($db_conn) {
                                 <th>수동 보너스 P</th>
                                 <th>요청일자</th>
                                 <th>처리일자</th>
-                                <th>수동 보너스 지급</th>
                                 <th>상태</th>
+                                <th colspan="3">수동 보너스 지급</th>
                                 <th>쪽지</th>
                             </tr>
                             <?php
@@ -377,6 +386,25 @@ if ($db_conn) {
                                         if($row['bank_id'] == 1000){
                                             $db_deposit_account_name = '네오덱스(코인)';
                                         }
+                                        
+                                        $bonus_display   = "";
+
+                                        if ($row['bonus_option_idx'] == -1) {
+                                            $bonus_display = $db_bonus_option[0]['set_type_val'];
+                                        }elseif ($row['bonus_option_idx'] == 0) {
+                                            $bonus_display = $db_bonus_option[1]['set_type_val'];
+                                        }elseif ($row['bonus_option_idx'] == 1) {
+                                            $bonus_display = $db_bonus_option[2]['set_type_val'];
+                                        }elseif ($row['bonus_option_idx'] == 2) {
+                                            $bonus_display = $db_bonus_option[3]['set_type_val'];
+                                        }elseif ($row['bonus_option_idx'] == 3) {
+                                            $bonus_display = $db_bonus_option[4]['set_type_val'];
+                                        }elseif ($row['bonus_option_idx'] == 4) {
+                                            $bonus_display = $db_bonus_option[5]['set_type_val'];
+                                        }elseif ($row['bonus_option_idx'] == 5) {
+                                            $bonus_display = $db_bonus_option[6]['set_type_val'];
+                                        }
+                                
                                         ?>
                                         <tr <?= $status_style ?>>
                                             <td>
@@ -387,26 +415,25 @@ if ($db_conn) {
                                             </td>
                                             <td><?= $row['level'] ?></td>
                                             <td style='text-align:left;<?= $css_color_id ?>'>
-                                                <a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php', 'popuserinfo', 800, 1400, 'userinfo', '<?= $db_m_idx ?>');"><?= $db_id ?></a>
+                                                <a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php', 'popuserinfo', 800, 1400, 'userinfo', '<?= $db_m_idx ?>', '2');"><?= $db_id ?></a>
                                             </td>
                                             <td style='text-align:left;<?= $css_color_id ?>'>
-                                                <a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php', 'popuserinfo', 800, 1400, 'userinfo', '<?= $db_m_idx ?>');"><?= $db_nick ?></a>
+                                                <a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php', 'popuserinfo', 800, 1400, 'userinfo', '<?= $db_m_idx ?>', '2');"><?= $db_nick ?></a>
                                             </td>
-                                            <td><?= $row['dis_id'] ?></td>
+                                            <td><?= $row['dis_nick_name'] ?></td>
                                             <td style='text-align:left;'><?= $db_account_name ?></td>
                                             <td style='text-align:left;'><?= $db_account_info ?></td>
                                             <td style='text-align:left;'><?= $db_deposit_account_name ?></td>
                                             <td style='text-align:right;'><?= number_format($row['money']) ?></td>
-                                            <td style='text-align:right;'><?= getBonusOptionName($row['bonus_option_idx']) ?></td>
+                                            <td style='text-align:right;'><?= $bonus_display ?></td>
                                             <td style='text-align:right;'><?= number_format($row['bonus_point']) ?> <?=getBonusName($row['set_type'])?></td>
                                             <td style='text-align:right;'><?= number_format($row['manual_bonus_point']) ?></td>
                                             <td><?= $row['create_dt'] ?></td>
                                             <td><?= $row['update_dt'] ?></td>
-                                            <td style="width:300px;"><input type="number" name="" id="manualBonusPoint_<?=$row['charge_idx']?>" value="" style="width:120px; margin-right:5px; text-align:center;" placeholder="수동 포인트 입력">
-                                                <input type="password" name="" id="secondPassword_<?=$row['charge_idx']?>" value="" style="width:100px; text-align:center;" placeholder="2차비번 입력">
-                                                <a href="#" class="btn h25 btn_red" onClick="payManualBonusPoint(<?=$row['charge_idx']?>)">지급</a>
-                                            </td>
                                             <td><?= $status_str ?></td>
+                                            <td><input type="number" name="" id="manualBonusPoint_<?=$row['charge_idx']?>" value="" style="width:100%; text-align:center;" placeholder="수동 포인트 입력"></td>
+                                            <td><input type="password" name="" id="secondPassword_<?=$row['charge_idx']?>" value="" style="width:100%; text-align:center;" placeholder="2차비번 입력"></td>
+                                            <td><a href="#" class="btn h25 btn_red" onClick="payManualBonusPoint(<?=$row['charge_idx']?>)">지급</a></td>
                                             <td>
                                                 <a href="#" class="btn h25 btn_blu" onClick="popupWinPost('/member_w/pop_msg_write.php', 'popmsg', 660, 1000, 'msg', '<?= $db_m_idx ?>');">쪽지</a>
                                             </td>

@@ -10,7 +10,7 @@ if (isset($_FILES['uploadfile']) ) {
     $data      = fread($handle, filesize($filename));*/
     
     $headers = array();
-
+    $newfileName = trim(isset($_POST['newfileName']) ? $_POST['newfileName'] : '');
     $savePath = trim(isset($_POST['savePath']) ? $_POST['savePath'] : '');
     $filename  = $_FILES['uploadfile']['name'];
     
@@ -18,19 +18,29 @@ if (isset($_FILES['uploadfile']) ) {
     $ext = explode('.',$filename); 
     $filename_ext = strtolower(array_pop($ext));
     $allow_file = array("jpg", "png", "bmp", "gif");
+    
     //$UTIL->logWrite("name : " . $filename_ext, "error");
+    // For Item managements
+    $im = $savePath.'/'.$newfileName;
+    $newName = "";
+    if ($newfileName != '') {
+        $newName = $newfileName;
+
+    }else{
+        $newName = $filename;
+    }
     
     if (!in_array($filename_ext, $allow_file)) {
-        $UTIL->logWrite("NOTALLOW_" . $filename, "error");
+        $UTIL->logWrite("NOTALLOW_" . $newName, "error");
     }else{
         $uploadDir = IMAGE_TEMP_PATH;
-        $uploadFile = $uploadDir.'/'.basename($filename);
+        $uploadFile = $uploadDir.'/'.$newName;
         $UTIL->logWrite($uploadDir);
         if (move_uploaded_file($_FILES['uploadfile']['tmp_name'], $uploadFile)){
             $file = new stdClass;
             //$file->name = date("YmdHis") . mt_rand() . "." . $filename_ext;
             //$file->content = file_get_contents("php://input");
-            $file->name = $filename;
+            $file->name = $newName;
             $file->content = file_get_contents($uploadFile);
 
             $UTIL->logWrite($file->name, "error");

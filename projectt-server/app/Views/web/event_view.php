@@ -5,7 +5,7 @@
 <div class="title_wrap">
 	<div class="title">이벤트</div>
 </div>
-<?php $imagePath = config(App::class)->imageUrl.'/'.config(App::class)->imagePath.'/'; ?>
+<?php $imagePath = config(App::class)->IMAGE_SERVER.'/'.config(App::class)->imagePath.'/'; ?>
 
 <div class="contents_wrap">
 	<div class="contents_box">

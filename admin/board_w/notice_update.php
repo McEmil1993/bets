@@ -20,9 +20,6 @@ $MEMAdminDAO = new Admin_Bbs_DAO(_DB_NAME_WEB);
 $db_conn = $MEMAdminDAO->dbconnect();
 
 if($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$MEMAdminDAO)){
-        die();
-    }
     $p_data['idx'] = trim(isset($_REQUEST['idx']) ? $MEMAdminDAO->real_escape_string($_REQUEST['idx']) : 0);
     $p_data['status'] = trim(isset($_REQUEST['status']) ? $MEMAdminDAO->real_escape_string($_REQUEST['status']) : 0);
     

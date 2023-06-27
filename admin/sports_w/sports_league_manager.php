@@ -31,9 +31,7 @@ $LSportsAdminDAO = new Admin_LSports_Bet_DAO(_DB_NAME_WEB);
 $db_conn = $LSportsAdminDAO->dbconnect();
 
 if ($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$LSportsAdminDAO)){
-        die();
-    }
+
     $bet_type = $LSportsAdminDAO->real_escape_string($bet_type);
     $p_data['page'] = $LSportsAdminDAO->real_escape_string($p_data['page']);
     $p_data['num_per_page'] = $LSportsAdminDAO->real_escape_string($p_data['num_per_page']);
@@ -151,7 +149,7 @@ if ($db_conn) {
     if ($total_cnt > 0) {
         $start = ( $p_data['page'] - 1 ) * $p_data['num_per_page'];
 
-        $p_data['sql'] = "SELECT lsports_leagues.id, lsports_leagues.name as name, lsports_leagues.display_name, location_id, sport_id, lsports_leagues.is_use, lsports_leagues.image_path, "
+        $p_data['sql'] = "SELECT lsports_leagues.id, lsports_leagues.name as name, lsports_locations.name_en AS country_name, lsports_leagues.display_name, location_id, sport_id, lsports_leagues.is_use, lsports_leagues.image_path, "
                         . "input_refund_rate, dividend_rank, bet_type";
         $p_data['sql'] .= " FROM lsports_leagues";
         $p_data['sql'] .= " left join lsports_locations on lsports_leagues.location_id = lsports_locations.id";
@@ -404,7 +402,7 @@ if ($db_conn) {
                                             <td><?=$rows['bet_type'] == 1 ? '스포츠':'실시간'?></td>
                                             <td><?= !empty($arrSports[$rows['sport_id']]) ? $arrSports[$rows['sport_id']]['name'] : "N/A" ?></td>
                                             <td><?= !empty($arrLocations[$rows['location_id']]) ? $arrLocations[$rows['location_id']]['name'] : "N/A" ?></td>
-                                            <td><img src="<?='../assets_admin/images/flag/' . $rows['location_id'] . '.png'?>"  onerror="this.style.display='none'"></td>
+                                            <td><img src="<?= IMAGE_SERVER_URL.'/'.IMAGE_PATH.'/flag/' . strtolower($rows['country_name']) . '.png'?>"  onerror="this.style.display='none'"></td>
                                             <td class="file_thumb_section">
                                                 <input id="update_name_<?=$rows['id']?>" type=hidden value=''>
                                                 <form id="thumbnail_fm_<?=$rows['id']?>" method="post" action="../common/image_send.php" enctype="multipart/form-data" target="iframe1">

@@ -47,10 +47,10 @@ class CodeUtil {
             return '적중';
         if ($code == 3)
             return '정산완료';
-/*         if ($code == 4)
-            return '낙첨'; */
-		if ($code == 4)
-			return '미적중';
+        /*         if ($code == 4)
+          return '낙첨'; */
+        if ($code == 4)
+            return '미적중';
         if ($code == 5)
             return '취소';
         if ($code == 6)
@@ -105,6 +105,20 @@ class CodeUtil {
             return '데이터복구';
         if ($code == 999)
             return '기타';
+        if ($code == USER_PAY_BACK_REWARD_POINT)
+            return '페이백 지급';
+        if ($code == DAY_CHRGE_EVENT_REWARD_POINT) {
+            if ('GAMBLE' == config(App::class)->ServerName) {
+                return '겜블지원';
+            } else if ('NOVA' == config(App::class)->ServerName) {
+                return '노바지원';
+            } else if ('NOBLE' == config(App::class)->ServerName) {
+                return '노블지원';
+            } else if ('BULLS' == config(App::class)->ServerName) {
+                return '황소 지원';
+            } 
+           
+        }
         return '-';
     }
 
@@ -248,8 +262,8 @@ class CodeUtil {
     // 베팅결과 및 클래스 리턴
     static public function bet_status_by_info_2($status, $total_bet_money, $take_money) {
         //$class = '';
-    	$class = 'sports_division3';
-    	$result = '진행중';
+        $class = 'sports_division3';
+        $result = '진행중';
 
         if (1 == $status) {
             $result = '진행중';
@@ -267,20 +281,20 @@ class CodeUtil {
             }
             if (0 == $take_money) {
                 //$result = '낙첨';
-            	$result = '미적중';
-            	$class = 'sports_division1';
-            	//$class = 'bet_result_icon bg_red';
+                $result = '미적중';
+                $class = 'sports_division1';
+                //$class = 'bet_result_icon bg_red';
             }
             if ($total_bet_money == $take_money) {
                 $result = '취소';
                 $class = 'sports_division1';
                 //$class = 'bet_result_icon bg_gray';
             }
-            
+
             // 환급패치 사용
             if ($total_bet_money > $take_money && 0 < $take_money) {
-            	$result = '미적중';
-            	$class = 'sports_division1';
+                $result = '미적중';
+                $class = 'sports_division1';
             }
             // bet_result_icon bg_yellow
         }
@@ -290,40 +304,41 @@ class CodeUtil {
 
     // 베팅 결과값에 따른 배경색 클래스 리턴
     static public function X_bet_status_by_color_2($status) {
-    	if ($status == 1) {
-    		$color = '';
-    	} else if ($status == 2) {
-    		$color = 'bet_result_icon bg_blue';
-    	} else if ($status == 3) {
-    		$color = 'bet_result_icon bg_green';
-    	} else if ($status == 4) {
-    		$color = 'bet_result_icon bg_red';
-    	} else if ($status == 5) {
-    		$color = 'bet_result_icon bg_gray';
-    	} else if ($status == 6) {
-    		$color = 'bet_result_icon bg_yellow';
-    	}
-    	return $color;
+        if ($status == 1) {
+            $color = '';
+        } else if ($status == 2) {
+            $color = 'bet_result_icon bg_blue';
+        } else if ($status == 3) {
+            $color = 'bet_result_icon bg_green';
+        } else if ($status == 4) {
+            $color = 'bet_result_icon bg_red';
+        } else if ($status == 5) {
+            $color = 'bet_result_icon bg_gray';
+        } else if ($status == 6) {
+            $color = 'bet_result_icon bg_yellow';
+        }
+        return $color;
     }
+
     //1: 게임 결과 전\\n2: 적중 - 정산 전\\\\\n3: 적중 - 정산 완료\\\\\n4: 적중 실패  \\n5: 취소, \\\\n 6:적특
     // 베팅 결과값에 따른 배경색 클래스 리턴
     static public function bet_status_by_color_2($status) {
-    	if ($status == 1) {
-    		$color = 'sports_division3';
-    	} else if ($status == 2) {
-    		$color = 'sports_division2';
-    	} else if ($status == 3) {
-    		$color = 'sports_division2';
-    	} else if ($status == 4) { // 낙첨
-    		$color = 'sports_division1';
-    	} else if ($status == 5) {
-    		$color = 'sports_division1';
-    	} else if ($status == 6) {
-    		$color = 'sports_division4';
-    	} else {
-    		$color = 'sports_division1';
-    	}
-    	return $color;
+        if ($status == 1) {
+            $color = 'sports_division3';
+        } else if ($status == 2) {
+            $color = 'sports_division2';
+        } else if ($status == 3) {
+            $color = 'sports_division2';
+        } else if ($status == 4) { // 낙첨
+            $color = 'sports_division1';
+        } else if ($status == 5) {
+            $color = 'sports_division1';
+        } else if ($status == 6) {
+            $color = 'sports_division4';
+        } else {
+            $color = 'sports_division1';
+        }
+        return $color;
     }
 
     // 클라이언트 실제 주소를 가져온다.
@@ -360,12 +375,11 @@ class CodeUtil {
         return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
         );
     }
-    
-    static public function only_number(String $content){ 
-        return preg_replace('#[^0-9]#', '', $content); 
-        
+
+    static public function only_number(String $content) {
+        return preg_replace('#[^0-9]#', '', $content);
     }
-    
+
     static public function only_alpha_number(String $content) {
         return preg_replace('#[^a-zA-Z0-9]#', '', $content);
     }
@@ -375,7 +389,7 @@ class CodeUtil {
     }
 
     // use sports, classic
-    static public function getSelectFixtureData($sports_id, $location_id, $league_id, $league_name, $value,&$array_fix_all) {
+    static public function getSelectFixtureData($sports_id, $location_id, $league_id, $league_name, $value, &$array_fix_all) {
         //$array_fix_all = [];
         if (0 < mb_strlen($league_name, "UTF-8")) {
             //$logger->error("!!!!!!!!!!!!!!!!!! ***************** league_name ==> ".$league_name);    
@@ -445,27 +459,28 @@ class CodeUtil {
         }
 
         //$logger->info("!!!!!!!!!!!!!!!!!! ***************** getSelectFixtureData array_fix_all" . count($array_fix_all));
-         
+
         return $array_fix_all;
     }
-    
-    static public function checkCommercialIp($findMember, $logger){
+
+    static public function checkCommercialIp($findMember, $logger) {
         $abuse = new AbuseIPDB($logger);
         if (!$abuse) {
             $logger->error('------------- fail new abuse ----------------------------');
             return [false, '시스템 오류입니다. 관리자에게 문의바랍니다.'];
         }
 
-        if(9 != $findMember->getLevel()){
+        if (9 != $findMember->getLevel()) {
             $client_ip = CodeUtil::get_client_ip();
             $ret_check = $abuse->checkEndPoint($client_ip);
-            if('Commercial' == $ret_check->data->usageType){
-                $logger->error('checkCommercialIp id : '.$findMember->getId().' ip : '.$client_ip.' ip type : '.$ret_check->data->usageType);
+            if ('Commercial' == $ret_check->data->usageType) {
+                $logger->error('checkCommercialIp id : ' . $findMember->getId() . ' ip : ' . $client_ip . ' ip type : ' . $ret_check->data->usageType);
                 $messages = '산업용 아이피로 베팅할 수 없습니다.';
                 return [false, $messages];
             }
         }
-        
+
         return [true, 'success'];
     }
+
 }

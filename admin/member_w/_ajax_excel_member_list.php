@@ -1,14 +1,12 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/_LIB/base_config.php');
 include_once(_BASEPATH.'/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH.'/class_Admin_Common_dao.php');
 
 try {
     $result['retCode'] = SUCCESS;
     $result['retMsg'] = 'success';
-    
-    $p_data['second_password'] = trim(isset($_POST['second_password']) ? $_POST['second_password'] : '');
 
     /*$status = trim(isset($_REQUEST['status']) ? $_REQUEST['status'] : 0);
     $member_id = trim(isset($_REQUEST['member_id']) ? $_REQUEST['member_id'] : '');
@@ -29,15 +27,7 @@ try {
         $result['retMsg'] = FAIL_DB_CONNECT_MSG;
         return;
     }
-    
-    //2차인증 체크
-    $sql = "select set_type_val from t_game_config where set_type='second_pass'";
-    $second_pass = $commonDAO->getQueryData_pre($sql,[])[0];
-    if(hash('sha512', $p_data['second_password']) != $second_pass['set_type_val']){
-        $result['retCode'] = 2002;
-        return;
-    }
-    
+
     // 입금계좌 정보
     $p_data['sql'] = "SELECT IFNULL(a.dis_id,'') as '가입총판', a.level as '레벨', a.id as '아이디', a.nick_name as '닉네임', a.account_name as '이름', a.call as '연락처',
             a.account_number as '계좌번호',  a.reg_time as '가입일',

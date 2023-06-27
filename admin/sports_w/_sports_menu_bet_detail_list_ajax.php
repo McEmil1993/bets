@@ -8,9 +8,8 @@ header('Content-Type: json; charset=UTF-8');
 // 개별정산 처리 프론트 onBtnClickCalculate 함수에 의해서 호출된다.
 
 include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
-
 include_once(_BASEPATH . '/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH . '/class_Admin_Common_dao.php');
 
 $UTIL = new CommonUtil();

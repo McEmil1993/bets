@@ -52,6 +52,7 @@
                     <td class="list_title3">신청금액</td>
                     <td class="list_title3">진행결과</td>
                     <td class="list_title3">처리일자</td>
+                    <td  class="list_title3">삭제</td>
                 </tr>
                 <?php if($dataList) {?>
                     <?php foreach ($dataList as $key => $val) {?>
@@ -69,7 +70,8 @@
                                 </span>
                             </td>
 
-                            <td class="list3"><span class="font03"><?= $val['update_dt']?></span></td>                    
+                            <td class="list3"><span class="font03"><?= $val['update_dt']?></span></td>     
+                            <td class="list3"><button class="division2" onClick="delHist(<?= $val['idx']?>,'<?= $val['etype']?>')">삭제</button></td>               
                         </tr>
                     <?php }?>
                 <?php } else {?>
@@ -105,6 +107,33 @@
             });
         }
     });
+
+    function delHist(thisId,trans_type){
+        $.ajax({
+		type: 'get',
+		dataType: 'json',
+	    url: '/web/apply/delete',
+	    data:{'delId':thisId,'trans_type':trans_type},
+	    success: function (result) {
+            var result = confirm("삭제 하시겠습니까?");
+                    if (result==true) {
+                        alert("삭제하였습니다")
+                   location.reload();
+                    return true;
+                    } else {
+                    return false;
+                    }
+             
+
+		},
+	    error: function (request, status, error) {
+                        
+                        //alert(error + status);
+			alert('시스템 오류 입니다.');
+			return;
+		}
+	});
+    }
     
 </script>
 </body>

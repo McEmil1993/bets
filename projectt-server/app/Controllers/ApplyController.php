@@ -7,6 +7,7 @@ use App\Models\MemberModel;
 use App\Models\MemberMoneyChargeHistoryModel;
 use App\Models\MemberMoneyExchangeHistoryModel;
 use App\Models\TGameConfigModel;
+
 use CodeIgniter\API\ResponseTrait;
 use App\Util\CodeUtil;
 
@@ -16,20 +17,25 @@ class ApplyController extends BaseController {
 
     public function index() {
         $member_idx = session()->get('member_idx');
-        
-        $chkMobile = CodeUtil::rtn_mobile_chk();
 
         $viewRoot = "PC" == $chkMobile ? 'web' : 'web';
 
-        if ($member_idx == NULL) {
-            return redirect()->to(base_url("/$viewRoot/"));
-        }
+        $chkMobile = CodeUtil::rtn_mobile_chk();
+
+        if (false == session()->has('member_idx') || !isset($member_idx)) {
+            $url = base_url("/$viewRoot/index");
+            echo "<script>
+        	alert('로그인 후 이용해주세요.');
+        	window.location.href='$url';
+        	</script>";
+            return;
+        } 
         
         $memberModel = new MemberModel();
         //$findMember = $memberModel->getMemberWhereIdx($member_idx);
         //session()->set('level', $findMember->getLevel());
         //$member_level = session()->get('level');
-        
+       
         if (0 < session()->get('tm_unread_cnt')) {
 
             // $url = base_url("/$viewRoot/betting_history?menu=d");
@@ -102,6 +108,12 @@ class ApplyController extends BaseController {
                 $event_charge_end = $item['set_type_val'];
             }
         }
+
+
+        
+        
+
+
 
         // 레벨에 맞는 이벤트 충전정보
         $sql = "SELECT level, bonus, max_bonus FROM charge_event where level = ".$member->getLevel();
@@ -177,10 +189,20 @@ class ApplyController extends BaseController {
             $sub_name2 = iconv_substr($name, 3, 3, "utf-8");
             $name = $sub_name1 . "**" . $sub_name2;
         }
-
+        
         $totalCnt = 0;
         if ('c' == $menu) {
             $totalCnt = $chargeAllCount;
+
+            $totalCnt = $chargeAllCount;
+            $res = $TGCModel->getSetType('service_charge');
+            if ('Y' == $res && 9 != $member->getLevel()) {
+                echo "<script>
+                alert('충전하기 점검중입니다.');
+                window.history.back();
+                </script>";
+                return;
+            }
         } else if ('d' == $menu) {
             $totalCnt = $coinChargeAllCount;
         } else {
@@ -448,13 +470,132 @@ class ApplyController extends BaseController {
         ]);
     }
 
+    public function deleteHistory(){
+        $memberModel = new MemberModel();
+
+        $params[] = $_GET['delId'];
+        $trans_type = $_GET['trans_type'];
+        $sql = "";
+        if($trans_type == 'CH'){
+            $sql = "UPDATE member_money_charge_history SET delete_dt = '".date('Y-m-d H:i:s')."'  WHERE idx =  ".$_GET['delId'];
+        }else{
+            $sql = "UPDATE member_money_exchange_history SET delete_dt = '".date('Y-m-d H:i:s')."'  WHERE idx = ".$_GET['delId'];
+        }
+        $memberModel->db->query($sql, [])->getResult();
+
+        $ret['message'] = 'Success';
+
+        return json_encode($ret);
+    }
+
     // 환전하기
     public function exchange() {
-        $chkMobile = CodeUtil::rtn_mobile_chk();
+
+        $member_idx = session()->get('member_idx');
 
         $viewRoot = "PC" == $chkMobile ? 'web' : 'web';
 
+        $chkMobile = CodeUtil::rtn_mobile_chk();
+
+        if (false == session()->has('member_idx') || !isset($member_idx)) {
+            $url = base_url("/$viewRoot/index");
+            echo "<script>
+        	alert('로그인 후 이용해주세요.');
+        	window.location.href='$url';
+        	</script>";
+            return;
+        } 
+
+        $TGCModel = new TGameConfigModel();
+        $res = $TGCModel->getSetType('service_exchange');
+        if ('Y' == $res && 9 != session()->get('level')) {
+            echo "<script>
+            alert('환전하기 점검중입니다.');
+            window.history.back();
+            </script>";
+            return;
+        }
+
+        // if (false == session()->has('member_idx')) {
+        //     return $this->fail('로그인 후 이용해주세요.');
+        // }
+
+         // 베팅롤링정보
+         $memberModel = new MemberModel();
+         $sql = "SELECT sports_bet_s_money, sports_bet_d_money, real_bet_s_money, real_bet_d_money, mini_bet_money"
+                 . ", casino_bet_money, slot_bet_money, esports_bet_money, hash_bet_money, money as charge_money FROM member_money_charge_history "
+                 . "where member_idx = ? and status = 3 order by idx desc limit 1";
+
+         $result = $memberModel->db->query($sql, [$member_idx])->getResultArray();
+         
+         $lastChargeInfo = array(
+             'charge_money' => 0,
+             'sports_bet_s_money' => 0,
+             'sports_bet_d_money' => 0,
+             'real_bet_s_money' => 0,
+             'real_bet_d_money' => 0,
+             'mini_bet_money' => 0,
+             'casino_bet_money' => 0,
+             'slot_bet_money' => 0,
+             'esports_bet_money' => 0,
+             'hash_bet_money' => 0,
+             'sports_s_per' => 0,
+             'sports_d_per' => 0,
+             'real_s_per' => 0,
+             'real_d_per' => 0,
+             'mini_bet_money' => 0,
+             'casino_bet_per' => 0,
+             'slo_bet_per' => 0,
+             'esports_bet_per' => 0,
+             'hash_bet_per' => 0
+         );
+
+
+         if(0 < count($result)){
+             $row = $result[0];
+             // 배팅 비율
+             //$sports_s_per = $sports_d_per = $real_s_per = $real_d_per = $mini_per = $casino_bet_per = $slo_bet_per = $esports_bet_per = $hash_bet_per = 0;
+             $lastChargeInfo['charge_money'] = $row['charge_money'];
+             $lastChargeInfo['sports_bet_s_money'] = $row['sports_bet_s_money'];
+             $lastChargeInfo['sports_bet_d_money'] = $row['sports_bet_d_money'];
+             $lastChargeInfo['real_bet_s_money'] = $row['real_bet_s_money'];
+             $lastChargeInfo['real_bet_d_money'] = $row['real_bet_d_money'];
+             $lastChargeInfo['mini_bet_money'] = $row['mini_bet_money'];
+             $lastChargeInfo['casino_bet_money'] = $row['casino_bet_money'];
+             $lastChargeInfo['slot_bet_money'] = $row['slot_bet_money'];
+             $lastChargeInfo['esports_bet_money'] = $row['esports_bet_money'];
+             $lastChargeInfo['hash_bet_money'] = $row['hash_bet_money'];
+             
+             if($row['sports_bet_s_money'] > 0 && $row['charge_money'] > 0)
+                 $lastChargeInfo['sports_s_per'] = round($row['sports_bet_s_money']/$row['charge_money']*100);
+             
+             if($row['sports_bet_d_money'] > 0 && $row['charge_money'] > 0)
+                 $lastChargeInfo['sports_d_per'] = round($row['sports_bet_d_money']/$row['charge_money']*100);
+             
+             if($row['real_bet_s_money'] > 0 && $row['charge_money'] > 0)
+                 $lastChargeInfo['real_s_per'] = round($row['real_bet_s_money']/$row['charge_money']*100);
+             
+             if($row['real_bet_d_money'] > 0 && $row['charge_money'] > 0)
+                 $lastChargeInfo['real_d_per'] = round($row['real_bet_d_money']/$row['charge_money']*100);
+             
+             if($row['mini_bet_money'] > 0 && $row['charge_money'] > 0)
+                 $lastChargeInfo['mini_per'] = round($row['mini_bet_money']/$row['charge_money']*100);
+             
+             if($row['casino_bet_money'] > 0 && $row['charge_money'] > 0)
+                 $lastChargeInfo['casino_bet_per'] = round($row['casino_bet_money']/$row['charge_money']*100);
+             
+             if($row['slot_bet_money'] > 0 && $row['charge_money'] > 0)
+                 $lastChargeInfo['slo_bet_per'] = round($row['slot_bet_money']/$row['charge_money']*100);
+             
+             if($row['esports_bet_money'] > 0 && $row['charge_money'] > 0)
+                 $lastChargeInfo['esports_bet_per'] = round($row['esports_bet_money']/$row['charge_money']*100);
+             
+             if($row['hash_bet_money'] > 0 && $row['charge_money'] > 0)
+                 $lastChargeInfo['hash_bet_per'] = round($row['hash_bet_money']/$row['charge_money']*100);
+         }
+
         return view("$viewRoot/exchange", [
+            'lastChargeInfo' => $lastChargeInfo
         ]);
     }
 
@@ -565,9 +706,9 @@ class ApplyController extends BaseController {
 
         $param = [];
         if (0 == $type) { // 전체
-            $sql_count = "select member_idx from member_money_charge_history where member_idx = ? and status != 11
+            $sql_count = "select member_idx from member_money_charge_history where member_idx = ? and status != 11 and  delete_dt IS NULL 
                             UNION ALL
-                          select member_idx from member_money_exchange_history where member_idx = ? and status != 11
+                          select member_idx from member_money_exchange_history where member_idx = ? and status != 11 and  delete_dt IS NULL 
                             ";
             $param[] = $member_idx;
             $param[] = $member_idx;
@@ -589,24 +730,24 @@ class ApplyController extends BaseController {
         if (0 == $type) { // 전체
             $sql = "select 'CH' as etype,deposit_name,bank_id,bank_name,account_number
                             ,account_name,money,result_money,bonus_money,bonus_point
-                            ,set_type,status,comment,create_dt,update_dt
-                            from member_money_charge_history where member_idx = ? and status != 11
+                            ,set_type,status,comment,create_dt,update_dt,idx
+                            from member_money_charge_history where member_idx = ? and status and  delete_dt IS NULL 
                             UNION ALL
                           select 'EX' as etype ,'' as deposit_name,0 as bank_id,'' as bank_name,'' as account_number
                              ,'' as account_name,money,result_money,0 as bonus_money,0 as bonus_point
-                            ,set_type,status,comment,create_dt,update_dt
-                             from member_money_exchange_history where member_idx = ? and status != 11
+                            ,set_type,status,comment,create_dt,update_dt,idx
+                             from member_money_exchange_history where member_idx = ? and status and  delete_dt IS NULL 
                             order by create_dt desc limit ?, 10";
             $param[] = $member_idx;
             $param[] = $member_idx;
 
             $param[] = $start_page;
         } else if (1 == $type) {// 충전
-            $sql = "select 'CH' as etype, member_money_charge_history.*   from member_money_charge_history   where member_idx = ? and status != 11 order by create_dt desc limit ?,10";
+            $sql = "select 'CH' as etype, member_money_charge_history.*    from member_money_charge_history  where member_idx = ? and status and  delete_dt IS NULL  order by create_dt desc limit ?,10";
             $param[] = $member_idx;
             $param[] = $start_page;
         } else { // 환전 
-            $sql = "select 'EX' as etype, member_money_exchange_history.* from member_money_exchange_history where member_idx = ? and status != 11 order by create_dt desc limit ?,10";
+            $sql = "select 'EX' as etype, member_money_exchange_history.*  from member_money_exchange_history where member_idx = ? and status and  delete_dt IS NULL  order by create_dt desc limit ?,10";
             $param[] = $member_idx;
             $param[] = $start_page;
         }

@@ -6,15 +6,12 @@ include_once(_BASEPATH.'/common/_common_inc_class.php');
 include_once(_DAOPATH.'/class_Admin_Common_dao.php');
 include_once(_DAOPATH.'/class_Admin_Bbs_dao.php');
 
+$UTIL = new CommonUtil();
+
 //////// login check start
 include_once(_BASEPATH.'/common/login_check.php');
 //////// login check end
 
-$UTIL = new CommonUtil();
-
-if(0 != $_SESSION['u_business']){
-    die();
-}
 
 ?>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
@@ -99,13 +96,34 @@ include_once(_BASEPATH.'/common/iframe_head_menu.php');
                             </select>
                         </td>-->
                     </tr>
-                    <tr>
+                    <tr class="wysiswyg">
                     	<th style="width: 150px; text-align:left">내 용</th>
                         <td>
                         	<div id="loading"></div>
                         	<textarea name="b_content" id="b_content" rows="5" cols="100" style="width:780px; height:350px; display:none;"></textarea><br>
                         </td>
                     </tr>
+						<!--UPLOAD PDF FILE-->
+						<tr>
+                        	<th style="width: 150px; text-align:left">PDF Attachment (Optional)</th>
+								<td  style="white-space: normal; !important">
+									<div class="confing_box">
+
+										<div style="display: none; text-align: center;" class="upload-pdf-loading">
+											<div>Uploading PDF Please Wait</div>
+											<div>
+												<img style="margin: auto;" src="https://media.tenor.com/tEBoZu1ISJ8AAAAC/spinning-loading.gif" />
+											</div>
+										</div>
+
+										<!-- check if embed is enabled -->
+										<div class="upload-pdf-container"><input accept="application/pdf" type="file" id="pdf_attachment" name="pdf_attachment" value="" /></div>
+										<div class="remove-pdf" style="text-align: left; display: none;"><button type="button">Remove PDF</button></div>
+										<div><input readonly type="text" id="pdf_attachment_url" name="pdf_attachment_url" value="" /></div>
+										<div class="upload-pdf-content"></div>
+									</div>
+								</td>
+                    	</tr>
                 </table>                
                 
                 <div style="height: 20px"></div>
@@ -130,7 +148,60 @@ include_once(_BASEPATH.'/common/iframe_head_menu.php');
 include_once(_BASEPATH.'/common/bottom.php');
 ?> 
 <script>
-$(document).ready(function(){
+$(document).ready(function()
+	{
+		//PDF ATTACHMENT
+		$(".remove-pdf").click(() =>
+		{
+			$(".wysiswyg").show();
+			$(".upload-pdf-container").show();
+			$(".remove-pdf").hide();
+			$(".upload-pdf-content").html('');
+			$("#pdf_attachment_url").val('');
+			$("#pdf_attachment").val('');
+		})
+
+		$("#pdf_attachment").change(() =>
+		{
+			let form_data 	= new FormData();
+			let pdf_file 	= $("#pdf_attachment")[0].files
+
+			form_data.append('pdf_attachment', pdf_file[0]);
+			
+
+			$(".upload-pdf-loading").show();
+			$(".upload-pdf-content").hide();
+			
+			
+			$.ajax(
+			{
+				type:'POST',
+				url: '/board_w/_border_detail_upload_pdf.php',
+				data: form_data,
+				dataType: 'json',
+				cache:false,
+				contentType: false,
+				processData: false,
+				success:function(data)
+				{
+					$(".upload-pdf-loading").hide();
+					$(".upload-pdf-content").show();
+
+					let html_to_append = `<p><embed src="${data.full_path}#toolbar=0&navpanes=0" width="100%" height="500px" />`;
+
+					$(".upload-pdf-content").html(html_to_append);
+					$("#pdf_attachment_url").val(data.full_path);
+					$(".upload-pdf-container").hide();
+					$(".remove-pdf").show();
+				},
+				error: function(data)
+				{
+					console.log("error");
+					console.log(data);
+				}
+			});
+		});
+
 	// 공지 등록
 	$("#adm_btn_notice_send").click(function(){
 		var str_msg = '등록 하시겠습니까?';
@@ -138,6 +209,7 @@ $(document).ready(function(){
 		var selLevel = '';
 		
 		var msg_title = $("#send_m_title").val();
+		var pdf_attachment = $("#pdf_attachment_url").val();
 		
 		// 제목 길이 체크
 		if (msg_title.length < 4) {
@@ -169,10 +241,12 @@ $(document).ready(function(){
 				'member_idx': 0, 
 				'aid': 'admin', 
 				'nickname': 'admin', 
+				'pdf_attachment': pdf_attachment,
 				'msg_title': msg_title, 
 				//'msg_content': url_bcontent
 				'msg_content': encodeURIComponent(msg_content)
 			};
+
 			
 			$.ajax({
 				type: 'post',

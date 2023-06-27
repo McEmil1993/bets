@@ -165,14 +165,14 @@ function getParam(sname) {
 // 배팅 네임 변경 수정본
 function betNameToDisplay_new(str,market_id) {
     if (str === '1'){
-        if(market_id == 16 || market_id == 1326 || market_id == 1327 || market_id == 1328 || market_id == 1332){
+        if(market_id == 16){
             str = '홈';
         } else{
             str = '승';
         }
     }
     else if (str === '2'){
-        if(market_id == 16 || market_id == 1326 || market_id == 1327 || market_id == 1328 || market_id == 1332){
+        if(market_id == 16){
             str = '원정';
         } else{
             str = '패';

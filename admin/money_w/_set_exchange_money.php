@@ -8,7 +8,7 @@ header('Content-Type: text/html; charset=UTF-8');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
 
 include_once(_BASEPATH . '/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH . '/class_Admin_Cash_dao.php');
 include_once(_LIBPATH . '/class_Code.php');
 include_once(_LIBPATH . '/class_UserPayBack.php');
@@ -82,7 +82,7 @@ if ($db_conn) {
 
             $a_comment = "환전완료 ";
             $ac_code = 2;
-            $cash_use_kind = 'M';
+            $cash_use_kind = 'P';
 
             $p_data['sql'] = "select b.idx,b.member_idx, a.level, a.money, b.money as set_money,a.point,b.create_dt from member a, member_money_exchange_history b ";
             $p_data['sql'] .= " where a.idx=b.member_idx and b.idx in ($chkval) and b.status in (1,2) ";
@@ -155,6 +155,9 @@ if ($db_conn) {
                 $CASHAdminDAO->setQueryData($p_data);
                 
                 UserPayBack::AddExchange($member_idx,-$set_money,$CASHAdminDAO);
+                
+                $execute = new DayChargeEvent();
+                $execute->AddExchange($member_idx,-$set_money,$CASHAdminDAO);    
             }
             break;
     }

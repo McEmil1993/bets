@@ -18,9 +18,6 @@ $LSportsAdminDAO = new Admin_LSports_Bet_DAO(_DB_NAME_WEB);
 $db_conn = $LSportsAdminDAO->dbconnect();
 
 if ($db_conn) {
-        if(false === GameCode::checkAdminType($_SESSION,$LSportsAdminDAO)){
-           die();
-        }
 	$dividendPolicy = $LSportsAdminDAO->getLevelBetPolicy();
         $LSportsAdminDAO->dbclose();
 

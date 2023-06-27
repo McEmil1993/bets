@@ -321,8 +321,13 @@ if ($db_conn_common) {
     $bet_tot_holdem_bet = $db_dataHoldem[0]['total_bet_money'];
     $bet_tot_holdem_win = $db_dataHoldem[0]['total_win_money'];
 
-    $tot_distributor_point = distributorCalculateRecursive($COMMONDAO,$dist_idx);
+    $tot_distributor_point_given = distributorCalculateRecursive($COMMONDAO,$dist_idx);
 
+    $tot_distributor_point = totDistributorPoints($COMMONDAO);
+    $tot_distributor_money = totDistributorMoney($COMMONDAO);
+    $disMoney = disMoney($COMMONDAO);
+    $disPoint = disPoint($COMMONDAO);
+    
     $p_data['sql'] = "select * from total_system";
 
     $db_data_total_system = $COMMONDAO->getQueryData($p_data);
@@ -410,9 +415,34 @@ $result['tot_holdem_bet'] = number_format($bet_tot_holdem_bet);
 $result['tot_holdem_bet_win'] = number_format($bet_tot_holdem_win);
  
 // 총판지급액
+$result['tot_distributor_point_given'] = number_format($tot_distributor_point_given);
 $result['tot_distributor_point'] = number_format($tot_distributor_point);
+$result['tot_distributor_money'] = number_format($tot_distributor_money);
+$result['disMoney'] = number_format($disMoney);
+$result['disPoint'] = number_format($disPoint);
 
 echo json_encode($result, JSON_UNESCAPED_UNICODE);
+
+function totDistributorPoints($COMMONDAO){
+    $p_data['sql'] = "SELECT SUM(point) as dist_point FROM member WHERE u_business != 1";
+    $result = $COMMONDAO->getQueryData($p_data);
+    return $result[0]['dist_point'];
+}
+function totDistributorMoney($COMMONDAO){
+    $p_data['sql'] = "SELECT SUM(money) as dist_money FROM member WHERE u_business != 1";
+    $result = $COMMONDAO->getQueryData($p_data);
+    return $result[0]['dist_money'];
+}
+function disMoney($COMMONDAO){
+    $p_data['sql'] = "SELECT SUM(money) as disMoney FROM member WHERE idx = ".$_SESSION['member_idx'];
+    $result = $COMMONDAO->getQueryData($p_data);
+    return $result[0]['disMoney'];
+}
+function disPoint($COMMONDAO){
+    $p_data['sql'] = "SELECT SUM(point) as disPoint FROM member WHERE idx = ".$_SESSION['member_idx'];
+    $result = $COMMONDAO->getQueryData($p_data);
+    return $result[0]['disPoint'];
+}
 
 function distributorCalculateRecursive($COMMONDAO,$dist_idx){
     

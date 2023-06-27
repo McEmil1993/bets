@@ -53,6 +53,26 @@ if ($db_conn) {
     /* $p_data['db_srch_s_date'] = str_replace('/', '-', $p_data['srch_s_date']) . ' 00:00:00';
     $p_data['db_srch_e_date'] = str_replace('/', '-', $p_data['srch_e_date']) . ' 23:59:59'; */
 
+    $getdata['sql'] = "SELECT * FROM banners";
+    $getCheck_data = $MEMAdminDAO->getQueryData($getdata);
+    foreach ($getCheck_data as $value) {
+
+        $count['sql'] = " SELECT COUNT(*) AS C FROM banners WHERE status = 1 AND rank = '".$value['rank']."'";
+
+        $cnt = $MEMAdminDAO->getQueryData($count);
+
+        if ($cnt[0]['C'] == 1) {
+            // echo "<script>alert('".$cnt[0]['C']."')</script>";
+
+            $update_data['sql'] = "update banners set status = 0 where idx = '".$value['idx']."'";
+
+            $MEMAdminDAO->setQueryData($update_data);
+
+        }
+
+        // $cnt[0]['C']
+    }
+
     $p_data['sql'] = " SELECT COUNT(*) AS CNT FROM banners a WHERE a.idx > 0 ";
 
 
@@ -214,7 +234,7 @@ if ($db_conn) {
     $all_btn = "btn_blu";
     $node_btn = "btn_mdark";
 } ?>
-                                <div><a href="/board_w/banner_write.php" class="btn h30 <?= $all_btn ?>">배너 등록</a></div>
+                                <div><a href="/board_w/banner_write.php" class="btn h30 <?= $all_btn ?>">배너 등록 </a></div>
                             </div>
                         </div>
                     </form>            

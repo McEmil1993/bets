@@ -20,7 +20,7 @@
 			<div class="tab_wrap">
 				<ul>
 					<li><a href="javascript:fnLoadingMove('/web/member_info')"><span class="tab">내정보</span></a></li>
-					<li><a href="javascript:fnLoadingMove('/web/change_password')"><span class="tab">비밀번호변경</span></a></li>
+					<!-- <li><a href="javascript:fnLoadingMove('/web/change_password')"><span class="tab">비밀번호변경</span></a></li> -->
 					<li><a href="javascript:fnLoadingMove('/web/recommend_member')"><span class="tab">추천회원리스트</span></a></li>
 					<li><a href="javascript:fnLoadingMove('/web/point_history')"><span class="tab">포인트내역</span></a></li>
 					<li><a href="javascript:fnLoadingMove('/web/note')"><span class="tabon">쪽지함</span></a></li>
@@ -49,8 +49,7 @@
                         $db_content = nl2br(htmlspecialchars_decode($db_buff));
                     ?>
                     <tr class="list_tr" id="tr_<?= $item['idx'] ?>" onclick="readMsg(<?= $item['idx'] ?>, '<?= $item['read_yn'] ?>')">
-                        
-                        <td class="list1 " id="mb_sender" style="padding: 0 0 0 0;text-align: center;">
+                        <td class="list1" id="mb_sender" style="padding: 0 0 0 0;text-align: center;">
                             <?php
                                 if (isset($item['nick_name'])) {
                                     echo $item['nick_name'];
@@ -58,11 +57,9 @@
                                     echo '관리자';
                                 }
                             ?>
-                        </td>    
-                        <td class="list1">
-                        <?= $item['title']?>                                                                                     
                         </td>
-                        <td class="list1" id="reg_time_"><?= $item['reg_time'] ?></td>
+                        <td class="list1"><?= $item['title']?></td>
+                        <td class="list1"><?= $item['reg_time'] ?></td>
                         <td class="list1" id="read_time_<?= $item['idx'] ?>" ><?= $item['read_time'] ?></td>
                         <?php if ($item['read_yn'] == 'Y') { ?>
                             <td id="del_btn_<?= $item['idx'] ?>" width="5%" class="list1" onclick="delMsg(<?= $item['idx'] ?>)" >
@@ -86,37 +83,29 @@
                         <td colspan="5" class="list2">조회된 데이터가 없습니다.</td>
                     </tr>
                 <?php }?>                                           
-            </table>  
+            </table>
+
             <?php foreach ($messageList as $key => $item) : ?>
-                <?php 
-                    $db_buff = stripslashes($item['content']);
-                    $db_content = nl2br(htmlspecialchars_decode($db_buff));
-                ?>
+            <?php 
+                $db_buff = stripslashes($item['content']);
+                $db_content = nl2br(htmlspecialchars_decode($db_buff));
+            ?>
             <div class="memo_mobile tr_<?= $item['idx'] ?>"  onclick="readMsg(<?= $item['idx'] ?>, '<?= $item['read_yn'] ?>')">
-                    <h4 class="sender_name">
-                         <?php
-                                if (isset($item['nick_name'])) {
-                                    echo $item['nick_name'];
-                                } else {
-                                    echo '관리자';
-                                }
-                            ?>
-                    </h4>
-                    <span class="btn_del" style="position: absolute;right: 0px;top: 16px;" id="del_btn_<?= $item['idx'] ?>"   onclick="delMsg(<?= $item['idx'] ?>)">삭제</span></a>
-
-                    <p class="font06">  <?= $item['title']?></p>
-                    <p style="color: #999;">수신:<?= $item['reg_time'] ?>&nbsp;&nbsp; 확인:<?= $item['read_time'] ?></p>
-                 
-                    <div class="clickex_<?= $item['idx'] ?>" data-key="0" data-values="<?= $db_content ?>" style="display:none;">
-                
+                <h4 class="sender_name">
+                    <?php
+                        if (isset($item['nick_name'])) {
+                            echo $item['nick_name'];
+                        } else {
+                            echo '관리자';
+                        }
+                    ?>
+                </h4>
+                <span class="btn_del" style="position: absolute;right: 0px;top: 16px;" id="del_btn_<?= $item['idx'] ?>"   onclick="delMsg(<?= $item['idx'] ?>)">삭제</span></a>
+                <p class="font06">  <?= $item['title']?></p>
+                <p style="color: #999;">수신:<?= $item['reg_time'] ?>&nbsp;&nbsp; 확인:<?= $item['read_time'] ?></p>
+                <div class="clickex_<?= $item['idx'] ?>" data-key="0" data-values="<?= $db_content ?>" style="display:none;"></div> 
             </div>
-                    
-            </div>
-           
-                    
-            
             <?php endforeach; ?>
-
             <?php if($recommendAllCount> 0){ include('common/page_num.php'); }?>
         </div> 	
 	</div>
@@ -188,10 +177,7 @@
     // 쪽지 클릭
     function readMsg(message_idx, read_yn) {
         console.log('readMsg', message_idx, read_yn);
-        
-        // $('#tr_' + message_idx).attr("onclick", "readMsg(" + message_idx + ", 'Y')");
-        
-        // $('.clickex_'+ message_idx).attr('style','display:block');
+
         var key = $('.clickex_'+ message_idx).attr('data-key');
 
         if(key == "0"){
@@ -204,9 +190,6 @@
             $('.clickex_'+ message_idx).attr('data-key','0');
         }
 
-        
-
-        
         if ("Y" == read_yn) return;
 
         $.ajax({
@@ -220,7 +203,7 @@
             $('#read_time_' + message_idx).text(response['data']['time']);
             $('#del_btn_' + message_idx).html('<span class="btn1_2">삭제</span>');
             $('#del_btn_' + message_idx).attr("onclick", "delMsg(" + message_idx + ")");
-            $('#tr_' + message_idx).attr("onclick", "readMsg(" + message_idx + ", 'Y')");
+        //     $('#tr_' + message_idx).attr("onclick", "readMsg(" + message_idx + ", 'Y')");
         }).fail(function (error, response, p) {
             console.log(response['error']);
 

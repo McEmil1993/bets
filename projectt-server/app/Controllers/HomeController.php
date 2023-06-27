@@ -11,6 +11,7 @@ use CodeIgniter\API\ResponseTrait;
 use App\Util\PullOperations;
 use CodeIgniter\Log\Logger;
 use App\Util\CodeUtil;
+use App\Models\NotifySettingModel;
 
 class HomeController extends BaseController
 {
@@ -21,21 +22,18 @@ class HomeController extends BaseController
     	$chkMobile = CodeUtil::rtn_mobile_chk();
     	
     	$viewRoot = "PC" == $chkMobile ? 'web' : 'web';
-    
+    	
     	$LSportsFixturesModel = new LSportsFixturesModel();
     
         // 인기베팅데이터
         $mainModel = new MainModel();
         $memberModel = new MemberModel();
 
-        try{
-            $bestBetList = $this->getPplBetGame($mainModel);
-            $eventList = $this->getEvents($memberModel);
-            $noticeList = $this->getMainMenuBoard($mainModel);
-            $exchangeList = $this->getMainExchange($mainModel);
-        } catch (\mysqli_sql_exception $e) {
-
-        }
+        $bestBetList = $this->getPplBetGame($mainModel);
+        $eventList = $this->getEvents($memberModel);
+        $noticeList = $this->getMainMenuBoard($mainModel);
+        $exchangeList = $this->getMainExchange($mainModel);
+        $chargeList = $this->getChargeList($memberModel);
         
         // $nextGameList = $this->getNextGame($memberModel);
         /*if ($viewRoot == 'web') {
@@ -54,6 +52,8 @@ class HomeController extends BaseController
             , 'bannerList' => $bannerList
             , 'popupList' => $popupList
             , 'exchangeList' => $exchangeList
+            , 'chargeList' => $chargeList
+            // , 'nextGameList' => $nextGameList
         ]);
     }
 
@@ -65,6 +65,7 @@ class HomeController extends BaseController
         $eventList    = $this->getEvents($memberModel);
         $noticeList   = $this->getMenuBoard($memberModel);
         $exchangeList = $this->getExchange($memberModel);
+        // $chargeList = $this->getChargeList($memberModel);
         $bannerList   = $this->getBanners($memberModel);
         $popupList    = $this->getPopups($memberModel);
 
@@ -72,6 +73,7 @@ class HomeController extends BaseController
         $this->insertEvents($eventList, $mainModel);
         $this->insertMenuBoard($noticeList, $mainModel);
         $this->insertExchange($exchangeList, $mainModel);
+        // $this->insertCharge($chargeList, $memberModel);
         $this->insertBanners($bannerList, $mainModel);
         $this->insertPopups($popupList, $mainModel);
     }
@@ -165,7 +167,7 @@ class HomeController extends BaseController
 
         if (count($arrInsertData) > 0) {
             $sql = "INSERT INTO main_meh(id,nick_name,create_dt,money) VALUES " . implode(',', $arrInsertData);
-            $this->logger->info('------------- insertExchange sql ==>' . $sql);
+            //$this->logger->info('------------- insertExchange sql ==>' . $sql);
               
             $mainModel->db->query($sql);
         }
@@ -231,7 +233,7 @@ class HomeController extends BaseController
     	
     	$eventList = $model->db->query($sql)->getResultArray();
         return $eventList;
-    	/*$sql =
+    	$sql =
 	    	"select
 					idx
 					,title
@@ -262,7 +264,7 @@ class HomeController extends BaseController
 
         $exchangeList = $model->db->query($sql)->getResultArray();
 
-        return $exchangeList;*/
+        return $exchangeList;
     }
     
     public function getMenuBoard($model) {
@@ -301,6 +303,21 @@ class HomeController extends BaseController
 
         return $exchangeList;
     }
+
+    public function getChargeList($model) {
+        $sql = "select id, nick_name, meh.money, create_dt
+                     from
+                         member_money_charge_history as meh 
+                     join 
+                         member on meh.member_idx = member.idx 
+                     order by
+                         meh.idx desc
+                     limit 0,8";
+ 
+         $chargeList = $model->db->query($sql)->getResultArray();
+ 
+         return $chargeList;
+     }
 
     public function getMainEvents($model) {
         $sql = "select
@@ -520,6 +537,11 @@ class HomeController extends BaseController
     	$chkMobile = CodeUtil::rtn_mobile_chk();
     	
     	$viewRoot = "PC" == $chkMobile ? 'web' : 'web';
+
+        // Alert modifications
+        $NSModel = new NotifySettingModel;
+        $alert_id = $NSModel->getContentRow(18);
+        
     	
     	$memberModel = new MemberModel();
     	$str_sql_config = "SELECT set_type, set_type_val FROM t_game_config WHERE set_type = 'join_excluded_bank'"; // 머지 대상 아님
@@ -529,9 +551,12 @@ class HomeController extends BaseController
     	$bankList = $memberModel->db->query(
     			$sql
     			)->getResultArray();
+
+             
     	
     	return view("$viewRoot/join", [
-			'bankList' => $bankList
+			'bankList' => $bankList,
+            'alert_id' => $alert_id,
     	]);
     }
    

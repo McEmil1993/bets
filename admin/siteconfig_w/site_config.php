@@ -27,9 +27,7 @@ $set_type_arr = array("service_site", "service_charge", "service_exchange", "ser
     , "service_esports", "service_kiron", "service_hash", "odds_4_folder_bonus","service_classic","mini_service_eos_powerball","service_holdem");
 
 if($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$MEMAdminDAO)){
-        die();
-    }
+    
     $in_sql = "";
     
     foreach ($set_type_arr as $key => $val) {
@@ -601,16 +599,16 @@ function setConfigWeb(ptype=null,setidx=-1,txtobj=null,txtobj2=null) {
 		var radio_charge_f = document.querySelector('input[name = "con_charge"]:checked');
 		var radio_exchange_f = document.querySelector('input[name = "con_exchange"]:checked');
 		var radio_board_f = document.querySelector('input[name = "con_board"]:checked');
-                var radio_coin_charge_f = document.querySelector('input[name = "con_coin_charge"]:checked');
-                var radio_sports_f = document.querySelector('input[name = "con_sports"]:checked');
-                var radio_classic_f = document.querySelector('input[name = "con_classic"]:checked');
-                var radio_real_f = document.querySelector('input[name = "con_real"]:checked');
-                var radio_casino_f = document.querySelector('input[name = "con_casino"]:checked');
-                var radio_slot_f = document.querySelector('input[name = "con_slot"]:checked');
-                var radio_esports_f = document.querySelector('input[name = "con_esports"]:checked');
-                var radio_kiron_f = document.querySelector('input[name = "con_kiron"]:checked');
-                var radio_hash_f = document.querySelector('input[name = "con_hash"]:checked');
-                var radio_holdem_f = document.querySelector('input[name = "con_holdem"]:checked');
+        var radio_coin_charge_f = document.querySelector('input[name = "con_coin_charge"]:checked');
+        var radio_sports_f = document.querySelector('input[name = "con_sports"]:checked');
+        var radio_classic_f = document.querySelector('input[name = "con_classic"]:checked');
+        var radio_real_f = document.querySelector('input[name = "con_real"]:checked');
+        var radio_casino_f = document.querySelector('input[name = "con_casino"]:checked');
+        var radio_slot_f = document.querySelector('input[name = "con_slot"]:checked');
+        var radio_esports_f = document.querySelector('input[name = "con_esports"]:checked');
+        var radio_kiron_f = document.querySelector('input[name = "con_kiron"]:checked');
+        var radio_hash_f = document.querySelector('input[name = "con_hash"]:checked');
+        var radio_holdem_f = document.querySelector('input[name = "con_holdem"]:checked');
 
 		if(radio_site_f != null) {
                     w_site_f = radio_site_f.value;

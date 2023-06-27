@@ -389,7 +389,6 @@ class HoldemController extends BaseController {
 
         $sql = "UPDATE member SET money = money - ? WHERE idx = ?";
         $memberModel->db->query($sql, [$stack, $member->getIdx()]);
-
         //$this->logger->error(':::::::::::::::  call_back BUY_IN sql ' . $sql . ' param : ' . json_encode([$stack, $member->getIdx()]));
         # 로그 추가 시작
         $a_comment = $funcName . ' holdem buy in game ==> ' . ' [' . $game_num . '] ';
@@ -401,16 +400,11 @@ class HoldemController extends BaseController {
     private function buyOut($stack, $game_num, $member, $memberModel, $funcName) {
         $sql = "UPDATE member SET money = money + ? WHERE idx = ?";
         $memberModel->db->query($sql, [$stack, $member->getIdx()]);
-
-        $sql = "INSERT INTO tb_user_pay_back_info (member_idx, tot_bet_money) VALUES (?, ?) ON DUPLICATE KEY UPDATE tot_bet_money = tot_bet_money + ?";
-        $memberModel->db->query($sql, [$member->getIdx(), $stack, $stack]);
-
         //$this->logger->error(':::::::::::::::  call_back buyOut sql ' . $sql . ' param : ' . json_encode([$stack, $member->getIdx()]));
         # 로그 추가 시작
         $a_comment = $funcName . ' holdem buy out game ==> ' . ' [' . $game_num . '] ';
         $tLogCashModel = new TLogCashModel();
         $tLogCashModel->insertCashLog_mem_idx('', $member->getIdx(), HOLDEM_BUY_OUT, $game_num, $stack, $member->getMoney(), $a_comment);
-        $tLogCashModel->insertCashLog_mem_idx('', $member->getIdx(), HOLDEM_BUY_OUT, $game_num, $stack, $member->getMoney(), 'test');
     }
 
     private function roundEnd($before_stack, $after_stack, $betMoney, $winMoney, $game_num, $event, $member, $memberModel, $funcName, $json_data) {

@@ -26,7 +26,7 @@ $db_m_idx = $p_data['m_idx'];
 $accessLogRedis = new credis(REDIS_IP, REDIS_PORT, REDIS_PASSWORD, REDIS_DATABASE, REDIS_EXPIRE);
 if(!$accessLogRedis->connect()){
     //$UTIL->alertClose('회원정보가 없습니다.');
-    $UTIL->alertClose('레디스 연결 실패.');
+    echo '레디스 연결 실패.';
     exit;
 }
 

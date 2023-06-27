@@ -3,7 +3,7 @@ use App\Util\DateTimeUtil;
 use App\Util\StatusUtil;
 $imageBasePath = config(App::class)->IMAGE_SERVER.'/'.config(App::class)->imagePath;
 $p_data['num_per_page'] = SPORRS_BLOCK_COUNT;
-$p_data['page_per_block'] = 15; //_B_BLOCK_COUNT;
+$p_data['page_per_block'] = 10; //_B_BLOCK_COUNT;
 $p_data['start'] = ($page - 1) * $p_data['num_per_page'];
 
 $total_page = ceil($totalCnt / $p_data['num_per_page']);        // 페이지 수
@@ -19,7 +19,7 @@ $sportsId = isset($_GET['sports_id']) ? $_GET['sports_id'] : 0;
 $leagueId = isset($_GET['league_id']) ? $_GET['league_id'] : 0;
 
 if($sportsId != 0) $default_link .= '&sports_id='.$sportsId;
-//if($locationId != 0) $default_link .= '&location_id='.$locationId;
+
 $leftSports[0] = Array('id'=>0, 'name'=>'전체', 'count'=>0);
 $leftSports[SOCCER] = Array('id'=>SOCCER, 'name'=>'축구', 'count'=>0);
 $leftSports[BASKETBALL] = Array('id'=>BASKETBALL, 'name'=>'농구', 'count'=>0);
@@ -28,7 +28,13 @@ $leftSports[VOLLEYBALL] = Array('id'=>VOLLEYBALL, 'name'=>'배구', 'count'=>0);
 $leftSports[ICEHOCKEY] = Array('id'=>ICEHOCKEY, 'name'=>'아이스하키', 'count'=>0);
 $leftSports[ESPORTS] = Array('id'=>ESPORTS, 'name'=>'이스포츠', 'count'=>0);
 $leftSports[UFC] = Array('id'=>UFC, 'name'=>'UFC', 'count'=>0);
-$leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
+
+
+
+foreach ($listMenu as $keys) {
+    $leftSportsV1[$keys['id']] = Array('id'=>$keys['id'], 'name'=>$keys['display_name'], 'count'=>0,'image_path'=>$keys['image_path']);
+}
+$sportsImagePath = $imageBasePath.'/sports/';
 ?>
 
 
@@ -42,47 +48,94 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
 <!-- <div id="wrap"> -->
 <?= view('/web/common/header_wrap') ?>
 <!-- <input type="hidden" id="sports_id"> -->
+
+<div class="title_wrap"><div class="title">스포츠</div></div>
+<!-- 팝업창 -->
+<div id="gm_pop1" class="gm_popup_none">
+	<div class="gm_popup_wrap cf">   
+		<div class="gm_close_box"><a href="#" class="gm_pop1_close"><img src="/assets_w/images/m_close.png" width="50"></a></div>
+		<div class="gm_popup_box">
+            <div class="gm_popup">
+                <div class="gm_title1">보유중인 아이템</div>
+				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0" class="gm_table">
+					<tr>
+						<td width="33.3333%" class="gm_table_title">아이템명</td>
+						<td width="33.3333%" class="gm_table_title">개수</td>
+						<td width="33.3333%" class="gm_table_title">사용하기</td>
+					</tr>
+                    <?php foreach ($myItemList as $key => $item): ?>
+					<tr>
+						<td><?=$item['name']?></td>
+						<td><span class="font06"><?=$item['cnt']?></span>개</td>
+						<td><a onclick="fnClickItem(<?=$item['idx']?>,'<?=$item['name']?>', '<?=$item['item_value']?>')"><span class="gm_popup_btn1">사용</span></a></td>
+					</tr>
+					<?php endforeach; ?>
+                    <?php if(count($myItemList) == 0) { ?>
+                    <tr>
+                        <td> - </td>
+                        <td> - </td>
+                        <td> - </td>
+                    </tr>
+                    <?php } ?>
+					<!-- <tr>
+						<td>20% 환급패치</td>
+						<td><span class="font06">1</span>개</td>
+						<td><a href="#"><span class="gm_popup_btn1">사용</span></a></td>
+					</tr> -->
+				</table>
+                <div class="gm_title2">사용할 아이템을 <span class="font06">클릭</span>해주세요.</div>
+            </div>      
+		</div>
+	</div>
+</div>
+
 <div id="sports_wide_wrap">
     <div class="sports_wide_left">
         <div class="search">
             <ul>
                 <li>
-                    <input name="league_name" id="league_name" type="text" class="input_search" placeholder="국가 및 팀명"></li>
+                    <input name="league_name" id="league_name" type="text" class="input_search" placeholder="국가 및 리그명"></li>
                 <li style="float:right;"><a onclick="searchLeague()"><span class="search_btn">검색</span></a></li>
             </ul>
         </div>
         <div class="con_box_left">
             <ul class="dropdown">
-                <?php foreach ($leftSports as $key => $value) {
+ 
+                <?php foreach ($leftSportsV1 as $key => $value) {
+                    
                     $arrLeagueCheck = array();
                     if(isset($sports[$key]))
-                        $sport= $sports[$key];
+                        $sport = $sports[$key];
                     else
-                        $sport= $value;
+                        $sport = $value;
                 ?>
                 <li class="menu1">
-                    <a href="javascript:void(0);">
-                        <div class="left_list1" id="left_menu_<?=$sport['id']?>">
+                    <a style="display:none">
+                        <div class="left_list1" id="left_menu_<?=$value['id']?>">                     
+                        </div>
+                    </a>
+                    <a href="/web/sports">
+                        <div class="left_list1" id="left_menu_<?=$value['id']?>">
                             <span class="menu_left">
-                                <img src="<?=$imageBasePath.'/sports/'?>/icon_game<?=$sport['id']?>.png" width="18">&nbsp;&nbsp;&nbsp;<?=$sport['name'].''?>
+                                <img src="<?= ($value['image_path'] != "")? $sportsImagePath.$value['image_path'] : $sportsImagePath.'icon_game'.$value['id'].'.png'; ?>" width="24">&nbsp;&nbsp;&nbsp;<?=$value['name'].''?>
                             </span>
-                            <span class="m enu_right">
-                                <span class="menu_right_box" id="sports_count_<?=$sport['id']?>"><?= isset($sports[$sport['id']]['count']) ? $sports[$sport['id']]['count'] : 0 ?></span>
+                            <span class="menu_right">
+                                <span class="menu_right_box" id="sports_count_<?=$value['id']?>"><?= isset($sports[$value['id']]['count']) ? $sports[$value['id']]['count'] : 0 ?></span>
                             </span>
                         </div>
                     </a>
-                    <?php if($sports[$sport['id']]['count'] ?? 0 > 0){ 
-                        $totalFixtureCnt = ($totalFixtureCnt ?? 0) + $sports[$sport['id']]['count'];
+                    <?php if($sports[$value['id']]['count'] > 0){ 
+                        $totalFixtureCnt = ($totalFixtureCnt ?? 0) + $sports[$value['id']]['count'];
                     ?>
                         <ul style="display: none;">
                         <li>
-                        <?php foreach ($locationGameList[$sport['id']]['location_all'] as $locationKey => $locationData){ 
+                        <?php foreach ($locationGameList[$value['id']]['location_all'] as $locationKey => $locationData){ 
                                 foreach ($locationData as $llKey => $leagueData){
                                     // 이미 출력한 리그는 제외
                                     if(in_array($leagueData['fixture_league_id'], $arrLeagueCheck)) continue;
                                     $arrLeagueCheck[] = $leagueData['fixture_league_id'];
                         ?>
-                            <a href="javascript:leftLeagueItemClick(<?=$sport['id'].''?>, <?= $leagueData['fixture_league_id'] ?>)"><span class="left_list1_in"><?= $leagueData['fixture_league_name'] ?> <span class="menu_right_box"><?= $locationFixtureCount[$sport['id']][$leagueData['fixture_league_name']] ?></span></span></a>
+                            <a href="javascript:leftLeagueItemClick(<?=$value['id'].''?>, <?= $leagueData['fixture_league_id'] ?>)"><span class="left_list1_in"><?= $leagueData['fixture_league_name'] ?> <span class="menu_right_box"><?= $locationFixtureCount[$value['id']][$leagueData['fixture_league_name']] ?></span></span></a>
                         <?php 
                                  }
                                 }
@@ -91,7 +144,9 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
                     </ul>
                     <?php } ?>
                 </li>
+                
                 <?php } ?>
+                
             </ul>
         </div>          
 		<!--<script src="js/tendina.min.js"></script>-->          
@@ -124,9 +179,6 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
 		</script>   	
 
 
-
-
-        
     </div><!-- sports_wide_left -->
     
     <div class="sports_wide_center">
@@ -151,20 +203,31 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
             </div>       -->
             <div class="sports_list_title3">
             	<ul>
-                    <li><a href="javascript:sports_select(0)"><span id="sports_img_0" class=""><img src="/assets_w/images/icon01.png" width="18">&nbsp; 전체</span></a></li>
-                    <li><a href="javascript:sports_select(6046)"><span id="sports_img_6046" class=""><img src="/assets_w/images/icon02.png" width="18">&nbsp; 축구</span></a></li>
-                    <li><a href="javascript:sports_select(48242)"><span id="sports_img_48242" class=""><img src="/assets_w/images/icon03.png" width="18">&nbsp; 농구</span></a></li>                    
-                    <li><a href="javascript:sports_select(154914)"><span id="sports_img_154914" class=""><img src="/assets_w/images/icon04.png" width="18">&nbsp; 야구</span></a></li>
-                    <li><a href="javascript:sports_select(154830)"><span id="sports_img_154830" class=""><img src="/assets_w/images/icon05.png" width="18">&nbsp; 배구</span></a></li>
-                    <li><a href="javascript:sports_select(35232)"><span id="sports_img_35232" class=""><img src="/assets_w/images/icon06.png" width="18">&nbsp; 아이스하키</span></a></li>
-                    <li><a href="javascript:sports_select(687890)"><span id="sports_img_687890" class=""><img src="/assets_w/images/icon07.png" width="18">&nbsp; e스포츠</span></a></li> 
-                    <li><a href="javascript:sports_select(154919)"><span id="sports_img_154919" class=""><img src="/assets_w/images/icon08.png" width="18">&nbsp; UFC</span></a></li>
-                    <li><a href="javascript:sports_select(54094)"><span id="sports_img_54094" class=""><img src="/assets_w/images/icon11.png" width="18">&nbsp; 테니스</span></a></li>
+                
+                <?php foreach ($leftSportsV1 as $keys) {
+
+                    
+                ?>
+              
+                <li><a href="javascript:sports_select(<?= $keys['id']?>)"><span id="sports_img_<?= $keys['id']?>" class=""><img src="<?= ($keys['image_path'] != "")? $sportsImagePath.$keys['image_path'] : $sportsImagePath.'icon_game'.$keys['id'].'.png'; ?>" width="24">&nbsp; <?= $keys['name']?></span></a></li>
+
+                <?php
+                }
+                ?>
+                    
+                    <!-- <li><a href="javascript:sports_select(0)"><span id="sports_img_0" class=""><img src="/assets_w/images/icon01.png" width="20">&nbsp; 전체</span></a></li>
+                    <li><a href="javascript:sports_select(6046)"><span id="sports_img_6046" class=""><img src="/assets_w/images/icon02.png" width="20">&nbsp; 축구</span></a></li>
+                    <li><a href="javascript:sports_select(48242)"><span id="sports_img_48242" class=""><img src="/assets_w/images/icon03.png" width="20">&nbsp; 농구</span></a></li>                    
+                    <li><a href="javascript:sports_select(154914)"><span id="sports_img_154914" class=""><img src="/assets_w/images/icon04.png" width="20">&nbsp; 야구</span></a></li>
+                    <li><a href="javascript:sports_select(154830)"><span id="sports_img_154830" class=""><img src="/assets_w/images/icon05.png" width="20">&nbsp; 배구</span></a></li>
+                    <li><a href="javascript:sports_select(35232)"><span id="sports_img_35232" class=""><img src="/assets_w/images/icon06.png" width="20">&nbsp; 아이스하키</span></a></li>
+                    <li><a href="javascript:sports_select(687890)"><span id="sports_img_687890" class=""><img src="/assets_w/images/icon07.png" width="20">&nbsp; 이스포츠</span></a></li>
+                    <li><a href="javascript:sports_select(154919)"><span id="sports_img_154919" class=""><img src="/assets_w/images/icon08.png" width="20">&nbsp; UFC</span></a></li> -->
                 </ul>
             </div>
             <!-- <div class="sports_list_title4"></div> -->
         </div>
-        <div class="sports_s_left_sports_s_right_wrap">
+        <div class="sports_s_left_sports_s_right_wrap" style="min-height:600px;">
             <div class="sports_s_left">
                 <!-- <div class="bet_title_wrap">
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -184,7 +247,7 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
                     </table>
                 </div> -->
 
-                <div class="sports_list_bonus">
+                <!-- <div class="sports_list_bonus">
                     <ul>
                         <li class="odds_3_folder_bonus">
                             <span class="bonus1">3폴더</span>이상
@@ -199,7 +262,7 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
                             <div class="bonus_txt"><?= $arr_bonus['odds_7_folder_bonus']; ?></div>
                         </li>
                     </ul>
-                </div>
+                </div> -->
                 
                 <div class="dropdown2">
                 <?php
@@ -215,8 +278,9 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
 
                 // echo json_encode($gameList);
                 // exit;
-                
+                $prev_league = "";
                 foreach ($gameList as $timeKey => $sports_list) {
+                    
                     // 빈배열이 섞여들어온다. 제외한다.
                     if($timeKey == ''){
                         continue;
@@ -300,6 +364,9 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
                     $display_status = $mainGame['display_status'];
 
                     // 리그이미지가 없다.
+
+                    
+
                     $leagueImagePath = $imageBasePath.'/league/'.$mainGame['fixture_league_image_path'];
                     if(strpos($mainGame['fixture_league_image_path'], 'flag') !== false){
                         $leagueImagePath = $mainGame['fixture_league_image_path'];
@@ -308,7 +375,8 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
                     $currentTime = date('Y-m-d H:i:s');
                     //$startTime = date($mainGame['fixture_start_date'], strtotime("-" . 10 . " minutes"));
                     $startTime = date("Y-m-d H:i:s", strtotime($mainGame['fixture_start_date'] . "-" . 10 . " minutes"));
-                    $leagueType = $mainGame['fixture_league_id'];
+                    //$leagueType = $mainGame['fixture_league_id'];
+                    $leagueType = $mainGame['fixture_league_name'];
                     $sports_id = $mainGame['fixture_sport_id'];
                     
                     switch($sports_id){
@@ -331,10 +399,6 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
                             $leagueLine= '#ff5a7f';
                             break;
                         case 154919:
-                            $leagueLine= '#ff5a7f';
-                            break;
-                        case 54094:
-                            $leagueLine= '#ff5a7f';
                             break;
                         default :
                             $leagueLine= '';
@@ -358,110 +422,101 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
 
 
                     <!-- $beforeLeagueType = $leagueType; -->
+                   
                     <?php if ( ($leagueType != $beforeLeagueType) || ($sports_id != $beforeSports_id) )  {   // 리그 타이틀 ?>
-                        <div class="sport_title">
-                            <div class="sport_league">
-                                <img src="<?= $leagueImagePath ?>" width="28" onError="this.src='/images/flag_eng/international.png'">
-                                <img src="/assets_w/images/line.png">
-                                <img src="<?=$imageBasePath.'/sports/'?>icon_game<?= $mainGame['fixture_sport_id'] ?>.png" width="18">
-                                <img src="/assets_w/images/line.png">
-                                <?= $mainGame['fixture_league_name'] ?>
-                            </div>
-                            <div class="sport_title_time">
-                                <span class="font04"><?= $mainGame['markets_name_origin'] ?></span>
-                                <img src="/assets_w/images/line.png">
-                                <?=$fixture_date?> <?=$fixture_time?>
-                            </div>
-                        </div>
+                        
                     <?php } ?>
 
+                    <!-- <li class="sport_title_list bet_list1_wrap bettingInfo" id="fixture_row_<?=$mainGame['fixture_id']?>"> -->
+                    <li class="sport_title_list bettingInfo" id="fixture_row_<?=$mainGame['fixture_id']?>">
+                        <a href="javascript:void(0);">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <?php                
+                                //if($prev_league != $leagueType.$sports_id){
+                                if($prev_league != $leagueImagePath.$mainGame['fixture_start_date'].$sports_id){
+                             ?>
+                            <tr>
+                                <td colspan="2" style="padding: 9px;">
+                                    <img src="<?= $leagueImagePath ?>" width="30"> 
+                                    <!-- $leftSportsV1 -->
+                                    <?php
+                                    $image_path = "";
+                                    foreach ($leftSportsV1 as $keys) {
 
-                        <div class="sport_title_list bet_list1_wrap bettingInfo" id="fixture_row_<?=$mainGame['fixture_id']?>">
-                            <ul onClick="openBetData(<?=$mainGame['fixture_id']?>)">
-                                        <li class="sport_time bet1">
-                                            <!-- <?//=$fixture_date?> (<?//=DateTimeUtil::getWeekDay($mainGame['fixture_start_date'])?>) <?//=$fixture_time?> -->
-                                            <?=$fixture_date?> <?=$fixture_time?>
-                                        </li>                                        
-                                        <!-- 승무패 배당부분 -->
-                                        <?php if((1 == $mainGame['bet_status'] && 1 == $display_status) || $currentTime > $startTime){ ?>
-                                            <li class="sport_team1 bet_team1 odds_btn" data-bet-status="<?= $mainGame['bet_status']?>" data-index="<?= $key ?>" data-odds-type="win" 
-                                                                        data-bet-id="<?= $mainGame['win_bet_id'] ?>" data-bet-price="<?= $mainGame['win'] ?>"
-                                                                        data-td-cell="<?= $mainGame['win_bet_id'].'_'.$mainGame['fixture_start_date'] ?>" 
+                                        if($keys['id'] == $mainGame['fixture_sport_id']){
+                                            if($keys['image_path'] != ""){
+                                                $image_path = $sportsImagePath.$keys['image_path'];
+                                            }else{
+                                                $image_path = $sportsImagePath.'icon_game'.$keys['id'].'.png';
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                    <img src="<?=$image_path?>" width="24" style="margin: 0 8px;">
+                                    <span class="sport_title_league"><?= $mainGame['fixture_league_name'] ?></span>
+                                    <span class="sport_title_time"><?=$fixture_date?> (<?=DateTimeUtil::getWeekDay($mainGame['fixture_start_date'])?>) <?=$fixture_time?></span> 
+                            
+                                </td>
+                            </tr>
+                            <?php  } $prev_league =  $leagueImagePath.$mainGame['fixture_start_date'].$sports_id ?>
+                                                    
+                            <tr>
+                              
+                                <!-- 승무패 배당부분 -->
+                                <?php if((1 == $mainGame['bet_status'] && 1 == $display_status) || $currentTime > $startTime){ ?>
+                                    <td class="sport_team1 bet_team1 odds_btn" data-bet-status="<?= $mainGame['bet_status']?>" data-index="<?= $key ?>" data-odds-type="win" 
+                                                                data-bet-id="<?= $mainGame['win_bet_id'] ?>" data-bet-price="<?= $mainGame['win'] ?>"
+                                                                data-td-cell="<?= $mainGame['win_bet_id'].'_'.$mainGame['fixture_start_date'] ?>" 
+                                                                data-markets_name="<?= $markets_name?>" data-markets_name_origin="<?= $markets_name_origin?>" 
+                                                                data-markets_display_name="<?= $markets_display_name?>" data-bet-name="<?= $mainGame['win_bet_name'] ?>" data-bet-base-line="<?=$mainGame['bet_base_line'] ?>">
+                                        <span class="team_l" style="padding-right: 29%;"><?=$mainGame['fixture_participants_1_name']?></span>
+                                        <span class="team_r server_betPrice" style=" position: absolute;padding-left: 51px;"><?= $mainGame['win'] ?></span></td>
+                                <?php }else{ ?>
+                                    <td class="sport_team1 bet_team1">
+                                        <span class="team_l" style="padding-right: 29%;"><?=$mainGame['fixture_participants_1_name']?></span>
+                                        <span class="team_r" style=" position: absolute;padding-left: 51px;"><img src="\images\icon_lock.png" alt="lock" width="13"></td>
+                                <?php } ?>
+                                
+                                <!-- 무 -->
+                                <?php if((1 == $mainGame['bet_status'] && 1 == $display_status) || $currentTime > $startTime){ ?>
+                                    <?php if(isset($mainGame['draw'])){ ?>
+                                        <td class="sport_tie bet_vs odds_btn" data-bet-status="<?= $mainGame['bet_status']?>" data-index="<?= $key ?>" data-odds-type="draw" 
+                                                                    data-bet-id="<?= $mainGame['draw_bet_id'] ?>" data-bet-price="<?= $mainGame['draw'] ?>"
+                                                                    data-td-cell="<?= $mainGame['draw_bet_id'].'_'.$mainGame['fixture_start_date'] ?>" 
+                                                                    data-markets_name="<?= $markets_name?>" data-markets_name_origin="<?= $markets_name_origin?>" 
+                                                                    data-markets_display_name="<?= $markets_display_name?>" data-bet-name="<?= $mainGame['draw_bet_name'] ?>" data-bet-base-line="<?=$mainGame['bet_base_line'] ?>" >
+                                        <span class="bet_vs_rate server_betPrice"><?=$mainGame['draw']?></span></td>
+                                    <?php }else{ ?>
+                                        <td class="sport_tie bet_vs" style="cursor: default;"><span>VS</span></td>
+                                    <?php } ?>
+                                <?php }else{ ?>
+                                    <td class="sport_tie bet_vs"><img src="\images\icon_lock.png" alt="lock" width="13"></td>
+                                <?php } ?>
+                                
+                                <!-- 패 -->
+                                <?php if((1 == $mainGame['bet_status'] && 1 == $display_status) || $currentTime > $startTime){ ?>
+                                    <td class="sport_team2 bet_team2 odds_btn" data-bet-status="<?= $mainGame['bet_status']?>" data-index="<?= $key ?>" data-odds-type="lose" 
+                                                                        data-bet-id="<?= $mainGame['lose_bet_id'] ?>" data-bet-price="<?= $mainGame['lose'] ?>"
+                                                                        data-td-cell="<?= $mainGame['lose_bet_id'].'_'.$mainGame['fixture_start_date'] ?>" 
                                                                         data-markets_name="<?= $markets_name?>" data-markets_name_origin="<?= $markets_name_origin?>" 
-                                                                        data-markets_display_name="<?= $markets_display_name?>"  data-bet-name="<?= $mainGame['win_bet_name'] ?>">
-                                                <span class="team_l"><?=$mainGame['fixture_participants_1_name']?></span>
-                                                <span class="team_r server_betPrice">
-                                                    <!-- <img src="/assets_w/images/arr1.gif"> -->
-                                                    <?= $mainGame['win'] ?>
-                                                </span>
-                                            </li>
-                                        <?php }else{ ?>
-                                            <li class="sport_team1 bet_team1">
-                                                <span class="team_l"><?=$mainGame['fixture_participants_1_name']?></span>
-                                                <span class="team_r"><img src="\images\icon_lock.png" alt="lock" width="13">
-                                            </li>
-                                        <?php } ?>
-                                        
-                                        <!-- 무 -->
-                                        <?php if((1 == $mainGame['bet_status'] && 1 == $display_status) || $currentTime > $startTime){ ?>
-                                            <?php if(isset($mainGame['draw'])){ ?>
-                                                <li class="sport_tie bet_vs odds_btn" data-bet-status="<?= $mainGame['bet_status']?>" data-index="<?= $key ?>" data-odds-type="draw" 
-                                                                            data-bet-id="<?= $mainGame['draw_bet_id'] ?>" data-bet-price="<?= $mainGame['draw'] ?>"
-                                                                            data-td-cell="<?= $mainGame['draw_bet_id'].'_'.$mainGame['fixture_start_date'] ?>" 
-                                                                            data-markets_name="<?= $markets_name?>" data-markets_name_origin="<?= $markets_name_origin?>" 
-                                                                            data-markets_display_name="<?= $markets_display_name?>" data-bet-name="<?= $mainGame['draw_bet_name'] ?>">
-                                                    <span class="bet_font1 server_betPrice"><?=$mainGame['draw']?></span>
-                                                </li>
-                                            <?php }else{ ?>
-                                                <li class="sport_tie bet_vs">
-                                                    <span>VS</span>
-                                                </li>
-                                            <?php } ?>
-                                        <?php }else{ ?>
-                                            <li class="sport_tie bet_vs"><img src="/assets_w/images/icon_lock.png" alt="lock" width="13"></li>
-                                        <?php } ?>
-                                        
-                                        <!-- 패 -->
-                                        <?php if((1 == $mainGame['bet_status'] && 1 == $display_status) || $currentTime > $startTime){ ?>
-                                            <li class="sport_team2 bet_team2 odds_btn" data-bet-status="<?= $mainGame['bet_status']?>" data-index="<?= $key ?>" data-odds-type="lose" 
-                                                                                data-bet-id="<?= $mainGame['lose_bet_id'] ?>" data-bet-price="<?= $mainGame['lose'] ?>"
-                                                                                data-td-cell="<?= $mainGame['lose_bet_id'].'_'.$mainGame['fixture_start_date'] ?>" 
-                                                                                data-markets_name="<?= $markets_name?>" data-markets_name_origin="<?= $markets_name_origin?>" 
-                                                                                data-markets_display_name="<?= $markets_display_name?>" data-bet-name="<?= $mainGame['lose_bet_name'] ?>">
-                                                <span class="team_l server_betPrice">
-                                                    <?= $mainGame['lose'] ?>
-                                                    <!-- <img src="/assets_w/images/arr2.gif"> -->
-                                                </span>
-                                                <span class="team_r">
-                                                    <?=$mainGame['fixture_participants_2_name']?>
-                                                </span>
-                                            </li>
-                                        <?php }else{ ?>
-                                            <li class="sport_team2 bet_team2">
-                                                <span class="team_l"><img src="/assets_w/images/icon_lock.png" alt="lock" width="13"></span>
-                                                <span class="team_r"><?=$mainGame['fixture_participants_2_name']?></span>
-                                        </li>
-                                        <?php } ?>
-                                        <li class="sport_state bet_max bet8">
-                                            <span class="">
-                                                <?php
-                                                    if ($mainGame['leagues_m_bet_money'] > 10000) {
-                                                        echo number_format($mainGame['leagues_m_bet_money'] / 10000) . '만';
-                                                    } else {
-                                                        echo number_format($mainGame['leagues_m_bet_money']);
-                                                    }
-                                                ?>
-                                            </span>
-                                        </li>
-                                        <li class="sport_more bet7">+ <?= $betCount ?></li>
-                                    <!-- </tr>
-                                </table> -->
+                                                                        data-markets_display_name="<?= $markets_display_name?>" data-bet-name="<?= $mainGame['lose_bet_name'] ?>" data-bet-base-line="<?=$mainGame['bet_base_line'] ?>">
+                                        <span class="team_l server_betPrice" style="padding-right: 29%;"><?= $mainGame['lose'] ?></span>
+                                        <span class="team_r" style=" position: absolute;padding-left: 51px;"><?=$mainGame['fixture_participants_2_name']?></span></td>
+                                <?php }else{ ?>
+                                    <td class="sport_team2 bet_team2">
+                                        <span class="team_l" style="padding-right: 29%;"><img src="\images\icon_lock.png" alt="lock" width="13"></span>
+                                        <span class="team_r" style=" position: absolute;padding-left: 51px;"><?=$mainGame['fixture_participants_2_name']?></span></td>
+                                <?php } ?>
+                              
+                                <td class="sport_more bet7" onClick="openBetData(<?=$mainGame['fixture_id']?>)">+ <?= $betCount ?></td>
+                            </tr>
+                        </table>
+                        <div class="sports_s_right">
+                            <ul class="dropdown3">
                             </ul>
-                            <div class="sports_s_right">
-                                <ul class="dropdown3">
-                                </ul>
-                            </div>
-                        </div><!-- .sport_title_list -->
+                        </div>
+                    </a>
+                </li>
 
     <!-- 잠김표시 처리 -->
     <!-- 승무패 배당부분 -->
@@ -480,11 +535,6 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
                 </div><!-- .dropdown2 -->
                                             
             </div><!-- sports_s_left -->   
-                <!-- 더보기 -->
-            <!-- <div class="sports_s_right">
-                    <ul class="dropdown3">
-                    </ul>
-            </div> -->
         </div><!-- .sports_s_left_sports_s_right_wrap -->
     </div><!-- sports_wide_center -->
 	<!-- 12/8 라이브스포츠 아코디언 js 수정 -->
@@ -533,7 +583,6 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
     
     <div class="sports_wide_right">
         <div class="cart_wrap">
-
             <div class="btn__cart_close">
                 <a href="#"><img src="/assets_w/images/m_close.png" width="50"></a>
             </div>
@@ -541,16 +590,16 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
             <div class="sports_cart_title" id="sports_cart_title">
                 BETTING SLIP
                 <span class="sports_cart_title_right">
-                    <span class="sports_cart_title2">배당변경 자동적용</span>
+                    <span class="sports_cart_title2">배당변경 자동적용 &nbsp;&nbsp;</span>
                     <a href="javascript:void(0);">
                         <img src="<?=$is_betting_slip=='ON'?'/assets_w/images/cart_fix1.png':'/assets_w/images/cart_fix2.png'?>" onClick="setBettingSlip(this, '<?=$is_betting_slip?>')">
                     </a>
                 </span>
             </div>
 
-            <!-- <div class="font06" style="width: 100%; display:inline-block; text-align: center; padding: 5px 0; background:#2c2c2c;">
-                보너스폴더는 자동적용됩니다.<br>(3폴더 1.04 , 4폴더 1.06 , 5폴더 이상 1.08)
-            </div> -->
+            <div class="font05" style="width: 100%; display:inline-block; text-align: center; padding: 10px 0; <?php if($arr_bonus['service_bonus_folder'] == 'N'){echo 'display:none';}?>">
+                보너스폴더는 자동적용됩니다.<br>(3폴더 <?= $arr_bonus['odds_3_folder_bonus']; ?> , 4폴더  <?= $arr_bonus['odds_4_folder_bonus']; ?> , 5폴더 이상  <?= $arr_bonus['odds_5_folder_bonus']; ?>)
+            </div>
 
 
 
@@ -570,7 +619,7 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
                 </div>
             </div>
 
-            <div style="width: 100%; display: inline-block; padding:5px; background:#2c2c2c;">
+            <div style="width: 100%; display: inline-block; padding:5px;">
                 <a href="javascript:void(0);">
                     <span class="sports_btn2 waste_btn">
                         <img src="/assets_w/images/waste.png" alt="bet_delete" width="28">
@@ -598,7 +647,7 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
                             <td class="sports_cart_style1">베팅금액 <span class="sports_cart_style2"><input class="input3" id="betting_slip_money" style="text-align:right; width:150px;" value="0"></span></td>
                         </tr>
                         <tr>
-                            <td class="sports_cart_style1">예상당첨금 <span class="sports_cart_style2 will_win_money">0</span></td>
+                            <td class="sports_cart_style1">예상적중금 <span class="sports_cart_style2 will_win_money">0</span></td>
                         </tr>
                         <!--<tr>
                             <td class="sports_cart_style1">베팅금액 <span class="sports_cart_style2"><input class="input3" style="text-align:right; width:150px;"></span></td>
@@ -625,24 +674,25 @@ $leftSports[TENNIS] = Array('id'=>TENNIS, 'name'=>'테니스', 'count'=>0);
                         <!-- <tr>
                             <td width="100%" colspan="3"><a href="javascript:void(0);" class="gm_pop1_open"><span class="sports_btn3">G머니 사용</span></a></td>
                         </tr> -->
-
                         <!-- G-money 효과 적용시 -->
-                        <!-- <tr id="selectItemList" style="display: none">
-                            <td width="100%" colspan="3"> <span class="sports_cart_bet2" for="g_money_eff">★ <span id="clickItemName">20% 환급패치</span> ★ <a onclick="fnInitItem()"><span class="sports_cart_bet_img"><img src='/assets_w/images/cart_close.png'></span></span></a></td>
+
+                        <tr>
+                            <td width="100%" colspan="3" style="padding-top:3px;" align="center"><a href="javascript:void(0);" class="gm_pop1_open"><span class="cart_btn1">골드템 사용</span></a></td>
+                        </tr>
+                        <tr id="selectItemList" style="display: none">
+                            <td width="100%" colspan="3"> <span class="sports_cart_bet2" for="g_money_eff">★ <span id="clickItemName">20% 환급패치</span> ★ <a onclick="fnInitItem()"><span class="sports_cart_bet_img2"><img src='/assets_w/images/cart_close.png'></span></span></a></td>
                             <input type="hidden" id="itemId" value="">
                             <input type="hidden" id="itemValue" value="">
-                        </tr> -->
-                        <!-- G-money 효과 적용시 -->
-                                        
+                        </tr>
                         <tr>
-                            <td width="100%" colspan="3" style="padding-top:5px;"><a href="javascript:void(0);"><span class="sports_btn1">베팅하기</span></a></td>
-                        </tr>                                      
+                            <td width="100%" colspan="3" style="padding-top:3px;"><a href="javascript:void(0);"><span class="sports_btn1">베팅하기</span></a></td>
+                        </tr>
                     </table>
                 </div>
             </div>
         </div><!-- cart_wrap -->
         <div id="domain_pc">
-            <a target="_blank" href="https://xn--tl3bs23a.com/"><img src="/images/bets_banner_pc.jpg"></a>
+            <a target="_blank" href="https://불스주소.com/"><img src="/assets_w/images/bulls_domain.png"></a>
         </div>
         <div class="cart_bg"></div>
     </div><!-- sports_wide_right -->
@@ -729,11 +779,19 @@ let isMobile = mobileCheck(); // 1-모바일
 let folderType = 'D'; // 'S': 싱글, 'D': 다폴더
 let totalOdds = 0;
 let service_bonus_folder = '<?= $arr_bonus['service_bonus_folder']; ?>';
+<?php if($arr_bonus['service_bonus_folder'] == 'Y') { ?>
 let odds_3_folder_bonus = <?= $arr_bonus['odds_3_folder_bonus']; ?>;
 let odds_4_folder_bonus = <?= $arr_bonus['odds_4_folder_bonus']; ?>;
 let odds_5_folder_bonus = <?= $arr_bonus['odds_5_folder_bonus']; ?>;
 let odds_6_folder_bonus = <?= $arr_bonus['odds_6_folder_bonus']; ?>;
 let odds_7_folder_bonus = <?= $arr_bonus['odds_7_folder_bonus']; ?>;
+<?php } else { ?>
+let odds_3_folder_bonus = 1;
+let odds_4_folder_bonus = 1;
+let odds_5_folder_bonus = 1;
+let odds_6_folder_bonus = 1;
+let odds_7_folder_bonus = 1;
+<?php } ?>
 let limit_folder_bonus = <?= $arr_bonus['limit_folder_bonus']; ?>;
 let isAlreadyBetting = false;
 let betList = <?php echo json_encode($gameList) ?>;
@@ -781,21 +839,11 @@ $(document).ready(function(){
     choiceSportsImage(<?=$sportsId?>);
 
     fnSortBetting();
-    // 세션에 저장된 베팅슬립이 있으면 출력해준다.total_odds
+    // 세션에 저장된 베팅슬립이 있으면 출력해준다.
     displayBetSlip();
     betMaxCheck();
     changeWillWinMoney();
     
-    $(document).on("click",".notify-close-btn , .odds_btn",function(e){
-        e.preventDefault();
-        setTimeout(() => {
-            let backOdds = $('.total_odds').text();
-            console.log(backOdds)
-            if(backOdds == 0 || isNaN(backOdds)){
-                $('.total_odds').html(0);
-            }
-        },50)
-    })
     // 좌측 펼쳐짐 처리
     $('#left_menu_'+<?=$sportsId?>).trigger('click');
 
@@ -971,7 +1019,9 @@ $(document).ready(function(){
 
         // 동일베팅 항목을 선택(선택해제)
         if ($(this).hasClass('bet_on')) {
+
             console.log('동일베팅 항목을 선택(선택해제)');
+            let totalOddss = $('.total_odds').html();
             let price = betPrice;
             price = price == 0 ? 1 : price;
             totalOdds = totalOdds / price;
@@ -1269,7 +1319,14 @@ $(document).ready(function(){
         console.log('contentHeight');
         let targetHeight = $(document).find(".sports_s_right.active").height();
         targetHeight = Number(targetHeight) + 100;
-        $(document).find(".sports_s_left_sports_s_right_wrap").css("min-height", `${targetHeight}px`)
+        $(document).find(".sports_s_left_sports_s_right_wrap").css("max-height", `${targetHeight}px`)
+        var thisHeight = window.innerHeight;
+        thisHeight = thisHeight - 200;
+
+
+        $(document).find(".sports_s_left").css("max-height", `${thisHeight}px`);
+        $(document).find(".sports_s_right").css("max-height", `${thisHeight}px`);
+
     }
 
 
@@ -1279,7 +1336,7 @@ $(document).ready(function(){
 
         let myScroll = Math.ceil(scroll + winH);
         let docH = $(document).height();
-        let myEnd = docH - 250;
+        let myEnd = docH - 450;
 
         // console.log(scroll, myScroll, myEnd);
         
@@ -1291,9 +1348,9 @@ $(document).ready(function(){
         // }
 
         // lnb, cart fixed
-        if(scroll > 121 ){      $("body").addClass("fixed");
-        } else {                $("body").removeClass("fixed");
-        }
+        // if(scroll > 121 ){      $("body").addClass("fixed");
+        // } else {                $("body").removeClass("fixed");
+        // }
 
         if( myScroll >= myEnd ){     $("body").addClass("scrollEnd");
         } else {                    $("body").removeClass("scrollEnd");

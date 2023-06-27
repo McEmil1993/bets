@@ -30,12 +30,6 @@ function choiceSportsImage(sports_id){
             case 687890:
                 className = 'sports_ck7';
                 break;
-            case 154919:
-                className = 'sports_ck8';
-                break;
-            case 54094:
-                className = 'sports_ck9';
-                break;
             default :
                 className = 'sports_ck1';
                 break;

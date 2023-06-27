@@ -65,7 +65,7 @@ include_once(_BASEPATH.'/common/head.php');
 
             $(this).addClass('current');
             $("#"+tab_id).addClass('current');
-        })
+        });
     });
 </script>
 <script type="text/javascript" src="<?=_STATIC_COMMON_PATH?>/js/admConfigBet.js" charset="utf-8"></script>

@@ -61,9 +61,7 @@ switch ($p_data["srch_key"]) {
 $p_data['sql_where'] .= $srch_basic;
 $p_data['date_where'] = " AND update_dt >= '$db_srch_s_date'
                         AND update_dt <= '$db_srch_e_date' ";
-$p_data['bet_where'] = '';
-$p_data['casino_where'] = '';
-        
+
 $srch_basic_count = $srch_basic;
 if ($db_conn) {
     // 총판목록
@@ -71,31 +69,16 @@ if ($db_conn) {
     // 총판목록
     if ($_SESSION['u_business'] == 0) {
         $distributorList = GameCode::getRecommandMemberInfos(0, $CASHAdminDAO);
-        if ($member_id != '') {
-            $sql = "SELECT idx FROM member WHERE id = ?";
-            $member_idx = $CASHAdminDAO->getQueryData_pre($sql,[$member_id])[0]['idx'];
-            
-            $p_data['date_where'] .= "AND T1.idx in (SELECT idx FROM member WHERE dis_id = '$member_id')";
-            $p_data['bet_where'] .= " AND T1.idx in (SELECT idx FROM member WHERE dis_id = '$member_id')";
-            $p_data['casino_where'] = " AND MB.dis_id = '$member_id'";
-        }
     } else {
         $distributorList = GameCode::getRecommandMemberInfos($_SESSION['member_idx'], $CASHAdminDAO);
       
         if ($member_id != '') {
             $p_data['date_where'] .= "AND T1.idx in (SELECT idx FROM member WHERE dis_id = '$member_id')";
-            $p_data['bet_where'] .= " AND T1.idx in (SELECT idx FROM member WHERE dis_id = '$member_id')";
-            $p_data['casino_where'] = " AND MB.dis_id = '$member_id'";
-        } else { // 전체
+        } else { // 전체 
             $member_id = $distributorList[0]['id'];
-            $member_idx = $distributorList[0]['idx'];
             list($param_dist, $str_param_qm) = GameCode::getRecommandMemberIdx($_SESSION['member_idx'], $CASHAdminDAO);
             $str_param = implode(',', $param_dist);
-            /*$p_data['date_where'] .= "AND T1.idx in (SELECT idx FROM member WHERE recommend_member in($str_param))";
-            $p_data['bet_where'] .= " AND T1.idx in (SELECT idx FROM member WHERE recommend_member in($str_param))";*/
-            $p_data['date_where'] .= "AND T1.idx in (SELECT idx FROM member WHERE recommend_member in($member_idx))";
-            $p_data['casino_where'] = " AND MB.recommend_member in($member_idx)";
-            $p_data['bet_where'] .= " AND T1.idx in (SELECT idx FROM member WHERE recommend_member in($member_idx))";
+            $p_data['date_where'] .= "AND T1.idx in (SELECT idx FROM member WHERE recommend_member in($str_param))";
             
             $srch_basic_count = $srch_basic." AND T1.dis_id = '$member_id'";
         }
@@ -159,34 +142,34 @@ if ($db_conn) {
     }
 
     // 프리매치 - 싱글 - 배팅합계
-    $p_data['sql'] = CommonStatsQuery::getTotalSumPreMatchSingleBetMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['bet_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumPreMatchSingleBetMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $total['pre_bet_sum_s'] = $CASHAdminDAO->getQueryData($p_data)[0]['pre_bet_sum_s'];
     //CommonUtil::logWrite("pre_bet_sum_s sql: " . $p_data['sql'], "info");
     // 프리매치 - 싱글 - 당첨합계
-    $p_data['sql'] = CommonStatsQuery::getTotalSumPreMatchSingleTakeMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['bet_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumPreMatchSingleTakeMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $total['pre_take_sum_s'] = $CASHAdminDAO->getQueryData($p_data)[0]['pre_take_sum_s'];
     //CommonUtil::logWrite("pre_take_sum_s sql: " . $p_data['sql'], "info");
     // 프리매치 - 싱글 - 수익 합계
     $total['pre_sum_s'] = $total['pre_bet_sum_s'] - $total['pre_take_sum_s'];
 
     // 프리매치 - 다폴더 - 배팅합계
-    $p_data['sql'] = CommonStatsQuery::getTotalSumPreMatchMultiBetMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['bet_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumPreMatchMultiBetMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $total['pre_bet_sum_d'] = $CASHAdminDAO->getQueryData($p_data)[0]['pre_bet_sum_d'];
     //CommonUtil::logWrite("pre_bet_sum_d sql: " . $p_data['sql'], "info");
     // 프리매치 - 다폴더 - 당첨합계
-    $p_data['sql'] = CommonStatsQuery::getTotalSumPreMatchMultiTakeMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['bet_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumPreMatchMultiTakeMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $total['pre_take_sum_d'] = $CASHAdminDAO->getQueryData($p_data)[0]['pre_take_sum_d'];
     //CommonUtil::logWrite("pre_take_sum_d sql: " . $p_data['sql'], "info");
     // 프리매치 - 다폴더 - 수익 합계
     $total['pre_sum_d'] = $total['pre_bet_sum_d'] - $total['pre_take_sum_d'];
 
     // 실시간 싱글 - 배팅합계
-    $p_data['sql'] = CommonStatsQuery::getTotalSumInplaySingleBetMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['bet_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumInplaySingleBetMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $total['real_bet_sum_s'] = $CASHAdminDAO->getQueryData($p_data)[0]['real_bet_sum_s'];
 
     //CommonUtil::logWrite("real_bet_sum_s sql: " . $p_data['sql'], "info");
     // 실시간 싱글 - 당첨합계
-    $p_data['sql'] = CommonStatsQuery::getTotalSumInplaySingleTakeMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['bet_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumInplaySingleTakeMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $total['real_take_sum_s'] = $CASHAdminDAO->getQueryData($p_data)[0]['real_take_sum_s'];
 
     //CommonUtil::logWrite("real_take_sum_s sql: " . $p_data['sql'], "info");
@@ -194,11 +177,11 @@ if ($db_conn) {
     $total['real_sum_s'] = $total['real_bet_sum_s'] - $total['real_take_sum_s'];
 
     // 실시간 - 다폴더 - 배팅합계
-    $p_data['sql'] = CommonStatsQuery::getTotalSumInplayMultiBetMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['bet_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumInplayMultiBetMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $total['real_bet_sum_d'] = $CASHAdminDAO->getQueryData($p_data)[0]['real_bet_sum_d'];
     //CommonUtil::logWrite("real_bet_sum_d sql: " . $p_data['sql'], "info");
     // 실시간 - 다폴더 - 당첨합계
-    $p_data['sql'] = CommonStatsQuery::getTotalSumInplayMultiTakeMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['bet_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumInplayMultiTakeMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $total['real_take_sum_d'] = $CASHAdminDAO->getQueryData($p_data)[0]['real_take_sum_d'];
     //CommonUtil::logWrite("real_take_sum_d sql: " . $p_data['sql'], "info");
     // 실시간 - 다폴더 - 수익 합계
@@ -206,31 +189,29 @@ if ($db_conn) {
 
     // classic bet info
     // 클래식  - 배팅합계
-    $p_data['sql'] = CommonStatsQuery::getTotalSumClassicBetMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['bet_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumClassicBetMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $total['total_classic_bet_money'] = $CASHAdminDAO->getQueryData($p_data)[0]['total_classic_bet_money'];
     //CommonUtil::logWrite("real_bet_sum_d sql: " . $p_data['sql'], "info");
     // 클래식 - 당첨합계
-    $p_data['sql'] = CommonStatsQuery::getTotalSumClassicTakeMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['bet_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumClassicTakeMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $total['total_classic_win_money'] = $CASHAdminDAO->getQueryData($p_data)[0]['total_classic_win_money'];
     //CommonUtil::logWrite("real_take_sum_d sql: " . $p_data['sql'], "info");
     // 클래식 - 수익 합계
     $total['total_classic_lose_money'] = $total['total_classic_bet_money'] - $total['total_classic_win_money'];
         
     // 미니게임 - 배팅합계
-    $p_data['sql'] = CommonStatsQuery::getTotalSumMiniGameBetMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['bet_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumMiniGameBetMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $total['mini_bet_sum_d'] = $CASHAdminDAO->getQueryData($p_data)[0]['mini_bet_sum_d'];
     //CommonUtil::logWrite("mini_bet_sum_d sql: " . $p_data['sql'], "info");
-
     // 미니게임 - 당첨합계
-    $p_data['sql'] = CommonStatsQuery::getTotalSumMiniGameTakeMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['bet_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumMiniGameTakeMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $total['mini_take_sum_d'] = $CASHAdminDAO->getQueryData($p_data)[0]['mini_take_sum_d'];
-    
     //CommonUtil::logWrite("mini_take_sum_d sql: " . $p_data['sql'], "info");
     // 미니게임 - 수익 합계
     $total['mini_sum_d'] = $total['mini_bet_sum_d'] - $total['mini_take_sum_d'];
 
     // 카지노,슬롯 배팅금,당첨금 
-    $p_data['sql'] = CommonStatsQuery::getTotalSumCasinoSlotMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['casino_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumCasinoSlotMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $db_casino_slot_data = $CASHAdminDAO->getQueryData($p_data);
     foreach ($db_casino_slot_data as $value) {
         if ('bet_tot_casino' == $value['stype']) {
@@ -245,7 +226,7 @@ if ($db_conn) {
     }
 
     // 이스포츠 / 키론 / 해시  배팅금,당첨금 
-    $p_data['sql'] = CommonStatsQuery::getTotalSumEsportsHashMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['casino_where']);
+    $p_data['sql'] = CommonStatsQuery::getTotalSumEsportsHashMoneyQuery($db_srch_s_date, $db_srch_e_date);
     $db_espt_hash_data = $CASHAdminDAO->getQueryData($p_data);
     foreach ($db_espt_hash_data as $value) {
         if ('bet_tot_espt' == $value['stype']) {
@@ -257,15 +238,6 @@ if ($db_conn) {
             $total['total_hash_win_money'] = $value['total_win_money'];
             $total['total_hash_lose_money'] = $value['total_bet_money'] - $value['total_win_money'];
         }
-    }
-    
-    // 홀덤
-    $p_data['sql'] = CommonStatsQuery::getTotalSumHoldemMoneyQuery($db_srch_s_date, $db_srch_e_date, $p_data['casino_where']);
-    $db_holdem_data = $CASHAdminDAO->getQueryData($p_data);
-    foreach ($db_holdem_data as $value) {
-        $total['total_holdem_bet_money'] = $value['total_bet_money'];
-        $total['total_holdem_win_money'] = $value['total_win_money'];
-        $total['total_holdem_lose_money'] = $value['total_bet_money'] - $value['total_win_money'];
     }
 
     // 멤버
@@ -397,9 +369,6 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                                 <th colspan="3">카지노</th>
                                 <th colspan="3">슬롯머신</th>
                                 <th colspan="3">해시게임</th>
-                                <?php if('ON' == IS_HOLDEM){ ?>
-                                    <th colspan="3">홀덤</th>
-                                <?php } ?>
                             </tr>
                             <tr>
                                 <th>
@@ -498,18 +467,6 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                                 <th>
                                     <a href="javascript:;" onClick="goOrderby('total_hash_lose_money', '<?= $displayData['ob_total_hash_lose_money_change'] ?>');"><?= $displayData['ob_total_hash_lose_money_color'] ?></a>
                                 </th>
-                                
-                                <?php if('ON' == IS_HOLDEM){ ?>
-                                <th>
-                                    <a href="javascript:;" onClick="goOrderby('total_holdem_bet_money', '<?= $displayData['ob_total_holdem_bet_money_change'] ?>');"><?= $displayData['ob_total_holdem_bet_money_color'] ?></a>
-                                </th>
-                                <th>
-                                    <a href="javascript:;" onClick="goOrderby('total_holdem_win_money', '<?= $displayData['ob_total_holdem_win_money_change'] ?>');"><?= $displayData['ob_total_holdem_win_money_color'] ?></a>
-                                </th>
-                                <th>
-                                    <a href="javascript:;" onClick="goOrderby('total_holdem_lose_money', '<?= $displayData['ob_total_holdem_lose_money_change'] ?>');"><?= $displayData['ob_total_holdem_lose_money_color'] ?></a>
-                                </th>
-                                <?php } ?>
 
                             </tr>
                             <tr class="bg_orange">
@@ -546,11 +503,8 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                                 $total_hash_win_money = intval($total['total_hash_win_money']);
                                 $total_hash_lose_money = intval($total['total_hash_lose_money']);
                                 
-                                $total_holdem_bet_money = intval($total['total_holdem_bet_money']);
-                                $total_holdem_win_money = intval($total['total_holdem_win_money']);
-                                $total_holdem_lose_money = intval($total['total_holdem_lose_money']);
-                                
                                 // 클래식
+                                
                                 $total_classic_bet_money = intval($total['total_classic_bet_money']);
                                 $total_classic_win_money = intval($total['total_classic_win_money']);
                                 $total_classic_lose_money = intval($total['total_classic_lose_money']);
@@ -658,17 +612,6 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                                     <?= number_format($total_hash_lose_money) ?>
                                 </td>
 
-                                <?php if('ON' == IS_HOLDEM){ ?>
-                                    <td style='text-align:right;'>
-                                        <?= number_format($total_holdem_bet_money) ?>
-                                    </td>
-                                    <td style='text-align:right;'>
-                                        <?= number_format($total_holdem_win_money) ?> 
-                                    </td>
-                                    <td style='text-align:right; <?= $total_holdem_lose_money > 0 ? 'color:#0021FD' : ($total_holdem_lose_money < 0 ? 'color:#FD0000' : '') ?>'>
-                                        <?= number_format($total_holdem_lose_money) ?>
-                                    </td>
-                                <?php } ?>
 
                             </tr>
                             <?php
@@ -716,10 +659,6 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                                 $total_hash_bet_money = intval($row['total_hash_bet_money']);
                                 $total_hash_win_money = intval($row['total_hash_win_money']);
                                 $total_hash_lose_money = intval($row['total_hash_lose_money']);
-                                
-                                $total_holdem_bet_money = intval($row['total_holdem_bet_money']);
-                                $total_holdem_win_money = intval($row['total_holdem_win_money']);
-                                $total_holdem_lose_money = intval($row['total_holdem_lose_money']);
                                 ?>
 
                                 <tr onmouseover="this.style.backgroundColor = '#FDF2E9';" onmouseout="this.style.backgroundColor = '#ffffff';">
@@ -838,17 +777,6 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                                     </td>
                                     <td style='text-align:right; <?= $total_hash_lose_money > 0 ? 'color:#0021FD' : ($total_hash_lose_money < 0 ? 'color:#FD0000' : '') ?>'>
                                         <?= number_format($total_hash_lose_money) ?>
-                                    </td>
-                                    
-                                    <?php /* 홀덤 */ ?>
-                                    <td style='text-align:right;'>
-                                        <?= number_format($total_holdem_bet_money) ?>
-                                    </td>
-                                    <td style='text-align:right;'>
-                                        <?= number_format($total_holdem_win_money) ?>
-                                    </td>
-                                    <td style='text-align:right; <?= $total_holdem_lose_money > 0 ? 'color:#0021FD' : ($total_holdem_lose_money < 0 ? 'color:#FD0000' : '') ?>'>
-                                        <?= number_format($total_holdem_lose_money) ?>
                                     </td>
                                     <?php } ?>
                         </table>

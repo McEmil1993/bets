@@ -17,10 +17,6 @@ $BdsAdminDAO = new Admin_Bbs_DAO(_DB_NAME_WEB);
 $db_conn = $BdsAdminDAO->dbconnect();
 
 if ($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$BdsAdminDAO)){
-        die();
-    }
-    
     $idx = $BdsAdminDAO->real_escape_string($_GET['idx']);
     $p_data['sql'] = "SELECT a.idx, a.type, a.division, a.title, a.content, a.update_dt FROM template AS a WHERE idx = $idx";
     $db_dataArr = $BdsAdminDAO->getQueryData($p_data);

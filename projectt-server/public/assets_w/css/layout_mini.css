@@ -1,5 +1,329 @@
 @charset "utf-8";
 
+/*-------------------------------------------------------------------------------------*
+ *  미니게임 레이아웃                                                                   *
+ *-------------------------------------------------------------------------------------*/
+ #mini_wide_wrap{position:relative; padding: 0 280px; height:100vh;}
+ #mini_wide_wrap::after{content:''; display:block; clear:both;}
+ 
+ .mini_wide_wrap{width:100%; min-height:650px; margin:0 0 0 0;}
+ .mini_wide_left{position:absolute; left:0; top:0; width:280px;}
+ .mini_wide_center{padding:0 9px 20px 9px;}
+ .mini_wide_right{position:absolute; right:0; top:0; width:280px;}
+ 
+ @media screen and (max-width:1640px) {
+     #mini_wide_wrap{padding-left:0;}
+     .mini_wide_left{position:relative; left:auto; top:auto; width: 100%;}
+     .mini_left_title{display: none;}
+ 
+     #hash_wide_wrap{padding-left:0;}
+ }
+ 
+ @media screen and (max-width:1240px) {
+     #mini_wide_wrap{padding-right:0;}
+     .mini_wide_right{position:relative; right:auto; top:auto; width: 100%;}
+     .mini_wide_center{width:100%;}
+ 
+     #hash_wide_wrap{padding-right:0;}
+ }
+ 
+
+ /*-------------------------------------------------------------------------------------*
+  *  미니게임 좌측                                                                      *
+  *-------------------------------------------------------------------------------------*/
+ .mini_left_title {width:100%; height:180px; text-align:center; background:#1e2223; border-bottom:1px solid #2c2c2c;}
+ .mini_left_title_game {float:left; width:100%; height:50px; line-height:50px;  color:#ffffff; letter-spacing:-1px; text-align:center; border-radius:60px; margin:10px 0 5px 0; font-size:24px; font-weight:300; font-family:'Nanum Gothic', sans-serif;}
+ .mini_left_title_box {background:rgba(255,255,255,0.1); display:inline-block; width:230px; line-height:40px; font-weight:300; font-size:16px; color:#ffffff; letter-spacing:1px; text-align:center; border-radius:3px; margin:0 0 5px 0; font-family:'Nanum Gothic', sans-serif; font-weight:300;}
+ .mini_left_title_box_font {font-size:20px; color:#01aef0; font-weight:500; letter-spacing:1pt;}
+ 
+ .mini_left_list_wrap::after{content:''; display:block; clear:both;}
+ .mini_left_list ul li { width:100%; height:40px; line-height:38px; cursor:pointer; background: #1e2223; color:var(--color2-basic); font-size:12px; padding:0 10px 0 10px; font-weight:400; border-bottom:1px solid #2c2c2c;}
+ .mini_left_list ul li:hover {background:#142227; color:#ffa800;}
+
+ .mini_left_list_right {float:right;}
+ .mini_left_list_right_font {font-family: 'Nanum Gothic', sans-serif; font-weight:500; color:#01aef0; font-size:16px; letter-spacing:-1pt;}
+
+ .mini_menu_left {float:left; font-weight:500;}
+ .mini_menu_right {float:right;}
+
+ .mini_left_list1 {display:block; background:rgba(34,34,34,0.8); width:100%; height:40px; line-height:40px; cursor:pointer; font-size:14px; padding:0 10px 0 10px; border-bottom:1px solid rgba(255,255,255,0.1);}
+
+
+ @media screen and (max-width:1640px) {
+     .mini_left_list{margin: 0 auto;}
+     .mini_left_list ul{display:flex; align-items:center;}
+     .mini_left_list ul li{flex:0 0 170px; width:170px; height: 40px; line-height: 40px; text-align: center;}
+     .mini_left_list_right {display: none;}
+ }
+ 
+ @media screen and (max-width:1000px) {
+     .mini_left_list ul{overflow-x:scroll;}
+ }
+ 
+ /* 마감시간 효과 */
+.mini_left_title_box_font {
+	animation-name: mini_left_title_box_font;
+	-webkit-animation-name: mini_left_title_box_font;
+		
+	animation-duration: 3s;	
+	-webkit-animation-duration: 3s;
+
+	animation-iteration-count: infinite;
+	-webkit-animation-iteration-count: infinite;
+
+}
+
+@keyframes mini_left_title_box_font {
+    0%   {color:#01aef0;}
+    50%  {color:#ffffff;}
+    100%  {color:#01aef0;}
+}
+
+@-webkit-keyframes mini_left_title_box_font {
+    0%   {color:#01aef0;}
+    50%  {color:#ffffff;}
+    100%  {color:#01aef0;}
+}
+ 
+ /*-------------------------------------------------------------------------------------*
+  *  미니게임 중앙                                                                      *
+  *-------------------------------------------------------------------------------------*/
+.mini_title_wrap {float:left; width:100%; height:50px; line-height:50px; padding:0 20px 0 20px; background:#142227; border-bottom:1px solid var(--border-basic);} 
+
+.mini_list_title {float:left; width:100%; height:50px; background:#142227; border-bottom:1px solid var(--border-basic); transition:all 0.5s; display:none;}
+.mini_list_title_li {float:left; padding:0 0 0 15px;}
+.mini_list_title_li ul li {float:left; line-height:45px; font-weight:300; font-size:12px; color:#cfcfcf; padding:0 22px 0 0;}
+.mini_list_title_li ul li a {color:#cfcfcf;}
+.mini_list_title_li::-webkit-scrollbar{height:3px;}
+.mini_list_title_li::-webkit-scrollbar-thumb{width:30%; background:#01aef0; border-radius: 10px;}
+.mini_list_title_li::-webkit-scrollbar-track {background:var(--bgalphacolor1);}
+
+.mini_title {float:left; font-size:16px; font-family: 'Nanum Gothic', sans-serif; font-weight:500; color:#ffffff;}
+.mini_round{font-weight:300; display:none;}
+.mini_round span{color:#01aef0; letter-spacing:-1pt;}
+.mini_time{font-weight:300; display:none;}
+.mini_time span{color:#01aef0; letter-spacing:-1pt; }
+  
+ .mini_movie_wrap {position:relative; width:100%; height:700px; background:#555555; padding:20px 0 20px; overflow:hidden;}
+ .mini_movie_inner{position:relative; left:50%; top:50%; margin:-320px 0 0 -415px; width:830px; height: 641px; }
+  
+ @media screen and (max-width:1024px) {
+     .mini_movie_wrap{height:650px;}
+     .mini_movie_wrap .mini_movie_inner{transform:scale(.9);}
+ }
+ @media screen and (max-width:768px) {
+     .mini_movie_wrap{height:600px;}
+     .mini_movie_wrap .mini_movie_inner{transform:scale(.8);}
+ }
+ @media screen and (max-width:300px) {
+     .mini_movie_wrap{height:550px;}
+     .mini_movie_wrap .mini_movie_inner{transform:scale(.7);}
+ }
+ @media screen and (max-width:640px) {
+     .mini_movie_wrap{height:500px;}
+     .mini_movie_wrap .mini_movie_inner{transform:scale(.6);}
+ }
+ @media screen and (max-width:520px) {
+     .mini_movie_wrap{height:400px;}
+     .mini_movie_wrap .mini_movie_inner{transform:scale(.5);}
+ }
+ @media screen and (max-width:480px) {
+     .mini_movie_wrap{height:350px;}
+     .mini_movie_wrap .mini_movie_inner{transform:scale(.45);}
+ }
+ @media screen and (max-width:375px) {
+     .mini_movie_wrap{height:350px;}
+     .mini_movie_wrap .mini_movie_inner{transform:scale(.4);}
+ }
+ @media screen and (max-width:350px) {
+     .mini_movie_wrap{height:300px;}
+     .mini_movie_wrap .mini_movie_inner{transform:scale(.35);}
+ }
+ @media screen and (max-width:260px) {
+     .mini_movie_wrap{height:250px;}
+     .mini_movie_wrap .mini_movie_inner{transform:scale(.2);}
+ }
+ 
+/*-------------------------------------------------------------------------------------*
+ /* 미니게임 결과 배팅결과 *
+ *-------------------------------------------------------------------------------------*/
+ .mini_conter_wrap {float:left; width:100%; margin:30px 0 0 0;}
+
+ .mini_list_title1_bg  {}
+ .mini_list_title1     {background:#1e2223; border-bottom:1px solid #333333; border-top:1px solid #01aef0; color:#ffffff; font-size:12px; line-height:44px; text-align:center;}
+ .mini_list1           {background:#282828; border-bottom:1px solid #333333; color:#ffffff; font-size:12px; text-align:center; padding:10px 5px 10px 5px; cursor:pointer;}
+ 
+ .mini_history_title {float:left; width:100%; height:40px; line-height:40px; font-weight:500; font-size:16px; color:#ffffff; letter-spacing:-1px; margin:10px 0 0 0;}
+ .mini_history_list::-webkit-scrollbar{height:3px;}
+ .mini_history_list::-webkit-scrollbar-thumb{width:30%; background:#01aef0; border-radius: 10px;}
+ .mini_history_list::-webkit-scrollbar-track {background:var(--bgalphacolor1);}
+
+
+  /* 경기결과 패턴 내역 */
+ .mini_pattern_list {display: flex; margin-bottom: 20px;}
+ .mini_pattern_list > li {flex: 1;}
+ .mini_pattern_list > li.mini_pattern_blue dt{color: #00afed;}
+ .mini_pattern_list > li.mini_pattern_red dt{color: #fa4936;}
+ .mini_pattern_list > li.mini_pattern_green dt {color: #91c653;}
+ .mini_pattern_list > li.mini_pattern_blue span {background-color: #00afed;}
+ .mini_pattern_list > li.mini_pattern_red span {background-color: #fa4936;}
+ .mini_pattern_list > li.mini_pattern_green span {background-color: #91c653;} 
+ .mini_pattern_list dt, .mini_pattern_list dd {width: 100%; height: 36px; border: 1px solid #000; box-sizing: border-box; text-align: center; line-height: 36px;}
+ .mini_pattern_list dt {background-color: #1e2223;}
+ .mini_pattern_list dd {background-color: #1e2223;}
+ .mini_pattern_list dd span{display: block; width: 32px; height: 32px; margin: 1px auto; line-height: 32px; border-radius: 50%; background-color: #999; color: #f1f1f1;}
+ 
+
+/* 경기결과 베팅내역 */
+.mini_tab_wide {margin: 20px 0 0 0; transition:all 0.5s;}
+.mini_tab_wide_tr{display:flex; align-items:center; gap:3px;}
+.mini_tab_wide_tr li{flex:0 0 130px; width:130px; margin:0 0 3px 3px;}
+.mini_tab_wide_tr li:first-child{margin-left:0;}
+.mini_tab_wide_tr li a{display:block; border:1px solid #404040; background:#333333; width:130px; height:36px; line-height:34px; text-align:center; display:inline-block; color:#989898; font-size:13px; font-weight:400; border-radius:0px;}
+.mini_tab_wide_tr li.mini_tab_wide_td_on a {background:#009dd9; width:130px; height:36px; line-height:35px; text-align:center; display:inline-block; color:#ffffff; font-size:13px; font-weight:400; border-radius:0px;}
+
+
+@media (hover: hover) {
+    .mini_tab_wide_tr li:hover a{background:#009dd9; color:#ffffff}
+}
+@media screen and (max-width:720px) {
+    .mini_tab_wide_table{width:100%; overflow-x:scroll;}
+    .mini_tab_wide_tr li a{font-size:12px;}
+
+    .mini_center_result {overflow-x:scroll;}
+}
+
+
+
+.mini_center_result {/*float:left; width:100%; height:468px;*/ background:#191919;}
+.mini_center_site {float:left; width:100%; height:30px; line-height:30px; background:#383838; font-size:11px; color:#cfe3e3; font-weight:400; letter-spacing:-1pt; text-align:center;}
+
+.mini_center_site_btn {float:left; width:100%; height:40px; line-height:40px; background:#595959; color:#ffffff; text-align:center; font-weight:300;}
+
+@media (hover: hover) {
+    .mini_center_site_btn:hover {background:#05354c; color:#ffffff;}
+}
+
+
+.mini_list1           {font-size:12px; background:#282828; border-bottom:1px solid rgba(255,255,255,0.1); color:#ffffff; line-height:18px; padding:4px 0 4px 0; text-align:center;}
+.mini_list2           {font-size:12px; background:rgba(34,34,34,0.8); border-bottom:1px solid rgba(255,255,255,0.1); color:#ffffff; line-height:18px; padding:4px 0 4px 15px; font-weight:500;} 
+
+.vmini_list1           {font-size:12px; background:rgba(34,34,34,0.8); border-bottom:1px solid rgba(255,255,255,0.1); color:#9f9f9f; line-height:18px; padding:4px 0 4px 0; text-align:center;}
+
+.mini_history_title {float:left; width:100%; height:40px; line-height:40px; font-weight:500; font-size:18px; color:#ffffff; letter-spacing:-1px; margin:10px 0 0 0;}
+
+
+
+
+/*-------------------------------------------------------------------------------------*
+ *  미니게임 가이드  팝업                                                              *
+ *-------------------------------------------------------------------------------------*/
+.mini_popup_none              {display:none;}
+.mini_popup_wrap              {width:100%;}
+.mini_popup_box               {margin:0px auto; width:95%;}
+.mini_close_box               {width:100%; float:left; text-align:center; padding:10px 0 10px 0;}
+.mini_popupbox                {width:100%; float:left; background:url("../images/bg_popup2.jpg") center top repeat-y; min-height:calc(100vh - 150px); border-radius:10px; padding:10px; position:relative; box-shadow:0px 0px 100px rgba(0,0,0,0.7);}
+.mini_popup_title             {float:left; width:100%; background:linear-gradient(to right, #008b84 0%,  #0a6e45 100%); border:1px solid rgba(0,0,0,0.6); line-height:60px; font-weight:300; font-size:23px; color:#ffffff; font-family:'nanumsquare', sans-serif; letter-spacing:-1px; text-shadow:1px 1px 2px; background:rgba(0,0,0,0.8); padding:0 0 0 8px;}
+
+.mini_info_wrap       {background:rgba(0,0,0,0.7); border-bottom:1px solid rgba(255,255,255,0.0); float:left; width:100%; padding:10px 10px 15px 10px; border-radius:0px;}
+.mini_info_wrap td { border-bottom:1px solid rgba(255,255,255,0.1);}
+
+.mini_info1           {float:left; width:100%; line-height:40px; color:#ffd800; padding:0 0 0 0; font-size:22px; font-weight:300;}
+.mini_info2           {float:left; width:100%; line-height:30px; color:#ffffff; padding:5px 0 0 0; font-size:18px; font-weight:300;}
+.mini_info3           {float:left; width:100%; line-height:20px; min-height:40px;  color:#f2f2f2; padding:6px 0 6px 0; font-size:12px; font-weight:300;}
+
+.mini_info_num {float:left; background:rgba(6,88,96,0.5); width:20px; height:20px; line-height:20px; border-radius:20px; color:#ffde00; display:inline-block; text-align:center; margin:7px 5px 0 0;}
+
+.mini_info_font1 {color:#5ce8b5;}
+.mini_info_font2 {color:#f29f00;}
+
+
+
+
+/*-------------------------------------------------------------------------------------*
+ *  미니게임 우측                                                                      *
+ *-------------------------------------------------------------------------------------*/
+ .mini_cart_title {float:left; width:100%; height:36px; line-height:36px; background:#142227; font-size:16px; color:#ffffff; font-weight:500; letter-spacing:-1pt; padding:0 8px 0 8px;}
+ .mini_cart_title_right {float:right;}
+ 
+ .mini_cart_wrap {float:left; width:100%; padding:5px 5px 10px 5px; background:#1e2223;}
+ 
+ .mini_cart_bet {float:left; width:100%; padding:8px 7px 8px 7px; margin:0 0 1px 0; background:#333333;}
+ .mini_cart_bet:hover {background:#222222;}
+ .mini_cart_bet td {color:var(--color2-basicr); font-size:12px; letter-spacing:0pt; font-weight:300; line-height:22px;}
+ .mini_cart_bet_p {display:inline-block; padding:0 7px 0 7px;  font-size:16px; color:#00ffc6; font-weight:500;}
+ 
+ .mini_cart_bet_font1 {color:#cfcfcf;}
+ .mini_cart_bet_font2 {color:#ffffff; font-weight:500;}
+ .mini_cart_bet_font3 {color:#ffffff;}
+ 
+ .mini_cart_style1 {line-height:25px; padding:4px 3px 4px 3px; color:#eaeaea; border-bottom:1px solid var(--border-color2);} /* 카트리스트 */
+ .mini_cart_style2 {float:right; font-size:16px; color:#ffa800; font-weight:500; letter-spacing:-1pt;}
+ .mini_cart_style3 {float:right; font-size:16px; color:#ffffff; font-weight:500; letter-spacing:-1pt;}
+ 
+ .cart_btn1         {display:inline-block; text-align:center; border-radius:0px; color:#ffffff; font-size:14px; letter-spacing:0pt; font-weight:300;}
+ .cart_btn2         {display:inline-block; text-align:center; border-radius:0px; color:var(--color2-basicr); font-size:12px; letter-spacing:0pt; font-weight:300;}
+ 
+ .cart_btn1         {background:linear-gradient(#01aef0 0%,  #01aef0 100%); width:100%; height:50px; line-height:50px;}
+ .cart_btn1:hover   {background:linear-gradient(-45deg, #0098d2 0%,  #0098d2 100%);}
+ 
+ .cart_btn2         {background:linear-gradient(#3b3b3b 0%,  #3b3b3b 100%); width:100%; height:40px; line-height:40px;}
+ .cart_btn2:hover   {background:linear-gradient(-45deg, #4b4b4b 0%,  #4b4b4b 100%);}
+
+/* 버튼쪽 */
+.mini_game_wrap{width:100%; display:flex; flex-wrap:wrap; justify-content: space-between;}
+.mini_power_big_wrap {float:left; margin:10px 0 0 0; transition:all 0.5s;}
+.mini_power_big_wrap.w50 {width:49.9999%;}
+.mini_power_big_wrap.w30 {width:33.3333%;}
+
+.mini_power_title{text-align:center; display:block; background:#3d3d3d; font-size:13px; font-weight:500; line-height:20px; border-radius:0px; padding:8px 0 8px 0;}
+.mini_power_btn1 {float:left; width:100%; min-height:54px; line-height:12px; text-align:center; color:#ffffff; font-size:12px; font-weight:300; padding:4px 0 0 0; border-radius:0px; cursor: pointer;}
+.mini_power_btn1 {background:linear-gradient(#de2f00 0%, #de2f00 100%);}
+.mini_power_btn1:hover {background:linear-gradient(#de2f00 0%,  #de2f00 100%);}
+
+.mini_power_btn2 {float:left; width:100%; min-height:54px; line-height:12px; text-align:center; color:#ffffff; font-size:12px; font-weight:300; padding:4px 0 0 0; border-radius:0px; cursor: pointer;}
+.mini_power_btn2 {background:linear-gradient(#009acc 0%,  #009acc 100%);}
+.mini_power_btn2:hover {background:linear-gradient(#009acc 0%,  #009acc 100%);}
+
+.mini_power_btn3 {float:left; width:100%; min-height:54px; line-height:12px; text-align:center; color:#ffffff; font-size:12px; font-weight:300; padding:4px 0 0 0; border-radius:0px; cursor: pointer;}
+.mini_power_btn3 {background:linear-gradient(#30cc00 0%,  #30cc00 100%);}
+.mini_power_btn3:hover {background:linear-gradient(#30cc00 0%,  #30cc00 100%);}
+
+.mini_power_btn1.active {background:var(--bggradiuntcolor1); border:2px solid #de2f00;}
+.mini_power_btn2.active {background:var(--bggradiuntcolor1); border:2px solid #009acc;}
+.mini_power_btn3.active {background:var(--bggradiuntcolor1); border:2px solid #30cc00;}
+.mini_power_font {font-weight:500; font-size:16px; line-height:28px;}
+
+@media screen and (max-width:768px) {
+.mini_power_big_wrap.w50 {width:100%;}
+.mini_power_big_wrap.w30 {width:49.9999%;}
+
+.mini_power_font{font-size:14px; line-height:24px;}
+}
+
+/* 추가 */
+.mini_sport_wrap{float:left; width:100%; margin:30px 0 0 0;}
+.mini_sport_tab{float:left; width:100%;}
+.mini_sport_tab li{float:left; text-align:center; width:25%; line-height:1.8; color: #fff; padding: 0 5px; text-align: left; font-size: 14px; background:var(--bgcolor2); border-radius:0px; cursor: pointer;}
+.mini_sport_tab li.mini_sport_tab_on{background:var(--bgpointcolor2); color:var(--normal-color);}
+.mini_sport_tab li:hover{background:var(--bgpointcolor2); color:var(--normal-color);}
+.mini_sport_tab li.mini_sport_tab_on > div{color:var(--title-color); font-weight:500;}
+.mini_sport_tab li:hover > div{color:var(--title-color); font-weight:500;}
+.mini_sport_name{text-align:center;}
+.mini_sport_time{text-align:center;}
+
+.mini_sport_list{float:left; width:100%; margin:0 0 0 0;}
+.mini_sport_title{float:left; width:100%; margin:10px 0 0 0; height:40px; display:flex; align-items:center; justify-content:space-between; overflow: hidden; font-size:14px; padding:0 10px 0 10px; background:#2b2b2b;}
+
+@media screen and (max-width:768px) {
+.mini_sport_tab li{width:50%;}
+.mini_sport_title{padding:0 5px 0 5px;}
+}
+
+
+
+
+
 
 /*-------------------------------------------------------------------------------------*
  *  가상게임                                                                             *
@@ -13,7 +337,7 @@
  .imagine_table_1 {width:100%; border-bottom:solid 1px #171717}
  .imagine_table_1 tr td{background:#2b2b2b; height:43px; text-align:center;}
  .imagine_table_2 {width:100%}
- .imagine_table_title {color:#b7b7b7; font-size:14px; background:#343434; text-indent:10px; font-weight:700; height:40px;border-bottom:solid 1px #171717;}
+ .imagine_table_title {color:#b7b7b7; font-size:14px; background:#343434; text-indent:10px; font-weight:300; height:40px;border-bottom:solid 1px #171717;}
  .imagine_table_td {background:#232323; text-indent:10px;height:34px; border-bottom:solid 1px #171717}
  .imagine_table_in1 {width:100%}
  .imagine_table_in1 tr td {cursor:pointer;background:#242424; border-right:solid 1px #171717; height:34px; border-bottom:solid 1px #171717;-webkit-transition: all .2s ease-in-out;-moz-transition: all .2s ease-in-out;-o-transition: all .2s ease-in-out;-ms-transition: all .2s ease-in-out;transition: all .2s ease-in-out;}
@@ -57,235 +381,22 @@
  .bs_vs_cont > p {float:left; max-width: 45%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
  .bs_vs_cont > span {float: left; width: 10%; text-align: center;}
  
- .mini_pattern_list {display: flex; margin-bottom: 20px;}
- .mini_pattern_list > li {flex: 1;}
- .mini_pattern_list > li.mini_pattern_blue dt{color: #00afed;}
- .mini_pattern_list > li.mini_pattern_red dt{color: #fa4936;}
- .mini_pattern_list > li.mini_pattern_green dt {color: #91c653;}
- .mini_pattern_list > li.mini_pattern_blue span {background-color: #00afed;}
- .mini_pattern_list > li.mini_pattern_red span {background-color: #fa4936;}
- .mini_pattern_list > li.mini_pattern_green span {background-color: #91c653;} 
- .mini_pattern_list dt, .mini_pattern_list dd {width: 100%; height: 36px; border: 1px solid #000; box-sizing: border-box; text-align: center; line-height: 36px;}
- .mini_pattern_list dt {background-color: #242424;}
- .mini_pattern_list dd {background-color: #222;}
- .mini_pattern_list dd span{display: block; width: 32px; height: 32px; margin: 1px auto; line-height: 32px; border-radius: 50%; background-color: #999; color: #f1f1f1;}
+
+
+/*-------------------------------------------------------------------------------------*
+ *  가상축구                                                                           *
+ *-------------------------------------------------------------------------------------*/
+
+ /* .vsports_center_wrap{position:relative;}
+ .vsports_center_wrap::after{content:''; display:block; clear:both;}
+  
+ .vsports_title_wrap {float:left; height:50px; line-height:50px; background:var(--bgtitleimg2);border-bottom:1px solid var(--border-basic); width:calc(50% - 5px);} 
+ .vsports_title {font-size:16px; font-family:'EsaManru'; font-weight:500; color:#ffffff; padding:0 0 0 22px;}
+  
  
-
-/* 경기결과 베팅내역 */
-.mini_tab_wide {margin:10px 0 0 0;}
-.mini_tab_wide_tr{display:flex; align-items:center; gap:3px;}
-.mini_tab_wide_tr li{flex:0 0 130px; width:130px;}
-.mini_tab_wide_tr li:first-child{margin-left:0;}
-.mini_tab_wide_tr li a{display:block; height:36px; line-height:34px; text-align:center; background:#3c3c3c; font-size:14px; font-weight:400; border-radius:0px; color:#fff; letter-spacing:-0.045rem;}
-.mini_tab_wide_tr li.mini_tab_wide_td_on a {border:1px solid #009dd9;}
-
-
-@media (hover: hover) {
-    .mini_tab_wide_tr li:hover a{background:#009dd9;}
-}
-@media screen and (max-width:720px) {
-    .mini_tab_wide_table{width:100%; overflow-x:scroll;}
-    .mini_tab_wide_tr li a{font-size:12px;}
-
-    .mini_center_result {overflow-x:scroll;}
-}
-
-
-.mini_center_result {/*float:left; width:100%;*/ height:468px; background:#191919;}
-.mini_center_site {float:left; width:100%; height:30px; line-height:30px; background:#383838; font-size:11px; color:#cfe3e3; font-weight:400; letter-spacing:-1pt; text-align:center;}
-
-.mini_center_site_btn {float:left; width:100%; height:40px; line-height:40px; background:#595959; color:#ffffff; text-align:center; font-weight:700;}
-
-@media (hover: hover) {
-    .mini_center_site_btn:hover {background:#412230; color:#ffffff;}
-}
-
-
-.mini_list_title1_bg  {background:#412230;}
-.mini_list_title1     {font-size:12px; color:#ffffff; line-height:18px; text-align:center; /*font-weight:bold;*/ padding:6px 0 6px 0;}
-.mini_list1           {font-size:12px; background:#404040; border-bottom:1px solid rgba(255,255,255,0.1); color:#9f9f9f; line-height:18px; padding:4px 0 4px 0; text-align:center;}
-.mini_list2           {font-size:12px; background:#404040; border-bottom:1px solid rgba(255,255,255,0.1); color:#ffffff; line-height:18px; padding:4px 0 4px 15px; font-weight:500;} 
-
-.vmini_list1           {font-size:12px; background:#404040; border-bottom:1px solid rgba(255,255,255,0.1); color:#9f9f9f; line-height:18px; padding:4px 0 4px 0; text-align:center;}
-
-.mini_history_title {float:left; width:100%; height:40px; line-height:40px; font-weight:500; font-size:18px; color:#ffffff; letter-spacing:-1px; margin:10px 0 0 0;}
-
-
-/*-------------------------------------------------------------------------------------*
- *  미니게임 가이드  팝업                                                              *
- *-------------------------------------------------------------------------------------*/
-.mini_popup_none              {display:none;}
-.mini_popup_wrap              {width:100%;}
-.mini_popup_box               {margin:0px auto; width:95%;}
-.mini_close_box               {width:100%; float:left; text-align:center; padding:10px 0 10px 0;}
-.mini_popupbox                {width:100%; float:left; background:url("../images/bg_popup2.jpg") center top repeat-y; min-height:calc(100vh - 150px); border-radius:10px; padding:10px; position:relative; box-shadow:0px 0px 100px rgba(0,0,0,0.7);}
-.mini_popup_title             {float:left; width:100%; background:linear-gradient(to right, #008b84 0%,  #0a6e45 100%); border:1px solid rgba(0,0,0,0.6); line-height:60px; font-weight:700; font-size:23px; color:#ffffff; font-family:'nanumsquare', sans-serif; letter-spacing:-1px; text-shadow:1px 1px 2px; background:rgba(0,0,0,0.8); padding:0 0 0 8px;}
-
-.mini_info_wrap       {background:rgba(0,0,0,0.7); border-bottom:1px solid rgba(255,255,255,0.0); float:left; width:100%; padding:10px 10px 15px 10px; border-radius:0px;}
-.mini_info_wrap td { border-bottom:1px solid rgba(255,255,255,0.1);}
-
-.mini_info1           {float:left; width:100%; line-height:40px; color:#ffd800; padding:0 0 0 0; font-size:22px; font-weight:700;}
-.mini_info2           {float:left; width:100%; line-height:30px; color:#ffffff; padding:5px 0 0 0; font-size:18px; font-weight:700;}
-.mini_info3           {float:left; width:100%; line-height:20px; min-height:40px;  color:#f2f2f2; padding:6px 0 6px 0; font-size:12px; font-weight:700;}
-
-.mini_info_num {float:left; background:rgba(6,88,96,0.5); width:20px; height:20px; line-height:20px; border-radius:20px; color:#ffde00; display:inline-block; text-align:center; margin:7px 5px 0 0;}
-
-.mini_info_font1 {color:#5ce8b5;}
-.mini_info_font2 {color:#f29f00;}
-
-
-/*-------------------------------------------------------------------------------------*
- *  미니                                                                             *
- *-------------------------------------------------------------------------------------*/
-#mini_wide_wrap{position:relative; padding: 0 280px; height:100vh;}
-#mini_wide_wrap::after{content:''; display:block; clear:both;}
-
-#hash_wide_wrap{position:relative; padding-left: 280px; height:100vh;}
-#hash_wide_wrap::after{content:''; display:block; clear:both;}
-
-.mini_wide_wrap    {/*float:left;*/ width:100%; min-height:650px; margin:0 0 0 0;}
-.mini_wide_left{/*float:left;*/ position:absolute; left:0; top:0; width:280px; /*transition:all 0.5s;*/}
-.mini_wide_center{/*float:left;*/ /*width:calc(100% - 560px);*/ border-left:1px solid var(--border-color2); border-right:1px solid var(--border-color2); padding:9px 9px 20px 9px;}
-.mini_wide_right{/*float:left;*/ position:absolute; right:0; top:0; width:280px;}
-
-@media screen and (max-width:1640px) {
-    #mini_wide_wrap{padding-left:0;}
-    .mini_wide_left{position:relative; left:auto; top:auto; width: 100%;}
-    .mini_left_title{display: none;}
-
-    #hash_wide_wrap{padding-left:0;}
-}
-
-@media screen and (max-width:1240px) {
-    #mini_wide_wrap{padding-right:0;}
-    .mini_wide_right{position:relative; right:auto; top:auto; width: 100%;}
-    .mini_wide_center{width:100%;}
-
-    #hash_wide_wrap{padding-right:0;}
-}
-
-/*-------------------------------------------------------------------------------------*
- *  미니게임 좌측                                                                      *
- *-------------------------------------------------------------------------------------*/
-.mini_left_title {/*float:left;*/ width:100%; height:180px; text-align:center; background:var(--bgtitleimg1); }
-.mini_left_title_game {float:left; width:100%; height:50px; line-height:50px;  color:#ffffff; letter-spacing:-1px; text-align:center; border-radius:60px; margin:10px 0 5px 0; font-size:24px; font-weight:500; font-family:'GmarketSans';}
-.mini_left_title_box {background:rgba(0,0,0,0.3); display:inline-block; width:230px; height:44px; line-height:42px; font-weight:500; font-size:16px; color:#ffffff; letter-spacing:1px; text-align:center; border-radius:60px; margin:0 0 5px 0; font-family:'rocket';}
-.mini_left_title_box_font {font-size:20px; color:#009dd9; font-weight:700; letter-spacing:1pt;}
-
-.mini_left_list_wrap {/*float:left;*/}
-.mini_left_list_wrap::after{content:''; display:block; clear:both;}
-.mini_left_list {/*float:left; width:100%;*/ }
-.mini_left_list ul{background:var(--bgcolor2);}
-.mini_left_list ul li {line-height:3rem; cursor:pointer; color:var(--color2-basicr); font-size:12px; padding:0 10px 0 10px; font-weight:400;}
-
-@media (hover: hover) {
-    .mini_left_list ul li:hover {background:var(--bgcolor2);}
-}
-
-
-.mini_left_list_right {float:right;}
-.mini_left_list_right_font {font-size:18px; color:#00e4ff; font-weight:700; letter-spacing:-1pt;}
-
-@media screen and (max-width:1640px) {
-    .mini_left_list ul{display:flex; align-items:center;}
-    .mini_left_list ul li{flex:0 0 140px; width:140px; line-height: 3.5rem; text-align: center;}
-}
-
-@media screen and (max-width:1000px) {
-    .mini_left_list ul{overflow-x:scroll;}
-}
-
-
-/* 마감시간 효과 */
-.mini_left_title_box_font {
-	animation-name: mini_left_title_box_font;		
-	animation-duration: 3s;	
-	animation-iteration-count: infinite;
-}
-
-
-
-
-
-/*-------------------------------------------------------------------------------------*
- *  미니게임 중앙                                                                      *
- *-------------------------------------------------------------------------------------*/
-.mini_title_wrap {float:left; width:100%; height:50px; line-height:50px; padding:0 20px 0 20px; background:var(--bgcolor3);border-bottom:1px solid var(--border-basic);} 
-
-.mini_list_title {float:left; width:100%; height:50px; background:var(--bgcolor1); border-bottom:1px solid var(--border-color2); transition:all 0.5s; display:none;}
-.mini_list_title_li {float:left; padding:0 0 0 15px;}
-.mini_list_title_li ul li {float:left; line-height:45px; font-weight:500; font-size:12px; color:#cfcfcf; padding:0 22px 0 0;}
-.mini_list_title_li ul li a {color:#cfcfcf;}
-.mini_list_title_li::-webkit-scrollbar{height:3px;}
-.mini_list_title_li::-webkit-scrollbar-thumb{width:30%; background:#00e4ff; border-radius: 10px;}
-.mini_list_title_li::-webkit-scrollbar-track {background:var(--bgalphacolor1);}
-
-.mini_title {float:left; font-size:16px; font-family:'GmarketSans'; font-weight:500; color:#ffffff;}
-.mini_round{font-weight:500; display:none;}
-.mini_round span{color:#009dd9; letter-spacing:-1pt;}
-.mini_time{font-weight:500; display:none;}
-.mini_time span{color:#009dd9; letter-spacing:-1pt; }
-
-
-
-/* .mini_movie_wrap {float:left; width:100%; min-height:300px; background:var(--bgcolor3); text-align:center; padding:20px 0 20px;} */
-.mini_movie_wrap {position:relative; /*float:left;*/ width:100%; height:700px; background:var(--bgcolor3); padding:20px 0 20px; overflow:hidden;}
-.mini_movie_inner{position:relative; left:50%; top:50%; margin:-320px 0 0 -415px; width:830px; height: 641px;}
-/* .mini_movie_wrap iframe{position:relative; left:50%; margin-left:-415px; display:block; width:830px;} */
-
-@media screen and (max-width:1024px) {
-    .mini_movie_wrap{height:650px;}
-    .mini_movie_wrap .mini_movie_inner{transform:scale(.9);}
-}
-@media screen and (max-width:768px) {
-    .mini_movie_wrap{height:600px;}
-    .mini_movie_wrap .mini_movie_inner{transform:scale(.8);}
-}
-@media screen and (max-width:700px) {
-    .mini_movie_wrap{height:550px;}
-    .mini_movie_wrap .mini_movie_inner{transform:scale(.7);}
-}
-@media screen and (max-width:640px) {
-    .mini_movie_wrap{height:500px;}
-    .mini_movie_wrap .mini_movie_inner{transform:scale(.6);}
-}
-@media screen and (max-width:520px) {
-    .mini_movie_wrap{height:400px;}
-    .mini_movie_wrap .mini_movie_inner{transform:scale(.5);}
-}
-@media screen and (max-width:480px) {
-    .mini_movie_wrap{height:350px;}
-    .mini_movie_wrap .mini_movie_inner{transform:scale(.45);}
-}
-@media screen and (max-width:375px) {
-    .mini_movie_wrap{height:350px;}
-    .mini_movie_wrap .mini_movie_inner{transform:scale(.4);}
-}
-@media screen and (max-width:350px) {
-    .mini_movie_wrap{height:300px;}
-    .mini_movie_wrap .mini_movie_inner{transform:scale(.35);}
-}
-@media screen and (max-width:260px) {
-    .mini_movie_wrap{height:250px;}
-    .mini_movie_wrap .mini_movie_inner{transform:scale(.2);}
-}
-
-
-
-
-
-
-.mini_conter_wrap {float:left; width:100%; margin:30px 0 0 0;}
-
-.mini_list_title1_bg  {}
-.mini_list_title1     {background:var(--bgtitleimg2); color:var(--color2-basic); font-size:11px; /*line-height:44px*/; text-align:center;}
-.mini_list1           {border-bottom:1px solid var(--border-basic); color:var(--color1-basic); font-size:12px; text-align:center; padding:10px 5px 10px 5px; cursor:pointer;}
-
-.mini_history_title {float:left; width:100%; height:40px; line-height:40px; font-weight:500; font-size:16px; color:#ffffff; letter-spacing:-1px; margin:10px 0 0 0;}
-.mini_history_list::-webkit-scrollbar{height:3px;}
-.mini_history_list::-webkit-scrollbar-thumb{width:30%; background:#c6ddff; border-radius: 10px;}
-.mini_history_list::-webkit-scrollbar-track {background:var(--bgalphacolor1);}
-
+.vsports_movie_wrap {position:relative; width:100%; height:360px; background:#777777; padding:20px 0 20px; overflow:hidden;}
+.vsports_movie_inner{position:relative; left:50%; top:50%; margin:-145px 0 0 -257px; width:514px; height: 290px;}
+ */
 
 /*-------------------------------------------------------------------------------------*
  *  가상축구                                                                           *
@@ -294,11 +405,11 @@
  .vsports_center_wrap{position:relative;}
  .vsports_center_wrap::after{content:''; display:block; clear:both;}
   
- .vsports_title_wrap {float:left; width:calc(50% - 5px); background:var(--bgcolor3);} 
- .vsports_title {font-size:16px; height:50px; line-height:50px; font-family:'GmarketSans'; padding:0 20px; font-weight:500; color:#fff; border-bottom:1px solid var(--border-basic);}
+ .vsports_title_wrap {float:left; width:calc(50% - 5px); line-height:50px; background:var(--bgtitleimg2);} 
+ .vsports_title {font-size:16px; font-family:'EsaManru'; font-weight:500; color:#ffffff; padding:0 0 0 10px;}
 
  
-.vsports_movie_wrap {position:relative; width:100%; height:360px; background:var(--bgcolor3); padding:20px 0 20px; overflow:hidden}
+ .vsports_movie_wrap {position:relative; width:100%; height:360px; background:#777777; padding:20px 0 20px; overflow:hidden;}
 .vsports_movie_inner{position:relative; left:50%; top:50%; margin:-145px 0 0 -257px; width:514px; height: 290px;}
 
 
@@ -329,121 +440,48 @@
 
 
 
-
-
-
- .vsports_s_right{float:right; width: calc(50% - 5px);}
+ .vsports_s_right{float:right; width: calc(50% - 5px); line-height:50px;}
 
 
  .vsports_wide_right{position:absolute; right:0; top: 0; width:280px;}
  .vsports_cart_bet {width:100%; margin:0 0 1px 0; background:var(--bgcolor3); border-bottom:1px solid var(--border-color1);}
 
  .vsports_cart_bet_font1 {font-size: 12px; color:#cfcfcf;}
- .vsports_cart_bet_font2 {font-size: 12px; color:#d80000; font-weight:500;}
+ .vsports_cart_bet_font2 {font-size: 12px; color:#ffc815; font-weight:500;}
  .vsports_cart_bet_font3 {font-size: 12px; color:#00e4ff;}
 
- .vbet_list1_wrap {padding-bottom :15px;}
- .vbet_list1_in_title {font-size:16px; font-family:'GmarketSans'; margin-bottom: 10px; font-weight:500; color:#ffffff;}
+ .vbet_list1_wrap {padding:5px; background:var(--bgtitleimg2);}
+ .vbet_list1_in_title {font-size:16px; font-family:'EsaManru'; margin-bottom: 10px; font-weight:500; color:#ffffff;}
+
 
 
 
 /* 모바일 카트 */
 .mini_cart_center{display:none; margin:30px 0 0 0;}
+
 @media screen and (max-width:1640px) {
-.mini_list_title{display:block;}	
-.mini_round{display:inline-block;}	
-.mini_time{display:inline-block;}	
+    .mini_list_title{display:block;}	
+    .mini_round{display:inline-block;}	
+    .mini_time{display:inline-block;}	
 }
 
 @media screen and (max-width:1240px) {
-.mini_cart_center{display:block;}
-.mini_cart_title_right{display:none;}
+    .mini_cart_center{display:block;}
+    .mini_cart_title_right{display:none;}
 
-.mini_list_title_li{width:100%; height:50px; overflow:hidden; overflow-x:scroll;}
-.mini_list_title_li ul{width:150%;}
+    .mini_list_title_li{width:100%; height:50px; overflow:hidden; overflow-x:scroll;}
+    .mini_list_title_li ul{width:150%;}
 
     .vsports_title_wrap{clear:both; float:none; width:100%;}
     .vsports_s_right{clear:both; float:none; width:100%; margin:10px 0 0;}
 }
 
 @media screen and (max-width:600px) {
-.mini_history_list{overflow:hidden; overflow-x:scroll;}
-.mini_history_list table{min-width:600px;}
+    .mini_history_list{overflow:hidden; overflow-x:scroll;}
+    .mini_history_list table{min-width:600px;}
 
 }
 
-/*-------------------------------------------------------------------------------------*
- *  미니게임 우측                                                                      *
- *-------------------------------------------------------------------------------------*/
- .mini_cart_title {float:left; width:100%; height:36px; line-height:36px; background:var(--bgpointcolor2); border-top:1px solid var(--border-color1); font-size:16px; color:#ffffff; font-weight:500; letter-spacing:-1pt; padding:0 8px 0 8px;}
- .mini_cart_title_right {float:right;}
- 
- .mini_cart_wrap {float:left; width:100%; padding:5px 5px 10px 5px; background:var(--bgcolor3);}
- 
- .mini_cart_bet {float:left; width:100%; padding:8px 7px 8px 7px; margin:0 0 1px 0; background:var(--bgcolor1); border-bottom:1px solid var(--border-color1);}
- .mini_cart_bet td {color:var(--color2-basicr); font-size:12px; letter-spacing:0pt; font-weight:400; line-height:22px;}
- .mini_cart_bet_p {display:inline-block; padding:0 7px 0 7px;  font-size:16px; color:#00e4ff; font-weight:700;}
-
-@media (hover: hover) {
-    .mini_cart_bet:hover {background:var(--bgcolor4);}
-}
-
-
-
-.mini_cart_bet_font1 {color:#cfcfcf;}
-.mini_cart_bet_font2 {color:#d80000; font-weight:500;}
-.mini_cart_bet_font3 {color:#00e4ff;}
-
-.mini_cart_style1 {line-height:25px; padding:4px 3px 4px 3px; color:#eaeaea; border-bottom:1px solid var(--border-color2);} /* 카트리스트 */
-.mini_cart_style2 {float:right; font-size:16px; color:#00e4ff; font-weight:700; letter-spacing:-1pt;}
-.mini_cart_style3 {float:right; font-size:16px; color:#ffffff; font-weight:700; letter-spacing:-1pt;}
-
-.cart_btn1         {display:inline-block; text-align:center; border-radius:0px; color:var(--color2-basicr); font-size:12px; letter-spacing:0pt; font-weight:500; text-shadow:1px 1px 1px rgba(0,0,0,0.3); box-shadow:rgba(0,0,0,0.1) 2px 2px 2px -1px;}
-.cart_btn2         {display:inline-block; text-align:center; border-radius:0px; color:var(--color2-basicr); font-size:12px; letter-spacing:0pt; font-weight:500; text-shadow:1px 1px 1px rgba(0,0,0,0.3); box-shadow:rgba(0,0,0,0.1) 2px 2px 2px -1px;}
-
-.cart_btn1         {background:linear-gradient(#009dd9 0%,  #009dd9 100%); width:100%; height:50px; line-height:50px;}
-.cart_btn2         {background:linear-gradient(#4c4c4c 0%,  #4c4c4c 100%); width:100%; height:40px; line-height:40px;}
-
-@media (hover: hover) {
-    .cart_btn1:hover   {background:linear-gradient(-45deg, #00acee 0%,  #00acee 100%);}
-    .cart_btn2:hover   {background:linear-gradient(-45deg, #5d5d5d 0%,  #5d5d5d 100%);}
-}
-
-
-
-
-/* 버튼쪽 */
-.mini_game_wrap{width:100%; display:flex; flex-wrap:wrap; justify-content: space-between;}
-.mini_power_big_wrap {float:left; margin:10px 0 0 0; transition:all 0.5s;}
-.mini_power_big_wrap.w50 {width:49.9999%;}
-.mini_power_big_wrap.w30 {width:33.3333%;}
-
-.mini_power_title{text-align:center; display:block; background:var(--bggradiuntcolor1); border:1px solid var(--border-color3); font-size:13px; font-weight:500; line-height:20px; border-radius:2px; padding:8px 0 8px 0;}
-.mini_power_btn1 {float:left; width:100%; min-height:54px; line-height:12px; text-align:center; color:#ffffff; font-size:12px; font-weight:300; padding:4px 0 0 0; border-radius:0px; cursor: pointer;}
-.mini_power_btn1 {background:linear-gradient(#d03444 0%,  #9c1321 100%); border-top:1px solid var(--sport-border-color1); border-left:1px solid var(--sport-border-color1);}
-
-.mini_power_btn2 {float:left; width:100%; min-height:54px; line-height:12px; text-align:center; color:#ffffff; font-size:12px; font-weight:300; padding:4px 0 0 0; border-radius:0px; cursor: pointer;}
-.mini_power_btn2 {background:linear-gradient(#349cd0 0%,  #135f9c 100%); border-top:1px solid var(--sport-border-color1); border-left:1px solid var(--sport-border-color1);}
-
-.mini_power_btn3 {float:left; width:100%; min-height:54px; line-height:12px; text-align:center; color:#ffffff; font-size:12px; font-weight:300; padding:4px 0 6px 0; border-radius:0px; cursor: pointer;}
-.mini_power_btn3 {background:linear-gradient(#72b12c 0%,  #46850f 100%); border-top:1px solid var(--sport-border-color1); border-left:1px solid var(--sport-border-color1);}
-
-.mini_power_font {font-weight:500; font-size:16px; line-height:28px;}
-
-@media (hover: hover) {
-    .mini_power_btn1:hover {background:linear-gradient(#ff5b6b 0%,  #d03444 100%);}
-    .mini_power_btn2:hover {background:linear-gradient(#53c6ff 0%,  #349cd0 100%);}
-    .mini_power_btn3:hover {background:linear-gradient(#99e643 0%,  #72b12c 100%);}
-}
-
-
-
-@media screen and (max-width:768px) {
-.mini_power_big_wrap.w50 {width:100%;}
-.mini_power_big_wrap.w30 {width:49.9999%;}
-
-.mini_power_font{font-size:14px; line-height:24px;}
-}
 
 /* 추가 */
 .mini_sport_wrap{float:left; width:100%; margin:30px 0 0 0;}
@@ -466,5 +504,3 @@
 @media screen and (max-width:768px) {
     .mini_sport_tab li{width:50%;}
 }
-
-

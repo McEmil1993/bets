@@ -24,6 +24,8 @@ use App\GamblePatch\KwinGmPt;
 use App\GamblePatch\BetGoGmPt;
 use App\GamblePatch\ChoSunGmPt;
 use App\GamblePatch\BetsGmPt;
+use App\GamblePatch\NobleGmPt;
+use App\GamblePatch\BullsGmPt;
 
 //use CodeIgniter\HTTP\RequestInterface;
 
@@ -44,6 +46,10 @@ class SportsController extends BaseController {
             $this->gmPt = new ChoSunGmPt();
         } else if ('BETS' == config(App::class)->ServerName) {
             $this->gmPt = new BetsGmPt();
+        } else if ('NOBLE' == config(App::class)->ServerName) {
+            $this->gmPt = new NobleGmPt();
+        } else if ('BULLS' == config(App::class)->ServerName) {
+            $this->gmPt = new BullsGmPt();
         }
     }
 
@@ -306,17 +312,50 @@ class SportsController extends BaseController {
         if (2 < $t_time) {
             $this->logger->critical("!!!!!!!!!!!!!!!!!! ***************** sports Time : $t_time");
         }
+
+        $sql2 = "SELECT
+				count(*) as cnt
+				,mi.item_id
+				,mi.item_value
+				,i.name
+                ,mi.idx 
+			FROM
+				member_item as mi
+				,item as i
+			WHERE
+				1=1
+			AND
+				mi.item_id = i.id 
+			AND
+				mi.member_idx = ?
+			AND 
+				mi.status = 0
+			AND
+				i.type in (1,2)
+			AND
+				mi.create_dt >= date_add(now(), interval -1 month)
+			GROUP BY
+				mi.item_id, mi.item_value 
+			ORDER BY
+				mi.idx DESC";
+
+        $resultMyItemlist = $memberModel->db->query($sql2, [$member->getIdx()])->getResultArray();
         
-        //if ('Y' == $arr_config['service_sports']) {
         if ('Y' == $arr_config['service_sports'] && 9 != $member->getLevel()) {
-            $sql = "SELECT * FROM inspection WHERE idx = 1";
-            $inspection = $memberModel->db->query($sql)->getResultArray()[0];
-        
-            return view("$viewRoot/inspection", [
-                'system_mes' => $inspection
-            ]);
+
+            // return view("$viewRoot/inspection");
+            echo "<script>
+            alert('스포츠 점검중입니다.');
+            window.history.back();
+            </script>";
+            return;
+
         }else{
         
+            $getSql = "SELECT * FROM lsports_sports where bet_type = 1 and is_use = 1 ORDER BY display_order ASC";
+
+                $listMenu = $lSportsBetModel->db->query($getSql, [])->getResultArray();
+
         return view("$viewRoot/sports", [
             'sports' => $sportsList, // 상단 좌측에 사용
             'leagues' => $leaguesList, // 상단 전체리그 항목에 사용(game02)
@@ -334,8 +373,9 @@ class SportsController extends BaseController {
             'sports_id' => $_GET['sports_id'] ?? 0,
             'league_name' => $league_name,
             'is_betting_slip' => $member->getIsBettingSlip(),
-            'serverName' => config(App::class)->ServerName
-            //'myItemList' => $resultMyItemlist
+            'serverName' => config(App::class)->ServerName,
+            'myItemList' => $resultMyItemlist,
+            'listMenu' => $listMenu
         ]);
     }
     }
@@ -574,7 +614,7 @@ class SportsController extends BaseController {
 
         if (0 < count($array_fix)) {
             $getAvgSportsQueryString = time();
-            list($sql, $bind_parame) = $this->getAvgMainSportsQueryString($member_idx, $array_fix, $member->getLevel());
+            list($sql, $bind_parame) = $this->getAvgMainSportsQueryString($member_idx, $array_fix,$startTime, $endTime, $member->getLevel());
             $gameList = $lSportsBetModel->db->query($sql, $bind_parame)->getResult();
 
             $t_getAvgSportsQueryString = time() - $getAvgSportsQueryString;
@@ -686,7 +726,7 @@ class SportsController extends BaseController {
 
         # 배팅 리스트
         $lSportsBetModel = new LSportsBetModel();
-        list($sql, $bind_parame) = $this->getAvgSportsQueryString(session()->get('member_idx'),$array_fix,$startTime, $endTime, $member->getLevel());
+        list($sql, $bind_parame) = $this->getAvgSportsQueryString(session()->get('member_idx'), $fixture_id, $startTime, $endTime,$member->getLevel());
 
         $gameList = $lSportsBetModel->db->query($sql, $bind_parame)->getResult();
 
@@ -739,6 +779,59 @@ class SportsController extends BaseController {
     }
 
     // 총개수 가져오기 
+    private function _getAvgSportsAllCountQueryString($startTime, $endTime) {
+
+        $sql = "SELECT 
+                        markets.id as markets_id,
+                        markets.name,
+                        markets.menu,
+                        markets.limit_bet_price,
+                        markets.max_bet_price,
+                        markets.is_main_menu,
+                        markets.main_display_order,
+                        markets.display_order,
+                        markets.display_name as markets_display_name,
+                        markets.main_book_maker,
+                        fix.fixture_id,
+                        fix.fixture_sport_id,
+                        fix.fixture_location_id,
+                        fix.fixture_league_id,
+                        IF('ON' = fix.passivity_flag AND fix.fixture_start_date_passivity is NOT NULL ,fix.fixture_start_date_passivity,fix.fixture_start_date) as fixture_start_date,
+                        sports.name as sport_name,
+                        sports.display_order as sport_display_order,
+                        league.display_name as fixture_league_name,
+                        league.name as league_name,
+                        league.image_path as fixture_league_image_path,
+                        IF(locations.display_name is NOT NULL,locations.display_name,locations.name) as fixture_location_name,
+                        locations.image_path as fixture_location_image_path,
+                        p1.team_name as p1_team_name, p1.display_name as p1_display_name, 
+                        p2.team_name as p2_team_name, p2.display_name as p2_display_name
+                        FROM lsports_fixtures as fix ";
+        $sql .= " LEFT JOIN lsports_leagues as league ON fix.fixture_league_id = league.id   
+                  LEFT JOIN 	 lsports_participant as p1
+                           ON	 fix.fixture_participants_1_id = p1.fp_id
+                  LEFT JOIN 	 lsports_participant as p2
+                           ON	 fix.fixture_participants_2_id = p2.fp_id";
+
+        $sql .= " LEFT JOIN lsports_sports as sports ON fix.fixture_sport_id = sports.id";
+        $sql .= " LEFT JOIN lsports_bet as bet ON fix.fixture_id = bet.fixture_id ";
+        $sql .= " LEFT JOIN lsports_markets as markets ON bet.markets_id = markets.id ";
+        $sql .= " LEFT JOIN lsports_locations as locations ON fix.fixture_location_id = locations.id ";
+        $sql .= " WHERE 
+                    fix.bet_type = 1 
+                    AND IF('ON' = fix.passivity_flag AND fix.fixture_start_date_passivity is NOT NULL ,fix.fixture_start_date_passivity,fix.fixture_start_date) BETWEEN ? AND ?
+                    AND IF('ON' = fix.passivity_flag AND fix.display_status_passivity is NOT NULL ,fix.display_status_passivity,fix.display_status) IN (1)                     
+                    AND fix.admin_bet_status = 'ON' 
+                    AND bet.bet_type = 1
+                    AND IF('ON' = bet.passivity_flag AND bet.bet_status_passivity is NOT NULL ,bet.bet_status_passivity,bet.bet_status) IN (1) 
+                    AND bet.admin_bet_status = 'ON' ";
+        $sql = $sql . " AND sports.is_use = 1 and sports.bet_type = 1";
+        $sql = $sql . " AND league.is_use = 1 and league.bet_type = 1";
+        $sql = $sql . " AND markets.bet_group = 1 AND markets.is_delete = 0 AND markets.sport_id = fix.fixture_sport_id";
+        $sql .= " GROUP BY fix.fixture_id,IF('ON' = fix.passivity_flag AND fix.fixture_start_date_passivity is NOT NULL ,fix.fixture_start_date_passivity,fix.fixture_start_date) ORDER BY fixture_start_date asc ,league.display_name ,fix.fixture_sport_id ";
+        return $sql;
+    }
+
     private function getAvgSportsAllCountQueryString($startTime, $endTime) {
         $sql = "SELECT 
                         fix.fixture_id,
@@ -774,7 +867,6 @@ class SportsController extends BaseController {
                               WHEN fix.fixture_sport_id = 154830  THEN  bet.markets_id = 52 
                               WHEN fix.fixture_sport_id = 154919  THEN  bet.markets_id = 52 
                               WHEN fix.fixture_sport_id = 687890  THEN  bet.markets_id = 52 
-                              WHEN fix.fixture_sport_id = 54094  THEN  bet.markets_id = 52
                     ELSE 1 = 1 END) 
                     AND IF('ON' = bet.passivity_flag AND bet.bet_status_passivity is NOT NULL ,bet.bet_status_passivity,bet.bet_status) = 1 
                     AND bet.bet_type = 1
@@ -785,6 +877,74 @@ class SportsController extends BaseController {
         $sql .= " GROUP BY fix.fixture_id,IF('ON' = fix.passivity_flag AND fix.fixture_start_date_passivity is NOT NULL ,fix.fixture_start_date_passivity,fix.fixture_start_date) ORDER BY fixture_start_date asc ,league.display_name ,fix.fixture_sport_id ";
         //$this->logger->error($sql);
         return $sql;
+    }
+    
+    private function _getAvgSportsQueryString($member_idx, $array_fix, $startTime, $endTime, $level) {
+        $bind_parame = array();
+        $sql = "SELECT 
+                             bet.bet_id,
+                             bet.fixture_id,
+                             bet.bet_base_line,
+                             bet.bet_line,
+                             bet.bet_name,
+                             bet.providers_id,
+                             IF('ON' = bet.passivity_flag AND bet.bet_status_passivity is NOT NULL ,bet.bet_status_passivity,bet.bet_status) as bet_status,
+                             IF('ON' = bet.passivity_flag AND bet.bet_price_passivity is NOT NULL ,bet.bet_price_passivity,bet.bet_price) as bet_price,
+                             bet.last_update,
+                             bet.update_dt,
+                             markets.id as markets_id,
+                             markets.name,
+                             markets.menu,
+                             markets.limit_bet_price,
+                             markets.max_bet_price,
+                             markets.is_main_menu,
+                             markets.main_display_order,
+                             markets.display_order,
+                             markets.main_book_maker,
+                             markets.sub_book_maker,
+                             fix.fixture_sport_id, sports.name as fixture_sport_name,
+                             fix.fixture_location_id, location.name as fixture_location_name,
+                             fix.fixture_league_id, league.display_name as fixture_league_name,
+                             IF('ON' = fix.passivity_flag AND fix.fixture_start_date_passivity is NOT NULL ,fix.fixture_start_date_passivity,fix.fixture_start_date) as fixture_start_date, 
+                             IF('ON' = fix.passivity_flag AND fix.display_status_passivity is NOT NULL ,fix.display_status_passivity,fix.display_status) as display_status,
+                             p1.team_name as p1_team_name, p1.display_name as p1_display_name, 
+                             p2.team_name as p2_team_name, p2.display_name as p2_display_name,
+                             league.display_name as league_display_name,
+                             league.image_path as league_image_path,
+                             location.image_path as location_image_path,
+                             location.name as location_display_name,
+                             div_policy.amount,
+                             div_policy.amount - (select sum_bet_money from fixtures_bet_sum as bet_sum 
+                                where bet_sum.member_idx = ? and bet_sum.fixture_id = fix.fixture_id and bet_sum.bet_type = 1) as leagues_m_bet_money
+                    FROM         lsports_bet as bet
+                    LEFT JOIN    lsports_fixtures as fix
+                    ON       bet.fixture_id = fix.fixture_id 
+                    LEFT JOIN 	 lsports_participant as p1
+                           ON	 fix.fixture_participants_1_id = p1.fp_id
+                    LEFT JOIN 	 lsports_participant as p2
+                           ON	 fix.fixture_participants_2_id = p2.fp_id
+                    LEFT JOIN 	 lsports_leagues as league
+                           ON	 fix.fixture_league_id = league.id 
+                    LEFT JOIN 	 dividend_policy as div_policy
+                           ON	 league.dividend_rank = div_policy.rank 
+                    LEFT JOIN 	 lsports_locations as location
+                           ON	 fix.fixture_location_id = location.id
+                    LEFT JOIN 	 lsports_markets as markets
+                           ON	 bet.markets_id = markets.id   
+                     LEFT JOIN 	 lsports_sports as sports
+                           ON	 sports.id = fix.fixture_sport_id 
+
+                    WHERE 
+                    IF('ON' = bet.passivity_flag AND bet.bet_status_passivity is NOT NULL ,bet.bet_status_passivity,bet.bet_status) IN (1) 
+                    AND bet.admin_bet_status = 'ON'
+                    AND bet.bet_type = 1
+                    AND fix.fixture_id = ? AND fix.bet_type = 1 ";
+        $sql = $sql . " AND sports.is_use = 1 and sports.bet_type = 1";
+        $sql = $sql . " AND league.is_use = 1 and league.bet_type = 1";
+        $sql = $sql . " AND markets.bet_group = 1 AND markets.is_delete = 0  AND markets.sport_id = fix.fixture_sport_id AND div_policy.type = 1 AND div_policy.level = ?";
+        $sql = $sql . " GROUP BY bet.bet_id, bet.fixture_id,IF('ON' = fix.passivity_flag AND fix.fixture_start_date_passivity is NOT NULL ,fix.fixture_start_date_passivity,fix.fixture_start_date) ORDER BY fixture_start_date asc ,league.display_name,bet.bet_name,bet.bet_base_line *1";
+
+        return [$sql, $bind_parame];
     }
     
     private function getAvgSportsQueryString($member_idx, $array_fix, $startTime, $endTime, $level) {
@@ -846,18 +1006,87 @@ class SportsController extends BaseController {
                     AND IF('ON' = bet.passivity_flag AND bet.bet_status_passivity is NOT NULL ,bet.bet_status_passivity,bet.bet_status) = 1 
                     AND bet.admin_bet_status = 'ON'
                     AND bet.bet_type = 1
-                    AND fix.fixture_id IN (" . implode(',', $array_fix) . ") AND fix.bet_type = 1 ";
+                    AND fix.fixture_id IN (" .  $array_fix . ") AND fix.bet_type = 1 ";
 
 
         $sql = $sql . " AND sports.is_use = 1 and sports.bet_type = 1";
         $sql = $sql . " AND league.is_use = 1 and league.bet_type = 1";
         $sql = $sql . " AND markets.bet_group = 1 AND markets.is_delete = 0  AND markets.sport_id = fix.fixture_sport_id AND div_policy.type = 1 AND div_policy.level = $level";
         $sql = $sql . " GROUP BY bet.bet_id, bet.fixture_id,IF('ON' = fix.passivity_flag AND fix.fixture_start_date_passivity is NOT NULL ,fix.fixture_start_date_passivity,fix.fixture_start_date) ORDER BY fixture_start_date asc ,league.display_name,bet.bet_name,bet.bet_base_line *1";
+        return [$sql, $bind_parame];
+    }
 
+    private function _getAvgMainSportsQueryString($member_idx, $array_fix, $startTime, $endTime, $level) {
+        $bind_parame = array();
+        $sql = "SELECT 
+                             bet.bet_id,
+                             bet.fixture_id,
+                             bet.bet_base_line,
+                             bet.bet_line,
+                             bet.bet_name,
+                             bet.providers_id,
+                             IF('ON' = bet.passivity_flag AND bet.bet_status_passivity is NOT NULL ,bet.bet_status_passivity,bet.bet_status) as bet_status,
+                             IF('ON' = bet.passivity_flag AND bet.bet_price_passivity is NOT NULL ,bet.bet_price_passivity,bet.bet_price) as bet_price,
+                             bet.last_update,
+                             bet.update_dt,
+                             markets.id as markets_id,
+                             markets.menu,
+                             markets.main_book_maker,
+                             markets.sub_book_maker,
+                             markets.is_main_menu,
+                             markets.display_order,
+                             markets.main_display_order,
+                             markets.display_name as markets_display_name,
+                             markets.name,
+                             markets.limit_bet_price,
+                             markets.max_bet_price,
+                             fix.fixture_sport_id,sports.name as fixture_sport_name,
+                             fix.fixture_location_id, location.name as fixture_location_name,
+                             fix.fixture_league_id, league.display_name as fixture_league_name,
+                             IF('ON' = fix.passivity_flag AND fix.fixture_start_date_passivity is NOT NULL ,fix.fixture_start_date_passivity,fix.fixture_start_date) as fixture_start_date, 
+                             IF('ON' = fix.passivity_flag AND fix.display_status_passivity is NOT NULL ,fix.display_status_passivity,fix.display_status) as display_status,
+                             p1.team_name as p1_team_name, p1.display_name as p1_display_name, 
+                             p2.team_name as p2_team_name, p2.display_name as p2_display_name,
+                             league.display_name as league_display_name,
+                             league.image_path as league_image_path,
+                             location.image_path as location_image_path,
+                             location.name as location_display_name,
+                             location.name_en as location_name_en,
+                             div_policy.amount,
+                             div_policy.amount - (select sum_bet_money from fixtures_bet_sum as bet_sum 
+                                where bet_sum.member_idx = ? and bet_sum.fixture_id = fix.fixture_id and bet_sum.bet_type = 1) as leagues_m_bet_money
+                    FROM         lsports_bet as bet
+                    LEFT JOIN    lsports_fixtures as fix
+                    ON       bet.fixture_id = fix.fixture_id 
+                    LEFT JOIN 	 lsports_participant as p1
+                           ON	 fix.fixture_participants_1_id = p1.fp_id
+                    LEFT JOIN 	 lsports_participant as p2
+                           ON	 fix.fixture_participants_2_id = p2.fp_id
+                    LEFT JOIN 	 lsports_leagues as league
+                           ON	 fix.fixture_league_id = league.id 
+                    LEFT JOIN 	 dividend_policy as div_policy
+                           ON	 league.dividend_rank = div_policy.rank 
+                    LEFT JOIN 	 lsports_locations as location
+                           ON	 fix.fixture_location_id = location.id
+                    LEFT JOIN 	 lsports_markets as markets
+                           ON	 bet.markets_id = markets.id   
+                     LEFT JOIN 	 lsports_sports as sports
+                           ON	 sports.id = fix.fixture_sport_id 
+                    WHERE 
+                    IF('ON' = bet.passivity_flag AND bet.bet_status_passivity is NOT NULL ,bet.bet_status_passivity,bet.bet_status) IN(1) 
+                    AND bet.admin_bet_status = 'ON'
+                    AND bet.bet_type = 1
+                    AND IF('ON' = fix.passivity_flag AND fix.display_status_passivity is NOT NULL ,fix.display_status_passivity,fix.display_status) IN(1) 
+                    AND fix.fixture_id IN (" . implode(',', $array_fix) . ") AND fix.bet_type = 1 ";
+
+        $sql = $sql . " AND sports.is_use = 1 and sports.bet_type = 1";
+        $sql = $sql . " AND league.is_use = 1 and league.bet_type = 1";
+        $sql = $sql . " AND markets.bet_group = 1 AND markets.is_delete = 0  AND fix.fixture_sport_id = markets.sport_id AND div_policy.type = 1 AND div_policy.level = ?";
+        $sql = $sql . " GROUP BY bet.bet_id, bet.fixture_id,IF('ON' = fix.passivity_flag AND fix.fixture_start_date_passivity is NOT NULL ,fix.fixture_start_date_passivity,fix.fixture_start_date) ORDER BY fixture_start_date asc ,fix.fixture_sport_id,league.display_name,bet.bet_name,bet.bet_base_line *1";
 
         return [$sql, $bind_parame];
     }
-       
+
     private function getAvgMainSportsQueryString($member_idx, $array_fix, $startTime, $endTime, $level) {
         $bind_parame = array();
         $sql = "SELECT 
@@ -924,6 +1153,7 @@ class SportsController extends BaseController {
 
         return [$sql, $bind_parame];
     }
+    
     // 실시간 경기 수 가져오기 
     private function getRealTimeData($lSportsBetModel, $member_idx, $str_sports_ids, $str_fix_ids, $arr_fix_result, $level) {
 
@@ -1021,6 +1251,7 @@ class SportsController extends BaseController {
 
         //return $sql;
     }
+
     //// API
     // 마감임박 경기목록
     public function getMainSportTimeList() {

@@ -76,6 +76,8 @@
 
 		if( popupLength < 1 ){
 			$(document).find(".popup_wrap").hide();
+		}else{
+			$(document).find(".popup_wrap").show();
 		}
 	}
 </script>

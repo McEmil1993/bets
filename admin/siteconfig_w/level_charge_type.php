@@ -37,6 +37,7 @@ if($db_conn) {
     $bonus_opt3 = $db_bonus_option[2]['set_type_val'];
     $bonus_opt4 = $db_bonus_option[3]['set_type_val'];
     $bonus_opt5 = $db_bonus_option[4]['set_type_val'];
+
     
     $p_data['sql'] = " SELECT * FROM charge_type ";
     $p_data['sql'] .= " ORDER BY level" ;
@@ -109,7 +110,7 @@ include_once(_BASEPATH.'/common/head.php');
         <!-- detail search -->
         <div class="panel search_box">
         	<div style="color:#f89d1b!important">
-            	※ 가입 첫충 보너스 퍼센트 및 레벨별 배팅금액을 설정해주세요.
+            	※ 가입 첫충 퍼센트 및 기본 보너스 옵션을 설정해주세요.
             </div>
 
             <table class="mlist mline mt10">
@@ -128,28 +129,9 @@ include_once(_BASEPATH.'/common/head.php');
                             </tr>
                         </table>
                     </td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="panel search_box">
-        	<div style="color:#f89d1b!important">
-            	※ 충전시 보너스 포인트 지급 조건 및 기능동작을 설정할 수 있습니다.
-            </div>
-
-            <table class="mlist mline mt10">
-                <tr>
-                    <th width="600px">기본 보너스 옵션 기준</th>
                     <th width="200px">기본 보너스 옵션 설정</th>
-                    <th width="200px">보너스 옵션 1 설정</th>
-                    <th width="200px">보너스 옵션 2 설정</th>
-                    <th width="200px">보너스 옵션 3 설정</th>
-                    <th width="200px">보너스 옵션 4 설정</th>
-                    <th width="200px">보너스 옵션 5 설정</th>
-                </tr>
-                <tr>
                     <td>
-                        <input type="text" id="desc" class="" style="width: 400px" value="<?=$db_dataBaseArr[0]['desc']?>">
+                        <input type="text" id="desc" style="width: 600px" value="<?=$db_dataBaseArr[0]['desc']?>" placeholder="'기본 보너스 옵션'의 기준을 적어주세요">
                         <a href="javascript::" onclick="fn_update_bonus_desc(1)" class="btn h30 btn_blu">등록</a>
                     </td>
                     <td>
@@ -159,45 +141,9 @@ include_once(_BASEPATH.'/common/head.php');
                             <a href="javascript::" onclick="betOnOffBtnClick(this, 'ON', 1)" class="btn h30 btn_gray"> OFF</a>
                         <?php } ?>
                     </td>
-                    <td>
-                        <?php if ($db_dataBaseArr[0]['bonus_1_flag'] == 'ON') { ?>
-                            <a href="javascript::" onclick="betOnOffBtnClick(this, 'OFF', 2)" class="btn h30 btn_green"> ON</a>
-                        <?php }else{ ?>
-                            <a href="javascript::" onclick="betOnOffBtnClick(this, 'ON', 2)" class="btn h30 btn_gray"> OFF</a>
-                        <?php } ?>
-                    </td>
-                    <td>
-                        <?php if ($db_dataBaseArr[0]['bonus_2_flag'] == 'ON') { ?>
-                            <a href="javascript::" onclick="betOnOffBtnClick(this, 'OFF', 3)" class="btn h30 btn_green"> ON</a>
-                        <?php }else{ ?>
-                            <a href="javascript::" onclick="betOnOffBtnClick(this, 'ON', 3)" class="btn h30 btn_gray"> OFF</a>
-                        <?php } ?>
-                    </td>
-                    <td>
-                        <?php if ($db_dataBaseArr[0]['bonus_3_flag'] == 'ON') { ?>
-                            <a href="javascript::" onclick="betOnOffBtnClick(this, 'OFF', 4)" class="btn h30 btn_green"> ON</a>
-                        <?php }else{ ?>
-                            <a href="javascript::" onclick="betOnOffBtnClick(this, 'ON', 4)" class="btn h30 btn_gray"> OFF</a>
-                        <?php } ?>
-                    </td>
-                    <td>
-                        <?php if ($db_dataBaseArr[0]['bonus_4_flag'] == 'ON') { ?>
-                            <a href="javascript::" onclick="betOnOffBtnClick(this, 'OFF', 5)" class="btn h30 btn_green"> ON</a>
-                        <?php }else{ ?>
-                            <a href="javascript::" onclick="betOnOffBtnClick(this, 'ON', 5)" class="btn h30 btn_gray"> OFF</a>
-                        <?php } ?>
-                    </td>
-                    <td>
-                        <?php if ($db_dataBaseArr[0]['bonus_5_flag'] == 'ON') { ?>
-                            <a href="javascript::" onclick="betOnOffBtnClick(this, 'OFF', 6)" class="btn h30 btn_green"> ON</a>
-                        <?php }else{ ?>
-                            <a href="javascript::" onclick="betOnOffBtnClick(this, 'ON', 6)" class="btn h30 btn_gray"> OFF</a>
-                        <?php } ?>
-                    </td>
                 </tr>
             </table>
         </div>
-        
 
         <!-- list -->
         <div class="panel reserve">
@@ -215,12 +161,30 @@ include_once(_BASEPATH.'/common/head.php');
                 <th rowspan="3">레벨</th>
                 <th rowspan="2">충전방식</th>
                 <th rowspan="2">이름(Front)</th>
-                <th colspan="2"><?=$bonus_opt1 ?></th>
-                <th colspan="3"><input type="text" id="bonus_opt1" style="width:100%" value="" placeholder="보너스 옵션1의 명칭을 적어주세요"></th>
-                <th><a href="#" class="btn h30 btn_blu" onClick="bonus_option_update('bonus_option_1',1)">등록</a></th>
-                <th colspan="2"><?=$bonus_opt2 ?></th>
-                <th colspan="3"><input type="text" id="bonus_opt2" style="width:100%" value="" placeholder="보너스 옵션2의 명칭을 적어주세요"></th>
-                <th><a href="#" class="btn h30 btn_blu" onClick="bonus_option_update('bonus_option_2',2)">등록</a></th>
+                <th colspan="2">보너스 옵션 1</th>
+                <th colspan="3">
+                    <input type="text" id="bonus_opt1" style="width:200px" value="" placeholder="보너스 옵션1의 명칭을 적어주세요">
+                    <a href="#" class="btn h30 btn_blu" onClick="bonus_option_update('bonus_option_1',1)">등록</a>
+                </th>
+                <th>
+                    <?php if ($db_dataBaseArr[0]['bonus_1_flag'] == 'ON') { ?>
+                        <a href="javascript::" onclick="betOnOffBtnClick(this, 'OFF', 2)" class="btn h30 btn_green"> ON</a>
+                    <?php }else{ ?>
+                        <a href="javascript::" onclick="betOnOffBtnClick(this, 'ON', 2)" class="btn h30 btn_gray"> OFF</a>
+                    <?php } ?>
+                </th>
+                <th colspan="2">보너스 옵션 2</th>
+                <th colspan="3">
+                    <input type="text" id="bonus_opt2" style="width:200px" value="" placeholder="'보너스 옵션2'의 명칭을 적어주세요">
+                    <a href="#" class="btn h30 btn_blu" onClick="bonus_option_update('bonus_option_2',2)">등록</a>
+                </th>
+                <th>
+                    <?php if ($db_dataBaseArr[0]['bonus_2_flag'] == 'ON') { ?>
+                        <a href="javascript::" onclick="betOnOffBtnClick(this, 'OFF', 3)" class="btn h30 btn_green"> ON</a>
+                    <?php }else{ ?>
+                        <a href="javascript::" onclick="betOnOffBtnClick(this, 'ON', 3)" class="btn h30 btn_gray"> OFF</a>
+                    <?php } ?>
+                </th>
                 <th rowspan="2">수정</th>
             </tr>
             <tr>
@@ -239,8 +203,8 @@ include_once(_BASEPATH.'/common/head.php');
             </tr>
             <tr>
                 <th colspan="2">보너스 옵션 기준 설정</th>
-                <td colspan="6"><input type="text" id="bonus_1_desc" style="width: 100%;" value="<?=$db_dataBaseArr[0]['bonus_1_desc']?>"></td>
-                <td colspan="6"><input type="text" id="bonus_2_desc" style="width: 100%;" value="<?=$db_dataBaseArr[0]['bonus_2_desc']?>"></td>
+                <td colspan="6"><input type="text" id="bonus_1_desc" style="width: 100%;" value="<?=$db_dataBaseArr[0]['bonus_1_desc']?>" placeholder="'보너스 옵션1'의 기준을 적어주세요"></td>
+                <td colspan="6"><input type="text" id="bonus_2_desc" style="width: 100%;" value="<?=$db_dataBaseArr[0]['bonus_2_desc']?>" placeholder="'보너스 옵션2'의 기준을 적어주세요"></td>
                 <td><a href="#" class="btn h30 btn_blu" onClick="fn_update_bonus_desc(2)">등록</a></td>
             </tr>
 <?php 
@@ -289,15 +253,44 @@ include_once(_BASEPATH.'/common/head.php');
         <table class="mlist">
             <tr>
                 <th rowspan="3">레벨</th>
-                <th colspan="2"><?=$bonus_opt3 ?></th>
-                <th colspan="3"><input type="text" id="bonus_opt3" style="width:100%" value="" placeholder="보너스 옵션3의 명칭을 적어주세요"></th>
-                <th><a href="#" class="btn h30 btn_blu" onClick="bonus_option_update('bonus_option_3',3)">등록</a></th>
-                <th colspan="2"><?=$bonus_opt4 ?></th>
-                <th colspan="3"><input type="text" id="bonus_opt4" style="width:100%" value="" placeholder="보너스 옵션4의 명칭을 적어주세요"></th>
-                <th><a href="#" class="btn h30 btn_blu" onClick="bonus_option_update('bonus_option_4',4)">등록</a></th>
-                <th colspan="2"><?=$bonus_opt5 ?></th>
-                <th colspan="3"><input type="text" id="bonus_opt5" style="width:100%" value="" placeholder="보너스 옵션5의 명칭을 적어주세요"></th>
-                <th><a href="#" class="btn h30 btn_blu" onClick="bonus_option_update('bonus_option_5',5)">등록</a></th>
+                <th>보너스 옵션 3</th>
+                <th colspan="4">
+                    <input type="text" id="bonus_opt3" style="width:200px" value="" placeholder="'보너스 옵션3'의 명칭을 적어주세요">
+                    <a href="#" class="btn h30 btn_blu" onClick="bonus_option_update('bonus_option_3',3)">등록</a>
+                </th>
+                <th>
+                    <?php if ($db_dataBaseArr[0]['bonus_3_flag'] == 'ON') { ?>
+                        <a href="javascript::" onclick="betOnOffBtnClick(this, 'OFF', 4)" class="btn h30 btn_green"> ON</a>
+                    <?php }else{ ?>
+                        <a href="javascript::" onclick="betOnOffBtnClick(this, 'ON', 4)" class="btn h30 btn_gray"> OFF</a>
+                    <?php } ?>
+                </th>
+
+                <th>보너스 옵션 4</th>
+                <th colspan="4">
+                    <input type="text" id="bonus_opt4" style="width:200px" value="" placeholder="'보너스 옵션4'의 명칭을 적어주세요">
+                    <a href="#" class="btn h30 btn_blu" onClick="bonus_option_update('bonus_option_4',4)">등록</a>
+                </th>
+                <th>
+                    <?php if ($db_dataBaseArr[0]['bonus_4_flag'] == 'ON') { ?>
+                        <a href="javascript::" onclick="betOnOffBtnClick(this, 'OFF', 5)" class="btn h30 btn_green"> ON</a>
+                    <?php }else{ ?>
+                        <a href="javascript::" onclick="betOnOffBtnClick(this, 'ON', 5)" class="btn h30 btn_gray"> OFF</a>
+                    <?php } ?>
+                </th>
+
+                <th>보너스 옵션 5</th>
+                <th colspan="4">
+                    <input type="text" id="bonus_opt5" style="width:200px" value="" placeholder="'보너스 옵션5'의 명칭을 적어주세요">
+                    <a href="#" class="btn h30 btn_blu" onClick="bonus_option_update('bonus_option_5',5)">등록</a>
+                </th>
+                <th>
+                    <?php if ($db_dataBaseArr[0]['bonus_5_flag'] == 'ON') { ?>
+                        <a href="javascript::" onclick="betOnOffBtnClick(this, 'OFF', 6)" class="btn h30 btn_green"> ON</a>
+                    <?php }else{ ?>
+                        <a href="javascript::" onclick="betOnOffBtnClick(this, 'ON', 6)" class="btn h30 btn_gray"> OFF</a>
+                    <?php } ?>
+                </th>
                 <th rowspan="2">수정</th>
             </tr>
             <tr>
@@ -321,9 +314,9 @@ include_once(_BASEPATH.'/common/head.php');
                 <th>매충 최대(원)</th>
             </tr>
             <tr>
-                <td colspan="6"><input type="text" id="bonus_3_desc" style="width: 100%;" value="<?=$db_dataBaseArr[0]['bonus_3_desc']?>"></td>
-                <td colspan="6"><input type="text" id="bonus_4_desc" style="width: 100%;" value="<?=$db_dataBaseArr[0]['bonus_4_desc']?>"></td>
-                <td colspan="6"><input type="text" id="bonus_5_desc" style="width: 100%;" value="<?=$db_dataBaseArr[0]['bonus_5_desc']?>"></td>
+                <td colspan="6"><input type="text" id="bonus_3_desc" style="width: 100%;" value="<?=$db_dataBaseArr[0]['bonus_3_desc']?>" placeholder="'보너스 옵션3'의 기준을 적어주세요"></td>
+                <td colspan="6"><input type="text" id="bonus_4_desc" style="width: 100%;" value="<?=$db_dataBaseArr[0]['bonus_4_desc']?>" placeholder="'보너스 옵션4'의 기준을 적어주세요"></td>
+                <td colspan="6"><input type="text" id="bonus_5_desc" style="width: 100%;" value="<?=$db_dataBaseArr[0]['bonus_5_desc']?>" placeholder="'보너스 옵션5'의 기준을 적어주세요"></td>
                 <td><a href="#" class="btn h30 btn_blu" onClick="fn_update_bonus_desc(3)">등록</a></td>
             </tr>
 <?php 
@@ -576,36 +569,35 @@ function setConfigRegFirst() {
         }
     });
 }
-
-
 function bonus_option_update(bonus_option,index) {
 
-    let bonus_opt = $('#bonus_opt'+index).val();
+let bonus_opt = $('#bonus_opt'+index).val();
 
-    
-    
-    $.ajax({
-        type: 'post',
-        dataType: 'json',
-        url: '/siteconfig_w/_set_update_bonus_option.php',
-        //async: false,
-        data: {
-            'bonus_option': bonus_option,'txtval': bonus_opt
-        },
-        success: function(result) {
-            if (result['retCode'] == "1000") {
-               
-                location.reload();
-                return;
-            }
-        },
-        error: function(request, status, error) {
-            console.log(request);
-            alert('수정에 실패하였습니다.');
+
+
+$.ajax({
+    type: 'post',
+    dataType: 'json',
+    url: '/siteconfig_w/_set_update_bonus_option.php',
+    //async: false,
+    data: {
+        'bonus_option': bonus_option,'txtval': bonus_opt
+    },
+    success: function(result) {
+        if (result['retCode'] == "1000") {
+           
+            location.reload();
             return;
         }
-    });
+    },
+    error: function(request, status, error) {
+        console.log(request);
+        alert('수정에 실패하였습니다.');
+        return;
+    }
+});
 }
+
 </script>
 
 </html>

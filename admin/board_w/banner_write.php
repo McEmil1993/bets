@@ -15,6 +15,61 @@ if(0 != $_SESSION['u_business']){
     die();
 }
 
+$rank_check['1'] = array('rank'=> 1,'status' => 1);
+$rank_check['2'] = array('rank'=> 2,'status' =>1);
+$rank_check['3'] = array('rank'=> 3,'status' => 1);
+$rank_check['4'] = array('rank'=> 4,'status' => 1);
+$rank_check['5'] = array('rank'=> 5,'status' => 1);
+
+$getRank = new Admin_Bbs_DAO(_DB_NAME_WEB);
+$db_conn = $getRank->dbconnect();
+$data_select_p = 'selected';
+$data_select_m = '';
+if(isset($_POST['displayType'])){
+    if($_POST['displayType'] == 1){
+        $data_select_p = 'selected';
+        $data_select_m = '';
+    }else {
+        $data_select_p  = '';
+        $data_select_m = 'selected';
+    }
+}
+if($db_conn) {
+
+    $p_data['displayType'] = trim(isset($_POST['displayType']) ? $getRank->real_escape_string($_POST['displayType']) : '1');
+
+   
+    
+    try {
+        $r_data['sql'] = "SELECT * FROM banners WHERE display_type = '".$p_data['displayType']."' group by rank";
+        $chck_rank_array = $getRank->getQueryData($r_data);
+    
+        foreach($chck_rank_array as $data){
+            if($data['rank'] == 1){
+                $rank_check[$data['rank']] =  array('rank'=> 1,'status' => 0);
+            }elseif($data['rank'] == 2){
+                $rank_check[$data['rank']] =  array('rank'=> 2,'status' => 0);
+            }elseif($data['rank'] == 3){
+                $rank_check[$data['rank']] =  array('rank'=> 3,'status' => 0);
+            }elseif($data['rank'] == 4){
+                $rank_check[$data['rank']] =  array('rank'=> 4,'status' => 0);
+            }elseif($data['rank'] == 5){
+                $rank_check[$data['rank']] =  array('rank'=> 5,'status' => 0);
+            }
+            
+        
+        }
+
+        
+    } catch (\Exception $e) {
+        $UTIL->logWrite("[_banner_prc] [error -2]", "error");
+        $result['retCode'] = -3;
+        $result['retMsg'] = 'Exception 예외발생';
+    }
+} 
+
+
+
 
 ?>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
@@ -101,6 +156,7 @@ include_once(_BASEPATH.'/common/iframe_head_menu.php');
                             </select>
                         </td>-->
                     </tr>
+                    
                     <tr>
                     	<th style="width: 150px; text-align:left">썸네일</th>
                         <td class="file_thumb_section">
@@ -113,6 +169,12 @@ include_once(_BASEPATH.'/common/iframe_head_menu.php');
                             </form>
                         </td>
                     </tr>
+                        <?php
+                            // $img_size_array = getimagesize("");
+                            // $width = $img_size_array[0];
+                            // $height = $img_size_array[1];
+
+                        ?>
                     <!--<tr>
                     	<th style="width: 150px; text-align:left">상세</th>
                         <td>
@@ -130,21 +192,30 @@ include_once(_BASEPATH.'/common/iframe_head_menu.php');
                     </tr>
                     <tr>
                     	<th style="width: 150px; text-align:left">노출타입</th>
+                        <form action="" method="POST">
                         <td>
-                        	<select name="displayType" id="displayType" style="width: 100%">
-                                <option value="1" selected>PC</option>
-                                <option value="2">모바일</option>
+                        	<select name="displayType" id="displayType" onchange="this.form.submit()" style="width: 100%">
+                                <option <?=$data_select_p ?> value="1">PC</option>
+                                <option <?=$data_select_m ?> value="2">모바일</option>
                         </td>
+                        </form>
                     </tr>
                     <tr>
                     	<th style="width: 150px; text-align:left">순번</th>
+                        
                         <td>
-                        	<select name="rank" id="rank" style="width: 100%">
-                                <option value="1" selected>1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
+                            
+                        <select name="rank" id="rank"  style="width: 100%">
+                        <?php 
+                            foreach($rank_check as $rnk){
+                                if ($rnk['status'] === 1) {
+                        ?> 
+                            <option  value="<?=$rnk['rank'] ?>"><?=$rnk['rank'] ?></option>
+
+                        <?php 
+                            }
+                        }
+                        ?>
                         </td>
                     </tr>
                     <!-- 
@@ -157,7 +228,7 @@ include_once(_BASEPATH.'/common/iframe_head_menu.php');
                     </tr>
                      -->
                 </table>                
-                *PC적정 크기 : 1100 x 320 / *모바일적정 크기 : 340 x 170
+                *PC적정 크기 : 1920 x 400 / *모바일적정 크기 : 720 X 550
                 <br>
                 *최대 사용할 수 있는 배너는 5개 입니다.
                 <br>
@@ -188,81 +259,182 @@ let image_check = false;
 $(document).ready(function(){
 	// 공지 등록
 	$("#adm_btn_event_send").click(function(){
-            if(!image_check){
-                alert("파일을 첨부해 주세요.");
-                return;
-            }
-            
-            $('#saveName').val(getCurrentDate() + "_" + document.getElementById("uploadfile").files[0].name);
-            $("#thumbnail_fm").submit();
-            
-            let str_msg = '등록 하시겠습니까?';
 
-//            let msg_title = $("#send_m_title").val();
-            // document.getElementById 사용하니 fakepath 피해서 파일명이 가져와진다.
-            let filename = $('#saveName').val();
-            /* 
-            // 제목 길이 체크
-            if (msg_title.length < 4) {
-                    alert('이벤트명 4글자 이상 입력해 주세요.');
-                    $('#send_m_title').select();
-                    $('#send_m_title').focus();
-                    return ;
-            } */
-            
-//            oEditors.getById["b_content"].exec("UPDATE_CONTENTS_FIELD", []); 
+            var myImg = document.querySelector("#sky");
+            var currWidth = myImg.naturalWidth;
+            var currHeight = myImg.naturalHeight;
 
-            // 내용
-            /* var msg_content = $("#b_content").val();	
-            if (msg_content.length < 5) {
-                    alert('내용을 입력해 주세요.');
-                    $('#b_content').select();
-                    $('#b_content').focus();
-                    return ;
-            } */
-
-            /*var detail = $("#detail").val();
-            if (detail.length < 5) {
-                    alert('썸네일을 입력해 주세요.');
-                    $('#b_content').select();
-                    $('#b_content').focus();
-                    return ;
-            }*/
-
-            // 상태
             var status = $("#status option:selected").val();
             var displayType = $("#displayType option:selected").val();
             var rank = $("#rank option:selected").val();
 
-            var result = confirm(str_msg);
-            if (result){
-                    //var prctype = "reg";
+            if (displayType == '1') {
+                if (currWidth >= 1000 && currWidth <= 1920 && currHeight >= 310 && currHeight <= 400) {
 
-                    $.ajax({
-                            type: 'post',
-                            dataType: 'json',
-                            url: '/board_w/_banner_prc.php',
-                            data:{'filename':filename,'status':status,'displayType':displayType,'rank':rank},
-                            success: function (result) {
-                                console.log(result['retMsg']);
-                                    if(result['retCode'] == "1000"){
-                                            alert('등록하였습니다.');
-                                            location.href="/board_w/banner_list.php";
-                                            return;
-                                    }else{
-                                            alert(result['retMsg']);
+                    if(!image_check){
+                        alert("파일을 첨부해 주세요.");
+                        return;
+                    }
+
+                    $('#saveName').val(getCurrentDate() + "_" + document.getElementById("uploadfile").files[0].name);
+                    $("#thumbnail_fm").submit();
+
+                    let str_msg = '등록 하시겠습니까?';
+
+                    //            let msg_title = $("#send_m_title").val();
+                    // document.getElementById 사용하니 fakepath 피해서 파일명이 가져와진다.
+                    let filename = $('#saveName').val();
+                    /* 
+                    // 제목 길이 체크
+                    if (msg_title.length < 4) {
+                            alert('이벤트명 4글자 이상 입력해 주세요.');
+                            $('#send_m_title').select();
+                            $('#send_m_title').focus();
+                            return ;
+                    } */
+
+                    //            oEditors.getById["b_content"].exec("UPDATE_CONTENTS_FIELD", []); 
+
+                    // 내용
+                    /* var msg_content = $("#b_content").val();	
+                    if (msg_content.length < 5) {
+                            alert('내용을 입력해 주세요.');
+                            $('#b_content').select();
+                            $('#b_content').focus();
+                            return ;
+                    } */
+
+                    /*var detail = $("#detail").val();
+                    if (detail.length < 5) {
+                            alert('썸네일을 입력해 주세요.');
+                            $('#b_content').select();
+                            $('#b_content').focus();
+                            return ;
+                    }*/
+
+                    // 상태
+
+
+                    var result = confirm(str_msg);
+                    if (result){
+                            //var prctype = "reg";
+
+                            $.ajax({
+                                    type: 'post',
+                                    dataType: 'json',
+                                    url: '/board_w/_banner_prc.php',
+                                    data:{'filename':filename,'status':status,'displayType':displayType,'rank':rank},
+                                    success: function (result) {
+                                        console.log(result['retMsg']);
+                                            if(result['retCode'] == "1000"){
+                                                    alert('등록하였습니다.');
+                                                    location.href="/board_w/banner_list.php";
+                                                    return;
+                                            }else{
+                                                    alert(result['retMsg']);
+                                                    return;
+                                            }
+                                    },
+                                    error: function (request, status, error) {
+                                            alert('등록에 실패하였습니다.');
                                             return;
                                     }
-                            },
-                            error: function (request, status, error) {
-                                    alert('등록에 실패하였습니다.');
-                                    return;
-                            }
-                    });
+                            });
+                    }
+                    else {
+                            return;
+                    }
+
+                } else {
+                    alert("규정된 이미지 사이즈가 다릅니다");
+                    console.log(currWidth+"--"+currWidth+"--"+currHeight+"--"+currHeight);
+                }
+            } else {
+                if (currWidth >= 710 && currWidth <= 780 && currHeight >= 500 && currHeight <= 570) {
+
+                    if(!image_check){
+                        alert("파일을 첨부해 주세요.");
+                        return;
+                    }
+
+                    $('#saveName').val(getCurrentDate() + "_" + document.getElementById("uploadfile").files[0].name);
+                    $("#thumbnail_fm").submit();
+
+                    let str_msg = '등록 하시겠습니까?';
+
+                    //            let msg_title = $("#send_m_title").val();
+                    // document.getElementById 사용하니 fakepath 피해서 파일명이 가져와진다.
+                    let filename = $('#saveName').val();
+                    /* 
+                    // 제목 길이 체크
+                    if (msg_title.length < 4) {
+                            alert('이벤트명 4글자 이상 입력해 주세요.');
+                            $('#send_m_title').select();
+                            $('#send_m_title').focus();
+                            return ;
+                    } */
+
+                    //            oEditors.getById["b_content"].exec("UPDATE_CONTENTS_FIELD", []); 
+
+                    // 내용
+                    /* var msg_content = $("#b_content").val();	
+                    if (msg_content.length < 5) {
+                            alert('내용을 입력해 주세요.');
+                            $('#b_content').select();
+                            $('#b_content').focus();
+                            return ;
+                    } */
+
+                    /*var detail = $("#detail").val();
+                    if (detail.length < 5) {
+                            alert('썸네일을 입력해 주세요.');
+                            $('#b_content').select();
+                            $('#b_content').focus();
+                            return ;
+                    }*/
+
+                    // 상태
+
+
+                    var result = confirm(str_msg);
+                    if (result){
+                            //var prctype = "reg";
+
+                            $.ajax({
+                                    type: 'post',
+                                    dataType: 'json',
+                                    url: '/board_w/_banner_prc.php',
+                                    data:{'filename':filename,'status':status,'displayType':displayType,'rank':rank},
+                                    success: function (result) {
+                                        console.log(result['retMsg']);
+                                            if(result['retCode'] == "1000"){
+                                                    alert('등록하였습니다.');
+                                                    location.href="/board_w/banner_list.php";
+                                                    return;
+                                            }else{
+                                                    alert(result['retMsg']);
+                                                    return;
+                                            }
+                                    },
+                                    error: function (request, status, error) {
+                                            alert('등록에 실패하였습니다.');
+                                            return;
+                                    }
+                            });
+                    }
+                    else {
+                            return;
+                    }
+
+                } else {
+                    alert("규정된 이미지 사이즈가 다릅니다");
+                    console.log(currWidth+"--"+currWidth+"--"+currHeight+"--"+currHeight);
+                }
             }
-            else {
-                    return;
-            }
+
+
+            
+            
     });
 
     // 공지 취소
@@ -278,10 +450,12 @@ $(document).ready(function(){
 
     // 이미지 썸네일 추가 ADD KSG 
     function setThumbnail(event) {
+        $('.image_container').html('');
         var reader = new FileReader();
         
         reader.onload = function(event) {
             var img = document.createElement("img");
+            img.id = 'sky';
             img.setAttribute("src", event.target.result);
             document.querySelector("div.image_container").appendChild(img);
             image_check = true;
@@ -289,6 +463,7 @@ $(document).ready(function(){
         
         reader.readAsDataURL(event.target.files[0]);
     }
+
 </script>
 
 </body>

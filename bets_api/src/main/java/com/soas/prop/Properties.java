@@ -16,9 +16,9 @@ public class Properties {
     public static final String INSPECTION_VALUE_SLOT     = "service_slot";
 
     public static String KPLAY_API_DOMAIN = "http://kplayone.com";                        /* (PROD) KPLAY API 도메인 */
-    public static final String KPLAY_AG_CODE = "BON2506";                                 /* KPLAY 계정 코드 */
-    public static final String KPLAY_AG_TOKEN = "QmihHefXoTdFYK36ZKwb9iYaKwkLTrI5";      /* KPLAY API 토큰 */
-    public static final String KPLAY_SECRET_KEY = "9FkMWPgI7BifjMvJZGnQab66QCAwftDq";     /* KPLAY 시크릿 토큰 */
+    public static final String KPLAY_AG_CODE = "BON2509";                                 /* KPLAY 계정 코드 */
+    public static final String KPLAY_AG_TOKEN = "0VeraFOE6j6yG2iqfcNjn1dHcEzOu9ox";      /* KPLAY API 토큰 */
+    public static final String KPLAY_SECRET_KEY = "OixfkKu01DANt8OBz0thXQZk1afqLGfo";     /* KPLAY 시크릿 토큰 */
 
     /* Constants */
     public static final String CONSTANTS_TYPE_CASINO = "C";

@@ -292,7 +292,7 @@ class App extends BaseConfig
         |--------------------------------------------------------------------------
          */
         public $imageUrl = 'http://210.175.73.221';
-        public $imagePath = 'dev_bets';
+        public $imagePath = 'dev_bulls';
         public $imagePathBoard = 'board';
         public $IMAGE_SERVER = 'https://imghubserver.com';
         public $IMAGE_SERVER_UPLOAD_URL= 'https://imghubserver.com/receiver.php';
@@ -306,9 +306,10 @@ class App extends BaseConfig
         public $mid = 'paywinkw0m';
         
         // 추가값
-        public $ServerName = 'BETS'; // AS
+        // public $ServerName = 'BETS'; // AS
+		public $ServerName = 'BULLS'; // AS
         public $AuthCode = '123456';  // 1530
-        public $CheckMessage = '점검중입니다. 현재 텔레그램문의만가능합니다. @kwin2021'; // 현재 점검중에 있습니다.
+        public $CheckMessage = '점검중입니다. 현재 텔레그램문의만가능합니다. @bulls2023'; // 현재 점검중에 있습니다. 
                                                                                  //점검 시간 이후 접속이 안되시면
                                                                                  //쿠키 삭제 이후 재접속 부탁드립니다.
                                                                                  //텔레그램 @asbet7.
@@ -323,7 +324,7 @@ class App extends BaseConfig
         | 실시간 종목별 베팅지연 시간(밀리초)
         |--------------------------------------------------------------------------
          */
-        public $betDelayTime = array('6046'=>7000, '35232'=>5000, '48242'=>5000, '131506'=>5000, '687890'=>0, '154830'=>5000, '154914'=>5000);
+        public $betDelayTime = array('6046'=>7000, '35232'=>5000, '48242'=>5000, '131506'=>5000, '687890'=>5000, '154830'=>5000, '154914'=>5000);
         
         /*
         |--------------------------------------------------------------------------
@@ -331,9 +332,9 @@ class App extends BaseConfig
         |--------------------------------------------------------------------------
          */
         public $ApiUrl = 'http://kplayone.com';
-        public $AgToken = 'Gqr6fbXvVjfhZx5tSADrKElq1tATliec';
-        public $AgCode = 'BON2506';
-        public $SercetKey = 'v2S4uMxJuUIitAdzTb0smTwxhVsNYrHh';
+        public $AgToken = '0VeraFOE6j6yG2iqfcNjn1dHcEzOu9ox';
+        public $AgCode = 'BON2509';
+        public $SercetKey = 'OixfkKu01DANt8OBz0thXQZk1afqLGfo';
         
         //public $IS_INCLUDING_DISTRIBUTOR = 'OFF'; // 보유포인트 계산시 총판도 포함하는지 여부 asbet 은 포함 kwin은 미포함
         public $IS_MULTI_LOSS_ROLLING = 'ON'; // 다폴더 낙첨 롤링 지급 유무 kwin은 포함 asbet은 미포함
@@ -356,8 +357,8 @@ class App extends BaseConfig
         | 레디스 정보
         |--------------------------------------------------------------------------
          */
-        public $redis_ip = '124.33.132.21';
-        public $redis_port = 16389;
+        public $redis_ip = '210.175.73.245';
+        public $redis_port = 6379;
         public $redis_password = '';
         public $redis_database = 1;
         public $redis_expire = 0;

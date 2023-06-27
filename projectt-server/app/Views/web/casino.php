@@ -1,6 +1,7 @@
 <?= view('/web/common/header') ?>
 <?= view('/web/common/header_wrap') ?>
 
+<!-- SB casino -->
     <style>
     .cloader {
         width: 48px;
@@ -41,10 +42,10 @@
         display: inline-block;
     }
     </style>
+<!-- SB casino end -->
 
-    <div class="title_wrap">
-        <div class="title">라이브카지노</div>
-    </div>
+
+<div class="title_wrap"><div class="title">카지노</div></div>
 
     <div id="contents_wrap" class="sb_wrapper">
         <div class="container casino__wrap">

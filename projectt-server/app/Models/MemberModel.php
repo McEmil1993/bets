@@ -111,10 +111,8 @@ class MemberModel extends Model {
         }
     }
 
-       public function memberChangeMoney($memberIdx, $cMoney) {
-        $sql = "update member set money = money + ? where idx = ?";
-        $this->db->query($sql,[$cMoney,$memberIdx]);
-        //return $this->set('money', $cMoney)->where('idx', $memberIdx)->update();
+    public function memberChangeMoney($memberIdx, $cMoney) {
+        return $this->set('money', $cMoney)->where('idx', $memberIdx)->update();
     }
 
     public function memberChangeIsExchange($memberIdx) {
@@ -205,14 +203,6 @@ class MemberModel extends Model {
                 . "ON DUPLICATE KEY UPDATE betting_dt = now()";
         $this->db->query($sql);
     }
-    public function filterSanitize($postsData){
-        $post = array();
-        foreach($postsData as $row=>$a){
-            $post[$row] = filter_var($a, FILTER_SANITIZE_STRING);
-        }
-
-        return $post;
-    }   
 }
 
 //  session()->set('is_exchange', $findMember->getIsExchange());

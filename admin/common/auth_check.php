@@ -1,6 +1,10 @@
 <?php
 $UTIL = new CommonUtil();
-    session_start();
+
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+
     if (!isset($_SESSION['aid']))
     {
         $msg = "로그인 후 이용해 주세요.";

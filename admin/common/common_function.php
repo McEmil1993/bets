@@ -64,16 +64,25 @@ if (!function_exists('Fn_BoardLinkPagination')) {
         $bonusName = '';
         switch ($bonus_option_idx) {
             case -1:
-                $bonusName = '첫충';
-                break;
-            case 0:
                 $bonusName = '적용안함';
                 break;
+            case 0:
+                $bonusName = '기본 보너스';
+                break;
             case 1:
-                $bonusName = '보너스 옵션 1';
+                $bonusName = '3% 카지노전용';
                 break;
             case 2:
-                $bonusName = '보너스 옵션 2';
+                $bonusName = '5% 보너스';
+                break;
+            case 3:
+                $bonusName = '15% 보너스';
+                break;
+            case 4:
+                $bonusName = '돌발충전 20%';
+                break;
+            case 5:
+                $bonusName = '보너스 옵션 5';
                 break;
             default:
                 break;

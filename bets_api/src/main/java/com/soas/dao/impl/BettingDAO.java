@@ -64,7 +64,7 @@ public class BettingDAO extends MysqlMapper{
     public void updateLastDepositBet (Map<String,Object> params) {
         update("BettingMapper.updateLastDepositBet", params);
     }
-
+ 
     public void updateBetPlus (Map<String,Object> params) {
         update("BettingMapper.updateBetPlus", params);
     }

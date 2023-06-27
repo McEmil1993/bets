@@ -14,9 +14,9 @@ if (!isset($_SESSION)) {
     session_start();
 }
 
-/*if(0 != $_SESSION['u_business']){
+if(0 != $_SESSION['u_business']){
     die();
-}*/
+}
     
 $selContent = trim(isset($_REQUEST['selContent']) ? $_REQUEST['selContent'] : 1);
 
@@ -34,9 +34,9 @@ $MEMAdminDAO = new Admin_Member_DAO(_DB_NAME_WEB);
 $db_conn = $MEMAdminDAO->dbconnect();
 
 if ($db_conn) {
-    /*if(false === GameCode::checkAdminType($_SESSION,$MEMAdminDAO)){
+    if(false === GameCode::checkAdminType($_SESSION,$MEMAdminDAO)){
         die();
-    }*/
+    }
     $page = $MEMAdminDAO->real_escape_string($page);
     $db_m_idx = $MEMAdminDAO->real_escape_string($db_m_idx);
         
@@ -53,6 +53,7 @@ if ($db_conn) {
     }
 
     $p_data['sql'] = "select id, nick_name, money, point, betting_p, `call`, recommend_member, is_recommend, status, level, birth, mobile_carrier, auto_level, dis_id ";
+    $p_data['sql'] .= ", (SELECT b.nick_name FROM member b WHERE b.idx=member.recommend_member) AS dis_nick_name ";
     $p_data['sql'] .= ", account_number, account_name, account_bank, is_monitor, is_monitor_charge, is_monitor_security, is_monitor_bet, u_business, recommend_code, g_money ";
     $p_data['sql'] .= " from member where idx=" . $p_data['m_idx'] . " ";
     $db_data_mem = $MEMAdminDAO->getQueryData($p_data);
@@ -611,7 +612,7 @@ include_once(_BASEPATH . '/member_w/pop_userinfo_inc_content.php');
                         getUrl = '/member_w/_pop_userinfo_pointlog.php';
                         break;
                     case '7':
-                        getUrl = '/member_w/_pop_userinfo_pre_betting_list.php';
+                        getUrl = '/member_w/_pop_userinfo_pre_betting_list.php?page=1';
                         break;
                     case '8':
                         getUrl = '/member_w/_pop_userinfo_real_betting_list.php';
@@ -662,6 +663,7 @@ include_once(_BASEPATH . '/member_w/pop_userinfo_inc_content.php');
                     url: getUrl,
                     data: {'m_idx':<?= $db_m_idx ?>, 'p_seltype': selContent, 'tab_num': tab_num, 'page':<?=$page?>},
                     success: function (data) {
+                        // console.log(data);
                         if (data['retCode'] == "1000") {
                             $("#pop_userinfo_content_1").html(data['retData_1']);
                             $("#pop_userinfo_content_2").html(data['retData_2']);
@@ -677,6 +679,41 @@ include_once(_BASEPATH . '/member_w/pop_userinfo_inc_content.php');
                 });
 
             }
+
+            function getUserinfoPage(selContent, tab_num ,page) {
+
+                var m_idx = 0;
+                var getUrl = '/member_w/_pop_userinfo_pre_betting_list.php';
+
+                document.getElementById("pop_userinfo_bbs").style.display = "none";
+
+
+                var no_data = "";
+                $.ajax({
+                    type: 'post',
+                    dataType: 'json',
+                    url: getUrl,
+                    data: {'m_idx':<?= $db_m_idx ?>, 'p_seltype': selContent, 'tab_num': tab_num, 'page':page},
+                    success: function (data) {
+                        // console.log(data);
+                        if (data['retCode'] == "1000") {
+                            $("#pop_userinfo_content_1").html(data['retData_1']);
+                            $("#pop_userinfo_content_2").html(data['retData_2']);
+                        } else {
+                            $("#pop_userinfo_content_1").html(no_data);
+                            $("#pop_userinfo_content_2").html(no_data);
+                        }
+                    },
+                    error: function (request, status, error) {
+                        $("#pop_userinfo_content_1").html(no_data);
+                        $("#pop_userinfo_content_2").html(no_data);
+                    }
+                });
+
+            }
+
+
+
             console.log('selContent : ' + <?= $selContent ?>);
             getUserinfoContent('<?= $selContent ?>');
 
@@ -883,12 +920,16 @@ include_once(_BASEPATH . '/member_w/pop_userinfo_inc_content.php');
             }
 
             const setClipboard = function () {
-                let account_name = '<?= $db_data_mem[0]['account_name'] ?>';
+                let id = '<?= $db_data_mem[0]['id'] ?>';
                 let nick_name = '<?= $db_data_mem[0]['nick_name'] ?>';
+                let birth = '<?= $db_data_mem[0]['birth'] ?>';
+                let call = '<?= $db_data_mem[0]['call'] ?>';
                 let account_bank = '<?= $db_data_mem[0]['account_bank'] ?>';
                 let account_number = '<?= $db_data_mem[0]['account_number'] ?>';
-                let call = '<?= $db_data_mem[0]['call'] ?>';
-                let mes = account_name + ' / ' + nick_name + ' / ' + account_bank + ' / ' + account_number + ' / ' + call;
+                let account_name = '<?= $db_data_mem[0]['account_name'] ?>';
+                let dis_nick_name = '<?= $db_data_mem[0]['dis_nick_name'] ?>';
+                
+                let mes = id + ' / ' + nick_name + ' / ' + birth + ' / ' + call + ' / ' + account_bank + ' / ' + account_number + ' / ' + account_name + ' / ' + dis_nick_name
 
                 // 이름/ 닉네임/ 은행명/ 계좌번호/연락처
                 copyToClipboard(mes);

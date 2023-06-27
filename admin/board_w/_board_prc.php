@@ -7,7 +7,7 @@ header('Content-Type: text/html; charset=UTF-8');
 
 include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
 include_once(_BASEPATH . '/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH . '/class_Admin_Bbs_dao.php');
 
 $UTIL = new CommonUtil();
@@ -25,6 +25,7 @@ if ($db_conn) {
     $title = trim(isset($_POST['msg_title']) ? $BdsAdminDAO->real_escape_string($_POST['msg_title']) : '');
 
     $message= trim(isset($_POST['msg_content']) ? $BdsAdminDAO->real_escape_string(urldecode($_POST['msg_content'])) : '');
+    $pdf_attachment= trim(isset($_POST['pdf_attachment']) ? $BdsAdminDAO->real_escape_string(urldecode($_POST['pdf_attachment'])) : '');
 
     //$message = $p_content_buff;
     //$message = str_replace("nbsp", "&nbsp;", $message);
@@ -34,9 +35,9 @@ if ($db_conn) {
     // $in_data = "values ('".$p_data['aid']."', '".$p_data['msg_title']."', '".$p_data['msg_content']."', now())";
     $p_data['sql'] = "INSERT INTO 
 						menu_board 
-							(idx, member_idx, a_id, nick_name, title, contents, create_dt, display) 
+							(idx, member_idx, a_id, nick_name, title, contents, create_dt, display, pdf_attachment) 
 						VALUES 
-							(NULL, $member_idx, '$adminId', '$nickname', '$title', '$message', NOW(), 1)";
+							(NULL, $member_idx, '$adminId', '$nickname', '$title', '$message', NOW(), 1, '$pdf_attachment')";
 
     $BdsAdminDAO->setQueryData($p_data);
 

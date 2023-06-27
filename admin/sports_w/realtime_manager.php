@@ -20,9 +20,7 @@ $MEMAdminDAO = new Admin_LSports_Bet_DAO(_DB_NAME_WEB);
 $db_conn = $MEMAdminDAO->dbconnect();
 
 if ($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$MEMAdminDAO)){
-        die();
-    }
+
     $today = date("Y/m/d");
     $start_date = $today;
 

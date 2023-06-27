@@ -17,9 +17,6 @@ $MEMAdminDAO = new Admin_Member_DAO(_DB_NAME_WEB);
 $db_conn = $MEMAdminDAO->dbconnect();
 
 if($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$MEMAdminDAO)){
-        die();
-    }
     $p_data['sql'] = "SELECT * FROM KP_PRD_INF WHERE PRD_ID > 0 AND TYPE = 'C';";
     $db_dataArr = $MEMAdminDAO->getQueryData($p_data);
     

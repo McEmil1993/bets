@@ -20,14 +20,14 @@ use App\GamblePatch\KwinGmPt;
 use App\GamblePatch\BetGoGmPt;
 use App\GamblePatch\ChoSunGmPt;
 use App\GamblePatch\BetsGmPt;
+use App\GamblePatch\NobleGmPt;
+use App\GamblePatch\BullsGmPt;
 use App\Util\UserPayBack;
 class BetController extends BaseController {
 
     use ResponseTrait;
-
     // API
     protected $gmPt; // 겜블패치 
-
     public function __construct() {
         if ('K-Win' == config(App::class)->ServerName) {
             $this->gmPt = new KwinGmPt();
@@ -39,12 +39,15 @@ class BetController extends BaseController {
             $this->gmPt = new ChoSunGmPt();
         } else if ('BETS' == config(App::class)->ServerName) {
             $this->gmPt = new BetsGmPt();
+        } else if ('NOBLE' == config(App::class)->ServerName) {
+            $this->gmPt = new NobleGmPt();
+        }else if ('BULLS' == config(App::class)->ServerName) {
+            $this->gmPt = new BullsGmPt();
         }
 
         helper('form');
         helper('security');
     }
-
     // is_betting_slip OFF 일때 호출한다.
     public function addBet() {
         if (0 < session()->get('tm_unread_cnt')) {
@@ -55,6 +58,7 @@ class BetController extends BaseController {
         $betType = isset($_POST['betType']) ? $_POST['betType'] : NULL;
         $totalMoney = isset($_POST['totalMoney']) ? $_POST['totalMoney'] : NULL;
         $itemId = isset($_POST['itemId']) ? $_POST['itemId'] : 0;
+        $itemIdx = isset($_POST['itemId']) ? $_POST['itemId'] : 0;
         $itemValue = isset($_POST['itemValue']) ? $_POST['itemValue'] : 0;
         $isBettingSlip = isset($_POST['isBettingSlip']) ? $_POST['isBettingSlip'] : '';
         $isClassic = isset($_POST['isClassic']) ? $_POST['isClassic'] : 'OFF';
@@ -66,7 +70,7 @@ class BetController extends BaseController {
                 ('ON' == $isClassic && GT_SPORTS != $betType) ||
                 !isset($betList) ||
                 0 == count($betList) ||
-                !CodeUtil::only_number($totalMoney) ||
+                !CodeUtil::only_number($totalMoney) || 
                 $totalMoney < 0 ||
                 '' == $isBettingSlip) {
             $response['messages'] = '인자값이 잘못되었습니다.';
@@ -76,98 +80,98 @@ class BetController extends BaseController {
         $memberModel = new MemberModel();
         try {
 
-            //$memberModel->db->transStart(); // trans start move
-            // 회원 상태값 체크
-            list($revtal, $message) = $this->checkBettingAccessToken($keep_login_access_token, $memberModel);
-            if (false == $revtal) {
-                //$memberModel->db->transRollback();
-                $response['messages'] = $message;
-                return $this->fail($response);
-            }
+        $memberModel->db->transStart(); // trans start move
+        // 회원 상태값 체크
+        /*list($revtal, $message) = $this->checkBettingAccessToken($keep_login_access_token, $memberModel);
+        if (false == $revtal) {
+            $memberModel->db->transRollback();
+            $response['messages'] = $message;
+            return $this->fail($response);
+        }*/
 
-            list($revtal, $message, $member, $memberIdx) = $this->checkMemberStatus(session()->get('member_idx'), $memberModel);
-            if (false == $revtal) {
-                //$memberModel->db->transRollback();
-                $response['messages'] = $message;
-                return $this->fail($response);
-            }
+        list($revtal, $message, $member, $memberIdx) = $this->checkMemberStatus(session()->get('member_idx'), $memberModel);
+        if (false == $revtal) {
+            $memberModel->db->transRollback();
+            $response['messages'] = $message;
+            return $this->fail($response);
+        }
 
-            if ($member->getMoney() < $totalMoney) {
-                //$memberModel->db->transRollback();
-                $response['messages'] = '배팅 금액이 부족합니다.';
-                return $this->fail($response);
-            }
+        if ($member->getMoney() < $totalMoney) {
+            $memberModel->db->transRollback();
+            $response['messages'] = '배팅 금액이 부족합니다.';
+            return $this->fail($response);
+        }
 
-            // Commercial ip check
-            list($retVal, $message) = CodeUtil::checkCommercialIp($member, $this->logger);
-            if (false == $retVal) {
-                $this->logger->error('checkCommercialIp');
-                //$memberModel->db->transRollback();
-                $response['messages'] = $message;
-                return $this->fail($response);
-            }
+        // Commercial ip check
+        list($retVal, $message) = CodeUtil::checkCommercialIp($member, $this->logger);
+        if (false == $retVal) {
+            $this->logger->error('checkCommercialIp');
+            $memberModel->db->transRollback();
+            $response['messages'] = $message;
+            return $this->fail($response);
+        }
 
-            // 개인별 베팅제한 체크
-            list($revtal_in, $message_in, $folderType) = $this->checkIndividual($memberIdx, $betType, $betList, $isClassic, $memberModel);
-            if (false == $revtal_in) {
-                //$memberModel->db->transRollback();
-                $response['messages'] = $message_in;
-                return $this->fail($response);
-            }
+        // 개인별 베팅제한 체크
+        list($revtal_in, $message_in, $folderType) = $this->checkIndividual($memberIdx, $betType, $betList, $isClassic, $memberModel);
+        if (false == $revtal_in) {
+            $memberModel->db->transRollback();
+            $response['messages'] = $message_in;
+            return $this->fail($response);
+        }
 
-            // 동일시간 베팅한 내용체크
-            /*$revtal_same_time = $this->checkSameTimeBetting($memberIdx, $memberModel);
-            if (false == $revtal_same_time) {
-                //$memberModel->db->transRollback();
-                $response['messages'] = '동일시간 베팅이 있습니다.';
-                return $this->fail($response);
-            }*/
+        // 동일시간 베팅한 내용체크
+        $revtal_same_time = $this->checkSameTimeBetting($memberIdx, $memberModel);
+        if (false == $revtal_same_time) {
+            $memberModel->db->transRollback();
+            $response['messages'] = '동일시간 베팅이 있습니다.';
+            return $this->fail($response);
+        }
 
-            // 배팅 슬립 데이터를 가져온다.
-            if ($isBettingSlip != $member->getIsBettingSlip()) {
-                //$memberModel->db->transRollback();
-                $response['messages'] = '배팅슬립 설정이 잘못 되어있습니다.';
-                return $this->fail($response);
-            }
+        // 배팅 슬립 데이터를 가져온다.
+        if ($isBettingSlip != $member->getIsBettingSlip()) {
+            $memberModel->db->transRollback();
+            $response['messages'] = '배팅슬립 설정이 잘못 되어있습니다.';
+            return $this->fail($response);
+        }
 
-            // 점검,보너스 배당률 정보도 가져온다.
-            $tgcModel = new TGameConfigModel();
-            $arr_config = $this->gmPt->getConfigData($tgcModel);
+        // 점검,보너스 배당률 정보도 가져온다.
+        $tgcModel = new TGameConfigModel();
+        $arr_config = $this->gmPt->getConfigData($tgcModel);
 
-            // 스포츠 점검
-            if ('Y' == $arr_config['service_sports'] && GT_SPORTS == $betType && 'OFF' == $isClassic && 9 != $member->getLevel()) {
-                //$memberModel->db->transRollback();
-                $response['messages'] = '스포츠 점검중입니다.';
-                return $this->fail($response);
-            }// 실시간 점검
-            else if ('Y' == $arr_config['service_real'] && GT_REALTIME == $betType && 9 != $member->getLevel()) {
-                //$memberModel->db->transRollback();
-                $response['messages'] = '실시간 점검중입니다.';
-                return $this->fail($response);
-            }// 클래식 점검
-            else if ('Y' == $arr_config['service_classic'] && GT_SPORTS == $betType && 'ON' == $isClassic && 9 != $member->getLevel()) {
-                //$memberModel->db->transRollback();
-                $response['messages'] = '클래식 점검중입니다.';
-                return $this->fail($response);
-            }
+        // 스포츠 점검
+        if ('Y' == $arr_config['service_sports'] && GT_SPORTS == $betType && 'OFF' == $isClassic && 9 != $member->getLevel()) {
+                $memberModel->db->transRollback();
+            $response['messages'] = '스포츠 점검중입니다.';
+            return $this->fail($response);
+        }// 실시간 점검
+        else if ('Y' == $arr_config['service_real'] && GT_REALTIME == $betType  && 9 != $member->getLevel()) {
+                $memberModel->db->transRollback();
+            $response['messages'] = '실시간 점검중입니다.';
+            return $this->fail($response);
+        }// 클래식 점검
+        else if ('Y' == $arr_config['service_classic'] && GT_SPORTS == $betType && 'ON' == $isClassic && 9 != $member->getLevel()) {
+                $memberModel->db->transRollback();
+            $response['messages'] = '클래식 점검중입니다.';
+            return $this->fail($response);
+        }
+        
+        // 중복베팅 체크
+        $lastBetInfo = $this->getLastBettingInfo($memberModel, $member->getIdx()); // 
+        $checkStartTime = date("Y-m-d H:i:s", strtotime($lastBetInfo[0]['betting_dt'] . "+" . 5 . "seconds"));
+        $currentTime = date('Y-m-d H:i:s');
+        
+        if (0 < count($lastBetInfo) && $currentTime < $checkStartTime) {
+            //$sql = "UPDATE member set status = 11 WHERE idx = ? ";
+            $sql = "UPDATE member set is_monitor_bet = 'Y' WHERE idx = ? ";
+            $memberModel->db->query($sql, [$memberIdx]);
 
-            // 중복베팅 체크
-            $lastBetInfo = $this->getLastBettingInfo($memberModel, $member->getIdx()); // 
-            $checkStartTime = date("Y-m-d H:i:s", strtotime($lastBetInfo[0]['betting_dt'] . "+" . 5 . "seconds"));
-            $currentTime = date('Y-m-d H:i:s');
-
-            if (0 < count($lastBetInfo) && $currentTime < $checkStartTime) {
-                //$sql = "UPDATE member set status = 11 WHERE idx = ? ";
-                $sql = "UPDATE member set is_monitor_bet = 'Y' WHERE idx = ? ";
-                $memberModel->db->query($sql, [$memberIdx]);
-
-                //$memberModel->db->transComplete();
-                $response['messages'] = '정상배팅이 아닙니다.!';
-                return $this->fail($response);
-            }
+                $memberModel->db->transComplete();
+            $response['messages'] = '정상배팅이 아닙니다.!';
+            return $this->fail($response);
+        }
 
 
-
+      
             $arr_bet_price = null;
             $max_dividend = 100;
             $bet_count = 0;
@@ -178,13 +182,13 @@ class BetController extends BaseController {
 
             list($retval_betlist, $message_betlist, $max_dividend, $totalOdds, $bet_count, $arr_bet_price, $array_fixture, $array_league_tag_id, $fDetail, $betList_renew, $overlap) = $this->checkBetListData($isBettingSlip, $totalOdds, $arr_config, $betType, $betList, $isClassic, $memberModel);
             if (false == $retval_betlist) {
-                //$memberModel->db->transRollback();
+                $memberModel->db->transRollback();
                 $response['messages'] = $message_betlist;
                 return $this->fail($response);
             }
 
             if (count($betList_renew) != count($betList)) {
-                //$memberModel->db->transRollback();
+                $memberModel->db->transRollback();
                 $response['messages'] = '데이터 검증이 잘못되었습니다.';
                 return $this->fail($response);
             }
@@ -192,32 +196,32 @@ class BetController extends BaseController {
             $bonus_dividend = 1;
             $total_bet_price = 1;
             list($total_bet_price, $bonus_dividend) = $this->gmPt->calBonusPrice($total_bet_price, $bonus_dividend, $folderType, $bet_count, $arr_config);
-
+            
             // 제한베당이 하나라도 있으면 보너스 적용을 하지 않는다.(조선)
-            if ($this->gmPt->isLimitFolder($betList_renew, $arr_config['limit_folder_bonus'])) {
+            if($this->gmPt->isLimitFolder($betList_renew, $arr_config['limit_folder_bonus'])){
                 $bonus_dividend = 1;
             }
-
+            
             // 야구, 농구, 아이스하키면 조합체크
             list($retval_overlap, $message_overlap) = $this->checkOverLap($overlap);
             if (false == $retval_overlap) {
-                //$memberModel->db->transRollback();
+                $memberModel->db->transRollback();
                 $response['messages'] = $message_overlap;
                 return $this->fail($response);
             }
 
             // 배당제한 체크
             if ($max_dividend < $totalOdds * $bonus_dividend) {
-                //$memberModel->db->transRollback();
+                $memberModel->db->transRollback();
                 $this->logger->debug('max_dividend : ' . $max_dividend . ' totalOdds : ' . $totalOdds . ' bonus_dividend : ' . $bonus_dividend);
                 $response['messages'] = '최고 배당 이상을 가져갈수 없습니다. ';
                 return $this->fail($response);
             }
 
             // 리그 최대 배팅금액도 가져온다.
-            list($retval_limit, $message_limit, $sql) = $this->checkLimitBetMoney($totalMoney, $betType, $betList, $array_fixture, $member, $isClassic, $memberModel);
+            list($retval_limit, $message_limit, $sql) = $this->checkLimitBetMoney($totalMoney, $betType, $betList, $array_fixture, $member,$isClassic, $memberModel);
             if (false == $retval_limit) {
-                //$memberModel->db->transRollback();
+                $memberModel->db->transRollback();
                 return $this->fail(message_limit);
             }
 
@@ -240,7 +244,7 @@ class BetController extends BaseController {
             // 유저 레벨별 배팅 최소,최대 금액을 체크한다.
             list($retval_min_max, $message_min_max) = $this->checkMinMaxBetMoney($totalOdds, $bonus_dividend, $totalMoney, $betType, $isClassic, $member, $tgcModel);
             if (false == $retval_min_max) {
-                //$memberModel->db->transRollback();
+                $memberModel->db->transRollback();
                 $response['messages'] = $message_min_max;
                 return $this->fail($response);
             }
@@ -248,27 +252,18 @@ class BetController extends BaseController {
             // 해당 아이템 번호가 유효하면 
             list($retval_item, $message_item) = $this->checkItemIdx($memberIdx, $itemId, $itemValue, $memberModel, $this->logger);
             if (false == $retval_item) {
-                //$memberModel->db->transRollback();
+                $memberModel->db->transRollback();
                 $response['messages'] = $message_item;
                 return $this->fail($response);
             }
 
             $memberBetModel = new MemberBetModel();
-            //$add_index = $memberBetModel->addMemberBet(date("Y-m-d H:i:s"), $member, $totalOdds, $totalMoney, $betType
-            //        , $folderType, $bonus_dividend, $betList_renew, $arr_bet_price, $fDetail, $isBettingSlip, $itemIdx, $isClassic);
-            
-            list($result, $errorMessage) = $this->transProcess($member, $totalOdds, $totalMoney, $betType
-                    , $folderType, $bonus_dividend, $betList_renew, $arr_bet_price, $fDetail, $isBettingSlip, $itemIdx, $isClassic, $memberBetModel);
-             
-            if (false == $result) {
-                $response['messages'] = $errorMessage;
-                return $this->fail($response);
+            $add_index = $memberBetModel->addMemberBet(date("Y-m-d H:i:s"), $member, $totalOdds, $totalMoney, $betType
+                    , $folderType, $bonus_dividend, $betList_renew, $arr_bet_price, $fDetail, $isBettingSlip, $itemIdx,$isClassic);
+            if (0 == $add_index) {
+                $memberModel->db->transRollback();
+                return $this->fail("배팅 정보 삽입 실패");
             }
-            
-            //if (0 == $add_index) {
-                //$memberModel->db->transRollback();
-            //    return $this->fail("배팅 정보 삽입 실패");
-            //}
 
             $type = '';
             if (GT_SPORTS == $betType && 'OFF' == $isClassic && 'S' == $folderType) {
@@ -292,12 +287,12 @@ class BetController extends BaseController {
 
             $keep_login_access_token = $this->tokenRefresh($member, $memberModel);
             $response['keep_login_access_token'] = $keep_login_access_token;
-
-            //$memberModel->db->transComplete();
+        
+            $memberModel->db->transComplete();
         } catch (\mysqli_sql_exception $e) {
             $this->logger->error(':::::::::::::::  addMemberBet error : ' . $e->getMessage());
             $this->logger->error(':::::::::::::::  addMemberBet query : ' . $memberModel->getLastQuery());
-            //$memberModel->db->transRollback();
+            $memberModel->db->transRollback();
             $response['messages'] = '디비처리 실패로 인한 배팅 실패';
             return $this->fail($response);
         }
@@ -315,40 +310,6 @@ class BetController extends BaseController {
         ];
         return $this->respond($response, 200);
     }
-
-    private function transProcess($member, $totalOdds, $totalMoney, $betType
-            , $folderType, $bonus_dividend, $betList_renew, $arr_bet_price, $fDetail, $isBettingSlip, $itemIdx, $isClassic, $memberBetModel) {
-
-        try {
-            $memberBetModel->db->transStart();
-
-            // 동일시간 베팅한 내용체크
-            $revtal_same_time = $this->checkSameTimeBetting($member->getIdx(), $memberBetModel);
-            if (false == $revtal_same_time) {
-                $memberBetModel->db->transRollback();
-
-                return [false, '동일시간 베팅이 있습니다.'];
-            }
-
-            $currentDate = date("Y-m-d H:i:s");
-            $add_index = $memberBetModel->addMemberBet($currentDate, $member, $totalOdds, $totalMoney, $betType
-                    , $folderType, $bonus_dividend, $betList_renew, $arr_bet_price, $fDetail, $isBettingSlip, $itemIdx, $isClassic);
-
-            if (0 == $add_index) {
-                $memberBetModel->db->transRollback();
-                return [false, '배팅 정보 삽입 실패'];
-            }
-
-            $memberBetModel->db->transComplete();
-            return [true, 'success'];
-        } catch (\mysqli_sql_exception $e) {
-            $memberBetModel->db->transRollback();
-            $this->logger->error(':::::::::::::::  transProcess error : ' . $e->getMessage());
-            $this->logger->error(':::::::::::::::  transProcess query : ' . $memberBetModel->getLastQuery());
-            return [false, '디비처리 실패로 인한 배팅 실패.'];
-        }
-    }
-
     // is_betting_slip OFF 일때만 호출한다. 
     public function checkBet() {
 
@@ -356,8 +317,8 @@ class BetController extends BaseController {
         $viewRoot = "PC" == $chkMobile ? 'web' : 'web';
 
         if (0 < session()->get('tm_unread_cnt')) {
-
-            return $this->fail('미확인 쪽지를 확인 바랍니다.');
+          
+          return $this->fail('미확인 쪽지를 확인 바랍니다.');
         }
 
         $betType = isset($_POST['betType']) ? $_POST['betType'] : NULL;
@@ -500,74 +461,74 @@ class BetController extends BaseController {
         $memberModel = new MemberModel();
         try {
             $memberModel->db->transStart();
-            list($revtal, $message) = $this->checkBettingAccessToken($keep_login_access_token, $memberModel);
+            /*list($revtal, $message) = $this->checkBettingAccessToken($keep_login_access_token, $memberModel);
             if (false == $revtal) {
                 $memberModel->db->transRollback();
                 $response['messages'] = $message;
                 return $this->fail($response);
-            }
+            }*/
 
             list($revtal, $message, $member, $memberIdx) = $this->checkMemberStatus(session()->get('member_idx'), $memberModel);
             if (false == $revtal) {
                 $memberModel->db->transRollback();
                 $response['messages'] = $message;
-                return $this->fail($response);
-            }
+            return $this->fail($response);
+        }
 
-            if ($member->getMoney() < $totalMoney) {
+        if ($member->getMoney() < $totalMoney) {
                 $memberModel->db->transRollback();
                 $response['messages'] = '배팅 금액이 부족합니다.';
-                return $this->fail($response);
-            }
+            return $this->fail($response);
+        }
 
             // Commercial ip check
             list($retVal, $message) = CodeUtil::checkCommercialIp($member, $this->logger);
             if (false == $retVal) {
                 $memberModel->db->transRollback();
                 $response['messages'] = $message;
-                return $this->fail($response);
-            }
+            return $this->fail($response);
+        }
+        
+        // 중복배팅
+        $lastBetInfo = $this->getLastBettingInfo($memberModel, $member->getIdx());
+        $checkStartTime = date("Y-m-d H:i:s", strtotime($lastBetInfo[0]['betting_dt'] . "+" . 3 . "seconds"));
+        $currentTime = date('Y-m-d H:i:s');
 
-            // 중복배팅
-            $lastBetInfo = $this->getLastBettingInfo($memberModel, $member->getIdx());
-            $checkStartTime = date("Y-m-d H:i:s", strtotime($lastBetInfo[0]['betting_dt'] . "+" . 3 . "seconds"));
-            $currentTime = date('Y-m-d H:i:s');
+        if (0 < count($lastBetInfo) && $currentTime < $checkStartTime) {
+            $sql = "UPDATE member set is_monitor_bet = 'Y' WHERE idx = ? ";
+            $memberModel->db->query($sql, [$memberIdx]);
 
-            if (0 < count($lastBetInfo) && $currentTime < $checkStartTime) {
-                $sql = "UPDATE member set is_monitor_bet = 'Y' WHERE idx = ? ";
-                $memberModel->db->query($sql, [$memberIdx]);
-
-                $response['messages'] = '정상배팅이 아닙니다.!';
+            $response['messages'] = '정상배팅이 아닙니다.!';
                 $memberModel->db->transComplete();
-                return $this->fail($response);
-            }
+            return $this->fail($response);
+        }
 
+        $gameType = 5;
+        if (3 == $betType) {
             $gameType = 5;
-            if (3 == $betType) {
-                $gameType = 5;
-            } else if (4 == $betType) {
-                $gameType = 6;
-            } if (5 == $betType) {
-                $gameType = 7;
-            } if (6 == $betType) {
-                $gameType = 8;
-            } if (15 == $betType) {
-                $gameType = 15;
-            }
-            $game_type_sql = "SELECT status FROM member_game_type where member_idx = ? and game_type = ?";
-            $arr_db_result_game_type = $memberModel->db->query($game_type_sql, [$memberIdx, $gameType])->getResultArray();
+        } else if (4 == $betType) {
+            $gameType = 6;
+        } if (5 == $betType) {
+            $gameType = 7;
+        } if (6 == $betType) {
+            $gameType = 8;
+        } if (15 == $betType) {
+            $gameType = 15;
+        }
+        $game_type_sql = "SELECT status FROM member_game_type where member_idx = ? and game_type = ?";
+        $arr_db_result_game_type = $memberModel->db->query($game_type_sql, [$memberIdx, $gameType])->getResultArray();
 
-            if ('OFF' == $arr_db_result_game_type[0]['status']) {
+        if ('OFF' == $arr_db_result_game_type[0]['status']) {
                 $memberModel->db->transRollback();
-                $response['messages'] = '해당 게임 배팅이 금지되어있습니다.';
-                return $this->fail($response);
-            }
+            $response['messages'] = '해당 게임 배팅이 금지되어있습니다.';
+            return $this->fail($response);
+        }
 
-            $tgcModel = new TGameConfigModel();
+        $tgcModel = new TGameConfigModel();
 
-            // 배팅 금지 상태인지 확인하자.(레벨9 유저는 베팅가능)
-            if (9 != $member->getLevel()) {
-                $str_sql_config = "SELECT set_type, set_type_val 
+        // 배팅 금지 상태인지 확인하자.(레벨9 유저는 베팅가능)
+        if (9 != $member->getLevel()) {
+            $str_sql_config = "SELECT set_type, set_type_val 
                                 FROM t_game_config 
                                 WHERE set_type 
                                     IN('mini_service_powerball',
@@ -576,202 +537,169 @@ class BetController extends BaseController {
                                         'mini_service_kino_ladder',
                                         'mini_service_v_soccer'
                                     )";
-                $arr_config_result = $tgcModel->db->query($str_sql_config)->getResultArray();
+            $arr_config_result = $tgcModel->db->query($str_sql_config)->getResultArray();
 
-                $arr_config = array();
-                foreach ($arr_config_result as $key => $value) {
-                    $arr_config[$value['set_type']] = $value['set_type_val'];
-                }
-
-                if (3 == $betType && 'N' == $arr_config['mini_service_eos_powerball']) {
-                    $memberModel->db->transRollback();
-                    $response['messages'] = 'EOS 파워볼 배팅은 점검중입니다.';
-                    return $this->fail($response);
-                } else if (4 == $betType && 'N' == $arr_config['mini_service_power_ladder']) {
-                    $memberModel->db->transRollback();
-                    $response['messages'] = '파워사다리 점검중입니다.';
-                    return $this->fail($response);
-                } else if (5 == $betType && 'N' == $arr_config['mini_service_kino_ladder']) {
-                    $memberModel->db->transRollback();
-                    $response['messages'] = '키노사다리 점검중입니다.';
-                    return $this->fail($response);
-                } else if (6 == $betType && 'N' == $arr_config['mini_service_v_soccer']) {
-                    $memberModel->db->transRollback();
-                    $response['messages'] = '가상축구 점검중입니다.';
-                    return $this->fail($response);
-                } else if (15 == $betType && 'N' == $arr_config['mini_service_powerball']) {
-                    $memberModel->db->transRollback();
-                    $response['messages'] = '파워볼 배팅은 점검중입니다.';
-                    return $this->fail($response);
-                }
+            $arr_config = array();
+            foreach ($arr_config_result as $key => $value) {
+                $arr_config[$value['set_type']] = $value['set_type_val'];
             }
 
-            // 미니게임 설정
-            $m_level = session()->get('level');
-            $sql_config = "SELECT * FROM mini_game_bet_config 
+            if (3 == $betType && 'N' == $arr_config['mini_service_eos_powerball']) {
+                    $memberModel->db->transRollback();
+                $response['messages'] = 'EOS 파워볼 배팅은 점검중입니다.';
+                return $this->fail($response);
+            } else if (4 == $betType && 'N' == $arr_config['mini_service_power_ladder']) {
+                    $memberModel->db->transRollback();
+                $response['messages'] = '파워사다리 점검중입니다.';
+                return $this->fail($response);
+            } else if (5 == $betType && 'N' == $arr_config['mini_service_kino_ladder']) {
+                    $memberModel->db->transRollback();
+                $response['messages'] = '키노사다리 점검중입니다.';
+                return $this->fail($response);
+            } else if (6 == $betType && 'N' == $arr_config['mini_service_v_soccer']) {
+                    $memberModel->db->transRollback();
+                $response['messages'] = '가상축구 점검중입니다.';
+                return $this->fail($response);
+            } else if (15 == $betType && 'N' == $arr_config['mini_service_powerball']) {
+                    $memberModel->db->transRollback();
+                $response['messages'] = '파워볼 배팅은 점검중입니다.';
+                return $this->fail($response);
+            }
+        }
+
+        // 미니게임 설정
+        $m_level = session()->get('level');
+        $sql_config = "SELECT * FROM mini_game_bet_config 
                         WHERE level = $m_level 
                         AND bet_type = ?"; // 가상축구 설정값
-            $result_config = $tgcModel->db->query($sql_config, [$betType])->getResult();
-            foreach ($result_config as $key => $value) {
-                $game_config = $value;
+        $result_config = $tgcModel->db->query($sql_config, [$betType])->getResult();
+        foreach ($result_config as $key => $value) {
+            $game_config = $value;
+        }
+
+        $fixture_id = $betList[0]['fixtureId'];
+        $round = $betList[0]['round'];
+        $marketsId = $betList[0]['marketsId'];
+        if (!is_int((int)$fixture_id) || !is_int((int)$round) || !is_int((int)$marketsId) || !is_double((double)$betList[0]['betPrice'])) {
+            $this->logger->critical("!!!!!!!!!!!!!!!!!! ***************** addMiniBet: die ");
+            die();
+        }
+
+        $dt_current = date("Y-m-d H:i:s");
+
+        // 가상축구이면 동일경기에 이미 베팅을 했는지 확인
+        if (6 == $betType) {
+            // 배팅가능 시간을 체크한다.
+            $sql = "SELECT start_dt, end_dt, result FROM mini_game WHERE bet_type = 6 AND id = ?";
+            $gameInfo = $tgcModel->db->query($sql, [$fixture_id])->getResultArray();
+            $result = json_decode($gameInfo[0]['result'], true);
+
+            if ($gameInfo[0]['start_dt'] < $dt_current) {
+                $response['messages'] = '베팅가능 시간을 초과하였습니다.';
+                $response['code'] = 1001;
+                    $memberModel->db->transRollback();
+                return $this->fail($response);
             }
 
-            $fixture_id = $betList[0]['fixtureId'];
-            $round = $betList[0]['round'];
-            $marketsId = $betList[0]['marketsId'];
-            if (!is_int((int) $fixture_id) || !is_int((int) $round) || !is_int((int) $marketsId) || !is_double((double) $betList[0]['betPrice'])) {
-                $this->logger->critical("!!!!!!!!!!!!!!!!!! ***************** addMiniBet: die ");
-                die();
-            }
-
-            $dt_current = date("Y-m-d H:i:s");
-            $betList[0]['betOtherPrice'] = $betList[0]['betOtherPriceDraw'] = 0;
-
-            // 가상축구이면 동일경기에 이미 베팅을 했는지 확인
-            if (6 == $betType) {
-                // 배팅가능 시간을 체크한다.
-                $sql = "SELECT start_dt, end_dt, result, league FROM mini_game WHERE bet_type = 6 AND id = ?";
-                $gameInfo = $tgcModel->db->query($sql, [$fixture_id])->getResultArray();
-                $result = json_decode($gameInfo[0]['result'], true);
-                
-                // 현재 경기가져온다.
-                $sql = "SELECT * FROM mini_game where bet_type = ? and start_dt > now() and league = ? order by start_dt asc limit 2;";
-                $db_result = $memberModel->db->query($sql, [$betType, $gameInfo[0]['league']])->getResultArray();
-                
-                if(0 == count($db_result)){
-                    $response['messages'] = '경기정보가 없습니다.';
-                    $memberModel->db->transRollback();
-                    return $this->fail($response);
-                }
-                
-                $current_game = array();
-                foreach ($db_result as $key => $value) {
-                    $current_game[] = $value['id'];
-                }
-                
-                // 보내준 경기번호가 현재진행중인 경기인지 체크
-                if(!in_array($fixture_id, $current_game)){
-                    $response['messages'] = '잘못된 경기입니다.';
-                    $memberModel->db->transRollback();
-                    return $this->fail($response);
-                }
-
-                // 경기시작 10초전까지 가능
-                $checkStartTime = date("Y-m-d H:i:s", strtotime($gameInfo[0]['start_dt'] . "-" . 10 . "seconds"));
-                if ($checkStartTime < $dt_current) {
-                    $response['messages'] = '베팅가능 시간을 초과하였습니다.';
-                    $response['code'] = 1001;
-                    $memberModel->db->transRollback();
-                    return $this->fail($response);
-                }
-
-                $sql = "SELECT ls_markets_id, total_bet_money
+            $sql = "SELECT ls_markets_id, total_bet_money
                     FROM mini_game_member_bet 
                     WHERE member_idx = ?
                         AND round = ? 
                         AND bet_type = ? for update";
-                $betInfo = $tgcModel->db->query($sql, [$memberIdx, $round, $betType])->getResultArray();
+            $betInfo = $tgcModel->db->query($sql, [$memberIdx, $round, $betType])->getResultArray();
 
-                // 잘못된 마켓아이디인지 체크한다.
-                if ($marketsId < 13001 || $marketsId > 13005) {
-                    $response['messages'] = '잘못 된 배팅입니다.';
+            // 잘못된 마켓아이디인지 체크한다.
+            if ($marketsId < 13001 || $marketsId > 13005) {
+                $response['messages'] = '잘못 된 배팅입니다.';
                     $memberModel->db->transRollback();
-                    return $this->fail($response);
-                }
+                return $this->fail($response);
+            }
 
-                // 배당률을 디비걸로 셋팅한다.
-                if ($marketsId == 13001) {
-                    $betList[0]['betPrice'] = $result['win'];
-                    $betList[0]['betOtherPrice'] = $result['lose'];
-                    $betList[0]['betOtherPriceDraw'] = $result['draw'];
-                } else if ($marketsId == 13002) {
-                    $betList[0]['betPrice'] = $result['draw'];
-                    $betList[0]['betOtherPrice'] = $result['win'];
-                    $betList[0]['betOtherPriceDraw'] = $result['lose'];
-                } else if ($marketsId == 13003) {
-                    $betList[0]['betPrice'] = $result['lose'];
-                    $betList[0]['betOtherPrice'] = $result['win'];
-                    $betList[0]['betOtherPriceDraw'] = $result['draw'];
-                } else if ($marketsId == 13004) {
-                    $betList[0]['betPrice'] = $result['lose'];
-                    $betList[0]['betOtherPrice'] = $result['win'];
-                } else {
-                    $betList[0]['betPrice'] = $result['win'];
-                    $betList[0]['betOtherPrice'] = $result['lose'];
-                }
-
-                if (0 < count($betInfo)) {
-                    $total_money = 0;
-                    foreach ($betInfo as $value) {
-                        $total_money += $value['total_bet_money'];
-                    }
-                    // 같은 타입 배팅은 최대한도만 체크한다.(100만)
-                    if ($marketsId == $betInfo[0]['ls_markets_id']) {
-                        if ($total_money + $totalMoney > $game_config->max) {
-                            $response['messages'] = '최대 배팅 및 당첨 상한이 초과되었습니다.';
-                            $memberModel->db->transRollback();
-                            return $this->fail($response);
-                        }
-                    } else {
-                        $response['messages'] = '이미 베팅한 경기입니다.';
-                        $memberModel->db->transRollback();
-                        return $this->fail($response);
-                    }
-                } else { // 첫배팅도 한도 체크
-                    if ($totalMoney > $game_config->max) {
-                        $response['messages'] = '최대 배팅 및 당첨 상한이 초과되었습니다.';
-                        $memberModel->db->transRollback();
-                        return $this->fail($response);
-                    }
-                }
+            // 배당률을 디비걸로 셋팅한다.
+            if ($marketsId == 13001) {
+                $betList[0]['betPrice'] = $result['win'];
+            } else if ($marketsId == 13002) {
+                $betList[0]['betPrice'] = $result['draw'];
+            } else if ($marketsId == 13003) {
+                $betList[0]['betPrice'] = $result['lose'];
+            } else if ($marketsId == 13004) {
+                $betList[0]['betPrice'] = $result['lose'];
             } else {
-                // 배팅가능 시간을 체크한다.
-                $sql = "SELECT end_dt, cnt FROM mini_game WHERE bet_type = ? AND id = ?";
-                $gameInfo = $tgcModel->db->query($sql, [$betType, $fixture_id])->getResultArray();
-                $cnt = $gameInfo[0]['cnt'];
+                $betList[0]['betPrice'] = $result['win'];
+            }
 
-                if ($round != $cnt) {
-                    $response['messages'] = '배팅 정보가 잘못되었습니다. 새로고침해주세요.';
-                    $response['code'] = 1001;
-                    $memberModel->db->transRollback();
+            if (0 < count($betInfo)) {
+                $total_money = 0;
+                foreach ($betInfo as $value) {
+                    $total_money += $value['total_bet_money'];
+                }
+                // 같은 타입 배팅은 최대한도만 체크한다.(100만)
+                if ($marketsId == $betInfo[0]['ls_markets_id']) {
+                    if ($total_money + $totalMoney > $game_config->max) {
+                        $response['messages'] = '최대 배팅 및 당첨 상한이 초과되었습니다.';
+                            $memberModel->db->transRollback();
+                        return $this->fail($response);
+                    }
+                } else {
+                    $response['messages'] = '이미 베팅한 경기입니다.';
+                        $memberModel->db->transRollback();
                     return $this->fail($response);
                 }
-
-                if ($gameInfo[0]['end_dt'] < $dt_current) {
-                    $response['messages'] = '배팅가능 시간을 초과하였습니다.';
-                    $response['code'] = 1001;
-                    $memberModel->db->transRollback();
+            } else { // 첫배팅도 한도 체크
+                if ($totalMoney > $game_config->max) {
+                    $response['messages'] = '최대 배팅 및 당첨 상한이 초과되었습니다.';
+                        $memberModel->db->transRollback();
                     return $this->fail($response);
                 }
+            }
+        } else {
+            // 배팅가능 시간을 체크한다.
+            $sql = "SELECT end_dt, cnt FROM mini_game WHERE bet_type = ? AND id = ?";
+            $gameInfo = $tgcModel->db->query($sql, [$betType, $fixture_id])->getResultArray();
+            $cnt = $gameInfo[0]['cnt'];
 
-                $sql = "SELECT ls_markets_id, total_bet_money
+            if ($round != $cnt) {
+                $response['messages'] = '배팅 정보가 잘못되었습니다. 새로고침해주세요.';
+                $response['code'] = 1001;
+                    $memberModel->db->transRollback();
+                return $this->fail($response);
+            }
+
+            if ($gameInfo[0]['end_dt'] < $dt_current) {
+                $response['messages'] = '배팅가능 시간을 초과하였습니다.';
+                $response['code'] = 1001;
+                    $memberModel->db->transRollback();
+                return $this->fail($response);
+            }
+            
+            $sql = "SELECT ls_markets_id, total_bet_money
                     FROM mini_game_member_bet 
                     WHERE member_idx = ?
                         AND round = ? 
                         AND bet_type = ?
                         AND date(create_dt) >= date_format(now(), '%Y-%m-%d')";
-                /* $betInfo = $tgcModel->db->query($sql, [$memberIdx, $round, $betType])->getResultArray();
-                  if (0 < count($betInfo)) {
-                  $response['messages'] = '이미 베팅한 경기입니다.';
-                  return $this->fail($response);
-                  } */
-
-                // 배당률을 디비걸로 셋팅한다.(가상축구는 제외)
-                $sql = "SELECT bet_price FROM mini_game_bet WHERE markets_id = ?";
-                $betInfo = $tgcModel->db->query($sql, [$marketsId])->getResultArray();
-                if ($betInfo[0]['bet_price'] > 0)
-                    $betList[0]['betPrice'] = $betInfo[0]['bet_price'];
-            }
-
-            // 베팅정보를 가져온다.
-            $marketsId = $betList[0]['marketsId'];
-            $sql = "SELECT game, markets_name, bet_price FROM mini_game_bet WHERE markets_id = ?";
-            $miniBet = $tgcModel->db->query($sql, [$marketsId])->getResultArray();
-            if (0 == count($miniBet)) {
-                $memberModel->db->transRollback();
-                $response['messages'] = '배팅 정보가 잘못되었습니다. ';
+            /*$betInfo = $tgcModel->db->query($sql, [$memberIdx, $round, $betType])->getResultArray();
+            if (0 < count($betInfo)) {
+                $response['messages'] = '이미 베팅한 경기입니다.';
                 return $this->fail($response);
-            }
+            }*/
+
+            // 배당률을 디비걸로 셋팅한다.(가상축구는 제외)
+            $sql = "SELECT bet_price FROM mini_game_bet WHERE markets_id = ?";
+            $betInfo = $tgcModel->db->query($sql, [$marketsId])->getResultArray();
+            if ($betInfo[0]['bet_price'] > 0)
+                $betList[0]['betPrice'] = $betInfo[0]['bet_price'];
+        }
+
+        // 베팅정보를 가져온다.
+        $marketsId = $betList[0]['marketsId'];
+        $sql = "SELECT game, markets_name, bet_price FROM mini_game_bet WHERE markets_id = ?";
+        $miniBet = $tgcModel->db->query($sql, [$marketsId])->getResultArray();
+        if (0 == count($miniBet)) {
+            $memberModel->db->transRollback();
+            $response['messages'] = '배팅 정보가 잘못되었습니다. ';
+            return $this->fail($response);
+        }
 
 
             $array_league_tag_id = [];
@@ -815,7 +743,7 @@ class BetController extends BaseController {
              
             $keep_login_access_token = $this->tokenRefresh($member, $memberModel);
             $response['keep_login_access_token'] = $keep_login_access_token;
-
+        
             $memberModel->db->transComplete();
             session()->set('money', $af_money);
         } catch (\mysqli_sql_exception $e) {
@@ -834,11 +762,11 @@ class BetController extends BaseController {
                 'total_bet_money' => $totalMoney,
                 'total_point' => $af_point,
                 'keep_login_access_token' => $keep_login_access_token
+                   
             ]
         ];
         return $this->respond($response, 200);
     }
-
     //ON/OFF 설정시 호출한다.
     public function setBettingSlip() {
         $is_betting_slip = isset($_POST['is_betting_slip']) ? $_POST['is_betting_slip'] : NULL; // 베팅슬립 on/off 값이다 .
@@ -872,18 +800,18 @@ class BetController extends BaseController {
         return $this->respond($response, 200);
     }
 
-    private function checkBetListData($isBettingSlip, $totalOdds, $arr_config, $betType, $betList, $isClassic, $memberModel) {
+    private function checkBetListData($isBettingSlip, $totalOdds, $arr_config, $betType, $betList,$isClassic, $memberModel) {
         $array_league_tag_id = [];
         $array_fixture = [];
         $betList_renew = []; // bet_name 추가 용도
         $overlap = []; // 조합중복 체크 용도
         $fDetail = '';
         $arr_bet_price = array();
-
+        
         foreach ($betList as $value) {
             $fixtureId = $value['fixtureId'];
             $marketsId = $value['marketsId'];
-
+         
             $betBaseLine = $value['betBaseLine'];
             $betName = $value['betName'];
             $fixtureStartDate = $value['fixture_start_date'];
@@ -920,17 +848,17 @@ class BetController extends BaseController {
             $betList_renew[] = $value;
             $overlap[$fixtureId][] = $value;
 
-            if ('ON' == $isClassic && SOCCER == $value['fixture_sport_id'] && (WDL != $marketsId && OVER_UNDER != $marketsId && HANDICAP != $marketsId) ||
-                    'ON' == $isClassic && BASKETBALL == $value['fixture_sport_id'] && (OVER_UNDER_OVERTIME != $marketsId && M_12_OVERTIME != $marketsId && HANDICAP_OVERTIME != $marketsId) ||
-                    'ON' == $isClassic && BASEBALL == $value['fixture_sport_id'] && (OVER_UNDER_OVERTIME != $marketsId && M_12_OVERTIME != $marketsId && HANDICAP_OVERTIME != $marketsId) ||
-                    'ON' == $isClassic && VOLLEYBALL == $value['fixture_sport_id'] && (OVER_UNDER != $marketsId && WL != $marketsId) ||
-                    'ON' == $isClassic && UFC == $value['fixture_sport_id'] && (WL != $marketsId) ||
-                    'ON' == $isClassic && ICEHOCKEY == $value['fixture_sport_id'] && (WDL != $marketsId && OVER_UNDER != $marketsId && HANDICAP != $marketsId) ||
-                    'ON' == $isClassic && ESPORTS == $value['fixture_sport_id'] && (WL != $marketsId && HANDICAP != $marketsId)) {
-                $this->logger->critical("!!!!!!!!!!!!!!!!!! ***************** checkBetListData: marketsId " . $marketsId);
+            if('ON' == $isClassic && SOCCER == $value['fixture_sport_id'] && (WDL != $marketsId && OVER_UNDER != $marketsId && HANDICAP != $marketsId) ||
+               'ON' == $isClassic && BASKETBALL == $value['fixture_sport_id'] && (OVER_UNDER_OVERTIME != $marketsId && M_12_OVERTIME != $marketsId && HANDICAP_OVERTIME != $marketsId)||
+               'ON' == $isClassic && BASEBALL == $value['fixture_sport_id'] && (OVER_UNDER_OVERTIME != $marketsId && M_12_OVERTIME != $marketsId && HANDICAP_OVERTIME != $marketsId) ||
+               'ON' == $isClassic && VOLLEYBALL == $value['fixture_sport_id'] && (OVER_UNDER != $marketsId && WL != $marketsId) || 
+               'ON' == $isClassic && UFC == $value['fixture_sport_id'] && (WL != $marketsId) ||
+               'ON' == $isClassic && ICEHOCKEY == $value['fixture_sport_id'] && (WDL != $marketsId && OVER_UNDER != $marketsId && HANDICAP != $marketsId) || 
+               'ON' == $isClassic && ESPORTS == $value['fixture_sport_id'] && (WL != $marketsId)){
+                $this->logger->critical("!!!!!!!!!!!!!!!!!! ***************** checkBetListData: marketsId ".$marketsId);
                 return [false, '배팅정보오류', $max_dividend, $totalOdds, $bet_count, $arr_bet_price, $array_fixture, $array_league_tag_id, $fDetail, $betList_renew, $overlap];
             }
-
+            
             if (false == in_array($fixtureId, $array_fixture)) {
                 $array_fixture[] = $fixtureId;
                 $array_league_tag_id[] = $leagueTagId;
@@ -975,12 +903,12 @@ class BetController extends BaseController {
     private function checkMinMaxBetMoney($totalOdds, $bonus_dividend, $totalMoney, $betType, $isClassic, $member, $tgcModel) {
         $config = $tgcModel->getMemberLevelConfig($betType, $member->getLevel());
         //$betGroup = $betType == 2 ? 'real' : 'pre';
-        if (2 == $betType) {
+        if(2 ==$betType){
             $betGroup = 'real';
-        } else {
+        }else{
             $betGroup = $isClassic == 'ON' ? 'classic' : 'pre';
         }
-
+        
         foreach ($config as $key => $item) {
             if ($item['set_type'] == $betGroup . '_max_money') {
                 if ($totalMoney > $item['set_type_val']) {
@@ -1012,12 +940,12 @@ class BetController extends BaseController {
         return [true, 'success'];
     }
 
-    private function checkLimitBetMoney($totalMoney, $betType, $betList, $array_fixture, $member, $isClassic, $memberModel) {
+    private function checkLimitBetMoney($totalMoney, $betType, $betList, $array_fixture, $member,$isClassic, $memberModel) {
         $plcBetType = $betType;
-        if (GT_SPORTS == $betType && 'ON' == $isClassic) {
+        if(GT_SPORTS == $betType && 'ON' == $isClassic){
             $plcBetType = GT_CLASSIC;
         }
-
+        
         $str_fixture = implode(',', $array_fixture);
         $str_league_query = "   SELECT 
                                         fix.fixture_id,
@@ -1171,12 +1099,13 @@ class BetController extends BaseController {
                 $messages = '해당 유형의 배팅은 현재 불가합니다.!!!';
                 return [false, $messages, $fDetail, $totalOdds, $bet_count, $arr_bet_price];
             }
-
+            
             //$retval = BetDataUtil::checkDisplayMarkets($mergeBet, $logger);
             if (BET_OPEN != BetDataUtil::checkDisplayMarkets($bet, $logger)) {
                 $messages = '해당 유형의 배팅은 현재 불가합니다.!!!';
                 return [false, $messages, $fDetail, $totalOdds, $bet_count, $arr_bet_price];
             }
+
         }
 
         return [true, 'success', $fDetail, $totalOdds, $bet_count, $arr_bet_price];
@@ -1188,9 +1117,9 @@ class BetController extends BaseController {
 
         $game_type = array();
         if (1 == $betType) {
-            if ('ON' == $isClassic) {
+            if('ON' == $isClassic){
                 $game_type[] = 16;
-            } else {
+            }else{
                 $game_type[] = 3;
                 if ('S' == $folderType) {
                     $game_type[] = 4;
@@ -1214,7 +1143,7 @@ class BetController extends BaseController {
                 if (14 == $result_game_type['game_type']) {
                     $messages = '2폴더 게임 배팅은 금지되어있습니다.';
                 } else {
-                    $messages = '해당 베팅 이용불가합니다.' . PHP_EOL . '자세한 안내는 고객센터로 문의바랍니다.';
+                    $messages = '해당 베팅 이용불가합니다.'.PHP_EOL.'자세한 안내는 고객센터로 문의바랍니다.';
                 }
 
                 return [false, $messages, $folderType];
@@ -1262,8 +1191,8 @@ class BetController extends BaseController {
 
         return [true, 'success', $member, $memberIdx];
     }
-
-    // 배팅한 반대 배팅정보를 구한다.(승패, 핸디캡, 오버언더)
+    
+      // 배팅한 반대 배팅정보를 구한다.(승패, 핸디캡, 오버언더)
     public function getOtherBetInfo($model, $fixture_id, $bet_type, $markets_id, $bet_name, $ls_markets_base_line) {
         $arr_winlose = array(52, 226);
         $arr_handicap = array(3, 342);

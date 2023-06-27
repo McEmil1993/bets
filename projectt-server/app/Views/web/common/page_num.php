@@ -21,28 +21,20 @@
 	
 	        $prv_b_page = $first_page - 1;
 	        $prv_b_link = $default_link . "&page=" . $prv_b_page;
-			
 	    } else {
 	        $class_str_none_pre = "page";
 	        $prv_b_link = "javascript:;";
 	    }
 	    ?>
-
-		<?php 
+	    <?php
 		// prev page function
+		$current_page = $_GET['page'];
 
-		$current_page = $_GET["page"];
+			$prev_page_string = $default_link . "&page=" . ($current_page - 1);
 
-		if ($current_page == "page") {
-			$current_page = $current_page_string;
-		}
-			$current_page_string = $default_link . "&page=" . ($current_page - 1);
-
-			if ($current_page > 1) {	
-	    		echo "<li><a href=' $current_page_string '><span class=' $class_str_none_pre '>이전</span></a></li>";	
-		} 
-		?>
-
+			if ($current_page > 1): ?>
+	    		<li><a href="javascript: fnLoadingMove(`<?= $prev_page_string ?>`)"><span class='<?= $class_str_none_pre ?>'>이전</span></a></li>
+			<?php endif; ?>
 	    <?php
 	    for ($i = $first_page; $i <= $last_page; $i++) {
 	        if ($i == $page) {
@@ -65,21 +57,17 @@
 	        $next_b_link = "javascript:;";
 	    }
 	    ?>
-
 		<?php
-		// next page function
+			//next page function
+			if (!$current_page) {
+				$current_page = 1;
+			}
 
-		if (!$current_page) {
-			$current_page = 1;
-		}
-		$next_page_string = $default_link . "&page=" . ($current_page + 1);
-
-			if ($total_page > $current_page) {
-				echo "<li><a href=' $next_page_string '><span class=' $class_str_none_next '>다음</span></a></li>";
-		}
-		?>
-
-
+			$next_page_string = $default_link . "&page=" .  ($current_page + 1);
+		
+			if($total_page > $current_page): ?>	
+	    		<li><a href="javascript: fnLoadingMove(`<?php echo $next_page_string ?>`)"><span class='<?= $class_str_none_next ?>'>다음</span></a></li>
+			<?php endif; ?>
 	    <?php
 	}
 	?>                

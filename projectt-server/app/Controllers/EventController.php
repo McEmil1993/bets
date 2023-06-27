@@ -12,12 +12,19 @@ class EventController extends BaseController {
     use ResponseTrait;
 
     public function index() {
+        $member_idx = session()->get('member_idx');
 
         $chkMobile = CodeUtil::rtn_mobile_chk();
+
         $viewRoot = "PC" == $chkMobile ? 'web' : 'web';
 
-        if (session()->get('member_idx') == NULL) {
-            return redirect()->to(base_url("/$viewRoot/"));
+         if (false == session()->has('member_idx') || !isset($member_idx)) {
+            $url = base_url("/$viewRoot/index");
+            echo "<script>
+        	alert('로그인 후 이용해주세요.');
+        	window.location.href='$url';
+        	</script>";
+            return;
         }
 
         if (0 < session()->get('tm_unread_cnt')) {

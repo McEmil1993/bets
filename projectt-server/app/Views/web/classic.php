@@ -52,7 +52,7 @@
     <div class="sports_wide_left">
         
         <div class="search_ajax">
-            <input type="text" id="league_name_ajax" placeholder="국가 및 팀명">
+            <input type="text" id="league_name_ajax" placeholder="국가 및 리그명">
             <button type="submit" id="league_name_ajax_button">검색</button>
         </div>
 
@@ -360,7 +360,7 @@
             </div>
         </div><!-- .cart_wrap -->
         <div id="domain_pc">
-            <a target="_blank" href="https://xn--tl3bs23a.com/"><img src="/images/bets_banner_pc.jpg"></a>
+            <a target="_blank" href="https://불스주소.com/"><img src="/assets_w/images/bulls_domain.png"></a>
         </div>
         <div class="cart_bg"></div>
     </div><!-- sports_wide_right -->
@@ -1627,17 +1627,7 @@
             $(document).find(".sports_wide_right").removeClass("active");
         });
 
-        $(document).on("click",".notify-close-btn",function(e){
-            e.preventDefault();
-            setTimeout(() => {
-                $('.cart_count2').text($(".slip_bet_ing").length)
-                let backOdds = $('.total_odds').text();
-                console.log(backOdds)
-                if(backOdds == 0 || isNaN(backOdds)){
-                    $('.total_odds').html(0);
-                }
-            },50)
-        })
+
 
         // lnb click => slide
         $(document).find('.dropdown').tendina({

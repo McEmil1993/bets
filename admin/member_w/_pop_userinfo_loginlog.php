@@ -1,11 +1,9 @@
 <?php 
 
 include_once($_SERVER['DOCUMENT_ROOT'].'/_LIB/base_config.php');
-
 include_once(_BASEPATH.'/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH.'/class_Admin_Common_dao.php');
-
 include_once(_DAOPATH.'/class_Admin_Cash_dao.php');
 
 
@@ -30,14 +28,15 @@ if($db_conn) {
     
     $db_first_ip = $db_first_time = '';
     if($db_loginlist_cnt > 0) {
-        $db_first_ip = $db_dataLoginList[0]['country'] != '필리핀' ? $db_dataLoginList[0]['ip']:'x.x.x.x';
-        $db_first_country = $db_dataLoginList[0]['country'] != '필리핀' ? $db_dataLoginList[0]['country']:'';
+        $db_first_ip = $db_dataLoginList[0]['ip'];
+        $db_first_country = $db_dataLoginList[0]['country'];
         $db_first_time = $db_dataLoginList[0]['login_datetime'];
     } else {
         $db_first_ip = '';
         $db_first_country = '';
         $db_first_time = '';
     }
+    
     $p_data['sql'] = " SELECT ip, country, COUNT(*) AS cnt  ";
     $p_data['sql'] .= " FROM member_login_history ";
     $p_data['sql'] .= " WHERE member_idx = ".$p_data['m_idx']." GROUP BY ip, country ";
@@ -134,8 +133,8 @@ $data_str_2 = "
 if($db_loginlist_cnt > 0) {
     for ($i=0;$i<$db_loginlist_cnt;$i++)
     {
-        $db_ip = $db_dataLoginList[$i]['country'] != '필리핀' ? $db_dataLoginList[$i]['ip']:'x.x.x.x';
-        $db_country = $db_dataLoginList[$i]['country'] != '필리핀' ? $db_dataLoginList[$i]['country']:'';
+        $db_ip = $db_dataLoginList[$i]['ip'];
+        $db_country = $db_dataLoginList[$i]['country'];
         $db_login_yn = $db_dataLoginList[$i]['login_yn'];
         $db_date = $db_dataLoginList[$i]['login_datetime'];
         

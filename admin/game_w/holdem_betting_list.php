@@ -79,14 +79,6 @@ if ($db_conn) {
             }
             break;
     }
-    
-    // 총판계정 접속시
-    if ($_SESSION['u_business'] > 0) {
-        //$srch_basic .= " AND member.recommend_member = ".$_SESSION['member_idx'];
-        list($param_dist, $str_param_qm) = GameCode::getRecommandMemberIdx($_SESSION['member_idx'], $LSportsAdminDAO);
-        $str_param = implode(',', $param_dist);
-        $srch_basic .= " AND member.recommend_member in ($str_param) ";
-    }
 
     //mysqli_report(MYSQLI_REPORT_ALL & ~MYSQLI_REPORT_INDEX);
     // 전체갯수

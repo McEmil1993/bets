@@ -1,8 +1,8 @@
 <?php
 
 class credis {
-    private $host = '127.0.0.1';
-    private $port = 16389;
+    private $host = '192.168.7.92';
+    private $port = 6378;
     private $password = '';
     private $database = 1;
     private $expire = 3000;

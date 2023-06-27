@@ -372,56 +372,7 @@ if ($db_conn) {
                             <div class="search_form fl">
                                 <div class="" style="padding-right: 10px;">
                                     <select name="srch_level" id="srch_level">
-                                        <option value="" <?php
-                                        if ($p_data['srch_level'] == '') {
-                                            echo "selected";
-                                        }
-                                        ?>>레벨선택</option>
-                                        <option value="1" <?php
-                                        if ($p_data['srch_level'] == '1') {
-                                            echo "selected";
-                                        }
-                                        ?>>1</option>
-                                        <option value="2" <?php
-                                        if ($p_data['srch_level'] == '2') {
-                                            echo "selected";
-                                        }
-                                        ?>>2</option>
-                                        <option value="3" <?php
-                                        if ($p_data['srch_level'] == '3') {
-                                            echo "selected";
-                                        }
-                                        ?>>3</option>
-                                        <option value="4" <?php
-                                        if ($p_data['srch_level'] == '4') {
-                                            echo "selected";
-                                        }
-                                        ?>>4</option>
-                                        <option value="5" <?php
-                                        if ($p_data['srch_level'] == '5') {
-                                            echo "selected";
-                                        }
-                                        ?>>5</option>
-                                        <option value="6" <?php
-                                        if ($p_data['srch_level'] == '6') {
-                                            echo "selected";
-                                        }
-                                        ?>>6</option>
-                                        <option value="7" <?php
-                                        if ($p_data['srch_level'] == '7') {
-                                            echo "selected";
-                                        }
-                                        ?>>7</option>
-                                        <option value="8" <?php
-                                        if ($p_data['srch_level'] == '8') {
-                                            echo "selected";
-                                        }
-                                        ?>>8</option>
-                                        <option value="9" <?php
-                                        if ($p_data['srch_level'] == '9') {
-                                            echo "selected";
-                                        }
-                                        ?>>9</option>
+                                        <option value="1">1</option>
                                     </select>
                                 </div>
                                 <div class="" style="padding-right: 10px;">
@@ -473,7 +424,7 @@ if ($db_conn) {
                                     <a href="javascript:;" onClick="goOrderby('no', '<?= $ob_no_change ?>');"><?= $ob_no_color ?></a>
                                 </th>
                                 <th colspan="3">추천인</th>
-                                <th colspan="9">가입 정보</th>
+                                <th colspan="8">가입 정보</th>
                                 <!-- <th colspan="3">머니/포인트</th>
                                 <th colspan="4">정산 정보</th> -->
                                 <th colspan="3">상태 정보</th>
@@ -491,7 +442,7 @@ if ($db_conn) {
                                     <a href="javascript:;" onClick="goOrderby('level', '<?= $ob_level_change ?>');"><?= $ob_level_color ?></a>
                                 </th>
                                 <th>상태</th>
-                                <th>핸드폰</th>
+                                <!--<th>핸드폰</th>-->
                                 <th>로그인</th>
                                 <th>
                                     <a href="javascript:;" onClick="goOrderby('regdt', '<?= $ob_regdt_change ?>');"><?= $ob_regdt_color ?></a>
@@ -572,7 +523,7 @@ if ($db_conn) {
                                             <td><?= $row['account_bank'] ?></td> <!-- 은행명내용 -->
                                             <td><?= $row['level'] ?></td>
                                             <td><?= $db_status ?></td>
-                                            <td><?= $row['call'] ?></td>
+                                            <!--<td><?//= $row['call'] ?></td>-->
                                             <?php /*
                                               <td style='text-align:right'><?=number_format($row['ch_sum_money'] - ($row['ex_sum_money'] + $row['money']))?></td>
                                              */ ?>

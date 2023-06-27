@@ -40,7 +40,7 @@
                 <div class="scroll_h_inner">
                     <div class="bet_history_tr">
                         <div class="bet_history_title title3">일자</div>
-                        <div class="bet_history_title title3">게임</div>
+                        <div class="bet_history_title title3 mini_none">게임</div>
                         <div class="bet_history_title title3">베팅금액</div>
                         <div class="bet_history_title title3">당첨금</div>
                         <div class="bet_history_title title3">결과</div>
@@ -88,11 +88,11 @@
 
                         <!-- 그룹1 -->
                         <div class="bet_history_tr">
-                            <div class="bet_history_td td3"><?=$row['REG_DTM']?></div>
-                            <div class="bet_history_td td3"><?=isset($prdList[$row['PRD_TYPE']])?$prdList[$row['PRD_TYPE']]:'기타'?></div>
-                            <div class="bet_history_td td3"><?=number_format($row['BET_MNY'])?></div>
-                            <div class="bet_history_td td3"><?=number_format($row['BET_MNY'] + $row['RSLT_MNY'])?></div>
-                            <div class="bet_history_td td3"><span class="<?=$betStatusColor ?>"><?=$betStatus?></span></div>
+                            <div class="bet_history_td td4"><?=$row['REG_DTM']?></div>
+                            <div class="bet_history_td td4 mini_none"><?=isset($prdList[$row['PRD_TYPE']])?$prdList[$row['PRD_TYPE']]:'기타'?></div>
+                            <div class="bet_history_td td4"><?=number_format($row['BET_MNY'])?></div>
+                            <div class="bet_history_td td4"><span class="font06"><?=number_format($row['BET_MNY'] + $row['RSLT_MNY'])?> 원</span></div>
+                            <div class="bet_history_td td4"><span class="<?=$betStatusColor ?>"><?=$betStatus?></span></div>
                         </div>
                         <!-- 그룹1끝 -->
         
@@ -115,7 +115,27 @@
 <!-- <a href="#myAnchor" class="go-top">▲</a> -->
 <script type="text/javascript" src="/assets_w/js/sub_05.js?v=<?php echo date("YmdHis"); ?>"></script>
 <script type="text/javascript">
-    $(function(){       
+    $(function(){
+        let htmls = ``
+        let htmls2 = ``
+
+        if($(document).width() < 500){
+            $(".bet_history_title").css("width","25%");
+            if($(".bet_history_tr").length > 1){
+            htmls = ``
+            }else{
+                htmls2 = `
+                    <div class="con_box20 bet_history_wrap2">
+                        <div class="bet_history_box">
+                            <div class="bet_history_top" style="display:block; text-align: center;">기록이 없습니다.</div>
+                        </div>
+                    </div>
+                    `
+                $(".tab_wrap").append(htmls2)
+                $(".tab_livecasino").remove()
+                $(".scroll_h_wrap").remove()
+            }
+        }
     });
 </script>
 </body>

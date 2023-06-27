@@ -6,11 +6,9 @@ if (!isset($_SESSION)) {
 $admin_id = $_SESSION['aid'];
 
 include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
-
 include_once(_BASEPATH . '/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH . '/class_Admin_Common_dao.php');
-
 include_once(_DAOPATH . '/class_Admin_Member_dao.php');
 
 $p_data['m_idx'] = trim(isset($_POST['m_idx']) ? $_POST['m_idx'] : 0);

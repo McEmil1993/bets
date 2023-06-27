@@ -387,12 +387,12 @@ function getScoreBoard(sports_id, fixture_id) {
         score_html = `
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">스코어</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">코너킥</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">옐로카드</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">레드카드</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">교체</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">페널티킥</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">스코어</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">코너킥</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">옐로카드</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">레드카드</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">교체</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">페널티킥</td>
                 </tr>
                 <tr>
                     <td height="60" align="center"><span class="live_font2 font05" id="participants_1_score_${fixture_id}">0</span></td>
@@ -417,12 +417,12 @@ function getScoreBoard(sports_id, fixture_id) {
         score_html = `
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">1q</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">2q</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">Half</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">3q</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">4q</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">T</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">1q</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">2q</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">Half</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">3q</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">4q</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">T</td>
                 </tr>
                 <tr>
                     <td height="60" align="center"><span class="live_font2 q1_p1_score_${fixture_id}">0</span></td>
@@ -447,11 +447,11 @@ function getScoreBoard(sports_id, fixture_id) {
         score_html = `
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">1s</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">2s</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">3s</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">4s</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">5s</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">1s</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">2s</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">3s</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">4s</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">5s</td>
                 </tr>
                 <tr>
                     <td height="60" align="center"><span class="live_font2 v1_p1_score_${fixture_id}">0</span></td>
@@ -474,10 +474,10 @@ function getScoreBoard(sports_id, fixture_id) {
         score_html = `
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">1p</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">2p</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">3p</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">T</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">1p</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">2p</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">3p</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">T</td>
                 </tr>
                 <tr>
                     <td height="60" align="center"><span class="live_font2 q1_p1_score_${fixture_id}">0</span></td>
@@ -498,12 +498,12 @@ function getScoreBoard(sports_id, fixture_id) {
         score_html = `
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">1s</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">2s</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">3s</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">4s</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">5s</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">T</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">1s</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">2s</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">3s</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">4s</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">5s</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">T</td>
                 </tr>
                 <tr>
                     <td height="60" align="center"><span class="live_font2 q1_p1_score_${fixture_id}">0</span></td>
@@ -528,16 +528,16 @@ function getScoreBoard(sports_id, fixture_id) {
         score_html = `
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">1i</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">2i</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">3i</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">4i</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">5i</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">6i</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">7i</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">8i</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">9i</td>
-                    <td width="10%" height="40" align="center" style="background:rgba(0,0,0,0.4); font-size:11px; color:#adadad;">T</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">1i</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">2i</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">3i</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">4i</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">5i</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">6i</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">7i</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">8i</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">9i</td>
+                    <td width="10%" height="40" align="center" style="background:var(--bgtitleimg2); font-size:11px; color:#f9f9f9;">T</td>
                 </tr>
                 <tr>
                     <td height="60" align="center"><span class="live_font22 i1_p1_score_${fixture_id}">0</span></td>
@@ -579,7 +579,7 @@ function setLiveScore(mainGame){
 
     let thisSId = mainGame['fixture_sport_id'];
     
-    if(mainGame['livescore'] == '' || mainGame['livescore'] == null || mainGame['livescore'] == '[object Object]'){
+    if(mainGame['livescore'] == '' || mainGame['livescore'] == null){
         //console.log('set null: '+ mainGame['livescore']);
         return;
     }
@@ -1177,7 +1177,7 @@ const bettingClick = function(){
         console.log(betList_new);
         fixture_sport_id = bet_data['fixture_sport_id'];
         
-        if(687890 == fixture_sport_id && (bet_data['livescore'] == '' || bet_data['livescore'] == null || bet_data['livescore'] == '[object Object]')){
+        if(687890 == fixture_sport_id && (bet_data['livescore'] == '' || bet_data['livescore'] == null)){
             live_score_1 = live_score_2 = 0;
         }else{
             livescore = JSON.parse(bet_data['livescore']);
@@ -1199,7 +1199,7 @@ const bettingClick = function(){
         arrFixtures.push(fixture_id);
     });
     $('#loadingCircle').show();
-    $('body').append("<div class='loading-overlay'></div>");
+    // $('body').append("<div class='loading-overlay'></div>");
     // 선택한 실시간 점수 저장
     $.ajax({
         url: '/api/setRealTimeScore',

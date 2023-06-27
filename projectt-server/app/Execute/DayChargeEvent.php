@@ -32,13 +32,13 @@ class DayChargeEvent {
                     . 'tot_charge = tot_charge + VALUES(tot_charge)';
             $memberDayChargeEvent->db->query($sql, [$member_idx, $count, $money]);
 
-
             if (-1 == $count) {
                 $memberDayChargeEvent->transComplete();
                 return;
             }
 
             $this->checkReward($member_idx);
+
             $memberDayChargeEvent->transComplete();
         } catch (\mysqli_sql_exception $e) {
             $this->logger->error(':::::::::::::::  DayChargeEvent AddCharge error : ' . $e->getMessage());
@@ -58,7 +58,7 @@ class DayChargeEvent {
                     . '(?,?)'
                     . ' ON DUPLICATE KEY UPDATE '
                     . 'tot_exchange = tot_exchange + VALUES(tot_exchange)';
-            $memberDayChargeEvent->db->query($sql, [$member_idx, $money]);
+            $memberDayChargeEvent->db->query($sql, [$member_idx,$money]);
             $memberDayChargeEvent->transComplete();
         } catch (\mysqli_sql_exception $e) {
             $this->logger->error(':::::::::::::::  DayChargeEvent AddExchange error : ' . $e->getMessage());

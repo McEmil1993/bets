@@ -96,7 +96,7 @@ class BaseController extends Controller {
 
             if($member_level != 9 && $is_inspection_page == false)
             {
-                header("Location: /web/inspection"); 
+                header("Location: /web/inspection");
                 exit;
             }
         }
@@ -202,4 +202,79 @@ class BaseController extends Controller {
         return [true, '성공'];
     }
 
+    
+    protected function checkServer($findMember, $productType) {
+        $tgcModel = new TGameConfigModel();
+        $str_sql_config = "SELECT set_type, set_type_val FROM t_game_config WHERE set_type IN('service_site','service_casino','service_slot')";
+        $arr_config_result = $tgcModel->db->query($str_sql_config)->getResultArray();
+
+        $arr_config = array();
+        foreach ($arr_config_result as $key => $value) {
+            $arr_config[$value['set_type']] = $value['set_type_val'];
+        }
+
+        // 사이트 점검체크
+        if ('Y' == $arr_config['service_site'] && 'Y' != $findMember->getIsTester()) {
+            return [false,'사이트 점검중입니다'];
+        }
+
+        // 카지노 점검체크
+        if (PRODUCT_TYPE_CASINO == $productType && 'Y' == $arr_config['service_casino'] && 'Y' != $findMember->getIsTester()) {
+            return [false,'카지노 점검중입니다'];
+        }
+        
+        // 슬롯 점검체크
+        if (PRODUCT_TYPE_SLOT == $productType && 'Y' == $arr_config['service_slot'] && 'Y' != $findMember->getIsTester()) {
+            return [false,'슬롯 점검중입니다'];
+        }
+
+        // 유저개인 점검
+        $game_type_sql = "SELECT game_type, status FROM member_game_type where member_idx = ? and game_type in ($productType)";
+        $arr_member_config_result = $tgcModel->db->query($game_type_sql, [$findMember->getIdx()])->getResultArray();
+
+        $arr_member_config = array();
+        foreach ($arr_member_config_result as $key => $value) {
+            $arr_member_config[$value['game_type']]['status'] = $value['status'];
+        }
+
+        if ('OFF' == $arr_member_config[$productType]['status'] && 'Y' != $findMember->getIsTester()) {
+            if(PRODUCT_TYPE_CASINO == $productType){
+                return [false,'카지노 점검중입니다'];
+            } else if (PRODUCT_TYPE_SLOT == $productType){
+                return [false,'슬롯 점검중입니다'];
+            }
+           
+        }
+
+        return [true,'success'];
+    }
+
+    public function isLogin($memberModel) {
+        if (false == session()->has('member_idx')) {
+            //$url = base_url("/$viewRoot/index");
+            return [null, '로그인 후 이용해주세요.'];
+        }
+
+        $memebr_idx = session()->get('member_idx');
+
+        $member = $memberModel->getMemberWhereIdx($memebr_idx);
+        if ($member == null) {
+            return [null, '조회되는 회원 또는 메세지 idx 가 없습니다.'];
+        }
+
+        if ($member->getStatus() == 2 || $member->getStatus() == 3) {
+            return [null, '사용이 불가능 한 계정으로 관리자에게 문의바랍니다.'];
+        }
+
+        if ($member->getStatus() == 11) {
+            $response['messages'] = '관리자 승인이 필요합니다.';
+            return [null, '관리자 승인이 필요합니다.'];
+        }
+
+        if ($member->getUBusiness() != 1) {
+            return [null, '총판은 배팅 이용이 불가능합니다.'];
+        }
+        return [$member, ''];
+    }
+    
 }

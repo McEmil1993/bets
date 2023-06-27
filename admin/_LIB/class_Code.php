@@ -1,10 +1,14 @@
 <?php
+
+
 /** @noinspection ALL */
 include_once(_LIBPATH . '/class_GameStatusUtil.php');
 include_once(_BASEPATH . '/GamblePatch/GambelGmPt.php');
 include_once(_BASEPATH . '/GamblePatch/KwinGmPt.php');
 include_once(_BASEPATH . '/GamblePatch/ChoSunGmPt.php');
 include_once(_BASEPATH . '/GamblePatch/BetsGmPt.php');
+include_once(_BASEPATH . '/GamblePatch/NobleGmPt.php');
+include_once(_BASEPATH . '/GamblePatch/BullsGmPt.php');
 include_once(_LIBPATH . '/class_CommonStatsQuery.php');
 include_once(_LIBPATH . '/class_UserPayBack.php');
 class GameCode {
@@ -124,6 +128,10 @@ class GameCode {
             $gmPt = new ChoSunGmPt();
         } else if ('BETS' == SERVER) {
             $gmPt = new BetsGmPt();
+        } else if ('NOBLE' == SERVER) {
+            $gmPt = new NobleGmPt();
+        }else if ('BULLS' == SERVER) {
+            $gmPt = new BullsGmPt();
         } else {
             throw new Exception('fail GamblePatch !!!');
         }
@@ -633,8 +641,10 @@ class GameCode {
             $result = $model->getQueryData_pre($sql, [$dis_idx]);
             $param = array($dis_idx);
 
-            foreach ($result as $dist) {
-                array_push($param, $dist['idx']);
+            if(null != $result){
+                foreach ($result as $dist) {
+                    array_push($param, $dist['idx']);
+                }
             }
 
             $str_param = implode(',', $param);
@@ -1486,5 +1496,35 @@ class GameCode {
             return true;
         }
 
+        // 실시간 날짜별 현황 총판유형 추가버전
+        public static function getRecommandMemberInfosByDistType($dis_idx, $dist_type, $model) {
+            $sql = "
+            WITH RECURSIVE TEMP AS (
+                SELECT member.idx,member.id,member.nick_name,member.u_business,member.dis_id, 1 as lvl
+                FROM member
+                WHERE recommend_member = ? and u_business <> 1
+
+                UNION ALL
+
+                SELECT A.idx,A.id,A.nick_name,A.u_business,A.dis_id,lvl + 1 lvl
+                FROM member A
+                INNER JOIN TEMP B ON A.recommend_member = B.idx WHERE A.recommend_member > 0 and A.u_business <> 1
+            )
+            SELECT idx,id,nick_name FROM TEMP order by u_business asc";
+
+            $result = $model->getQueryData_pre($sql, [$dis_idx]);
+            $param = array($dis_idx);
+
+            if(null != $result){
+                foreach ($result as $dist) {
+                    array_push($param, $dist['idx']);
+                }
+            }
+
+            $str_param = implode(',', $param);
+            $sql = "select idx,id,nick_name from member where idx in($str_param)  and dist_type = $dist_type";
+            $result = $model->getQueryData_pre($sql, []);
+            return $result;
+        }
     }
     ?>

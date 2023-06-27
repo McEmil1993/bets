@@ -75,7 +75,7 @@ public class BettingServiceImpl implements BettingService {
                     put("memberIdx", params.get("memberIdx"));
                     put("casinoBetMoney", params.get("betMoney"));
                 }});
-                
+
                 bettingDAO.updateBetPlus(new HashMap<String,Object>(){{
                     put("memberIdx", params.get("memberIdx"));
                     put("betMoney", params.get("betMoney"));

@@ -6,11 +6,9 @@ header('Expires: 0'); // Proxies.
 header('Content-Type: json; charset=UTF-8');
 
 include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
-
 include_once(_BASEPATH . '/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH . '/class_Admin_Common_dao.php');
-
 include_once(_DAOPATH . '/class_Admin_LSports_Bet_dao.php');
 
 try {
@@ -102,7 +100,7 @@ try {
        
         $result['retCode'] = FAIL_EMPTY_DATA;
         $result['retMsg']  = FAIL_EMPTY_DATA_MSG;
-        return;
+        throw new Exception('mysqli_sql_exception!!!');
     }
 
     $now_ip = CommonUtil::get_client_ip();

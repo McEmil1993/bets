@@ -109,7 +109,7 @@ include_once(_BASEPATH.'/common/iframe_head_menu.php');
                                 <input id="saveName" name="saveName" type=hidden value=''>
                                 <input type="file" onchange="setThumbnail(event);" id="uploadfile" name="uploadfile" accept="image/*">
                             </form>
-                        	<span style="margin-right: 920px;color: red;">※이벤트 썸네일 : 가로 340px / 세로 170px</span>
+                        	<span style="margin-right: 920px;color: red;">※이벤트 썸네일 : 가로 470px / 세로 150px</span>
                         </td>
                     </tr>
                     <!--<tr>

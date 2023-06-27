@@ -35,7 +35,7 @@
 			<div class="tab_wrap">
 				<ul>
 					<li><a href="javascript:fnLoadingMove('/web/member_info')"><span class="tab">내정보</span></a></li>
-					<li><a href="javascript:fnLoadingMove('/web/change_password')"><span class="tab">비밀번호변경</span></a></li>
+					<!-- <li><a href="javascript:fnLoadingMove('/web/change_password')"><span class="tab">비밀번호변경</span></a></li> -->
 					<li><a href="javascript:fnLoadingMove('/web/recommend_member')"><span class="tabon">추천회원리스트</span></a></li>
 					<li><a href="javascript:fnLoadingMove('/web/point_history')"><span class="tab">포인트내역</span></a></li>
 					<li><a href="javascript:fnLoadingMove('/web/note')"><span class="tab">쪽지함</span></a></li>

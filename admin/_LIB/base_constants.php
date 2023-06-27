@@ -106,6 +106,8 @@ defined('AC_GM_ALLOCATION_PRICE')   || define('AC_GM_ALLOCATION_PRICE', 509); //
 defined('AC_GM_ROLLBACK_RE_CALL_CHARGE')   || define('AC_GM_ROLLBACK_RE_CALL_CHARGE', 510); //출금취소로 인한 g_money 회수
 defined('AC_GM_CANCEL_ITEM_USE')   || define('AC_GM_CANCEL_ITEM_USE', 511); //배팅 취소로 인한 item 회수
 defined('AC_GM_ADMIN_ITEM_REWARD_PAYMENT')   || define('AC_GM_ADMIN_ITEM_REWARD_PAYMENT', 512); //Admin Item Reward Payment
+// defined('AC_USER_PAYBACK')   || define('AC_USER_PAYBACK', 3001);
+// defined('AC_DAY_CHRGE_EVENT_REWARD_POINT')   || define('AC_DAY_CHRGE_EVENT_REWARD_POINT', 3002);
 
 defined('USER_PAY_BACK_REWARD_POINT') || define('USER_PAY_BACK_REWARD_POINT', 3001);
 defined('DAY_CHRGE_EVENT_REWARD_POINT') || define('DAY_CHRGE_EVENT_REWARD_POINT', 3002);
@@ -117,8 +119,6 @@ defined('RECOMMENDER_BET_BACK_REWARD_POINT') || define('RECOMMENDER_BET_BACK_REW
 
 defined('USER_BET_LOSE_BACK_REWARD_POINT') || define('USER_BET_LOSE_BACK_REWARD_POINT', 4004);
 defined('RECOMMENDER_BET_LOSE_BACK_REWARD_POINT') || define('RECOMMENDER_BET_LOSE_BACK_REWARD_POINT', 4005);
-
-
 
 // 아이템 타입
 defined('GM_REFUND')   || define('GM_REFUND', 1); // 환급

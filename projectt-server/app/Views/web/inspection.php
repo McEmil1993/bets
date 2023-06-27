@@ -16,12 +16,12 @@
             justify-content:center;
             text-align:center;
             flex-direction:column;
-            background-color: rgba(0, 0, 0, 0.6);
+            background-color: rgba(0, 0, 0, 0.8);
         }
         
         .system_logo {
             display: block;
-            width: 200px;
+            width: 300px;
             margin: 60px auto;
         }
         
@@ -43,7 +43,7 @@
         
         /* 점검내용 */
         .system_description {
-            color:#b7b7b7; 
+            color:#01aef0; 
             font-size:16px; 
             font-weight:600; 
             margin:10px 0;
@@ -56,7 +56,7 @@
             margin: 0 auto;
             padding: 20px;
             text-align: left;
-            background-color: #009dd9;
+            background-color: #01aef0;
             border-radius: 0px;
         }
 
@@ -107,7 +107,7 @@
                 </div>
 
                 <p class="sub_description">※ 상기 작업시간은 사정에 의해 변경될 수 있습니다. </p>
-                <p class="sub_description">※ 현재 텔레그램문의만 가능합니다. @BETSKRCS </p>  
+                <p class="sub_description">※ 현재 텔레그램문의만 가능합니다. @BULLS882 </p>
                 <p class="sub_description">※ 점검 시간 이후 접속이 안되시면 쿠키 삭제 이후 재접속 부탁드립니다. </p>
             </div>
         </div>

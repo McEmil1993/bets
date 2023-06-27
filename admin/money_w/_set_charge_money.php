@@ -8,7 +8,8 @@ header('Content-Type: text/html; charset=UTF-8');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
 
 include_once(_BASEPATH . '/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
+
 include_once(_DAOPATH . '/class_Admin_Cash_dao.php');
 include_once(_LIBPATH . '/class_Code.php');
 
@@ -16,8 +17,12 @@ include_once(_BASEPATH . '/GamblePatch/GambelGmPt.php');
 include_once(_BASEPATH . '/GamblePatch/KwinGmPt.php');
 include_once(_BASEPATH . '/GamblePatch/ChoSunGmPt.php');
 include_once(_BASEPATH . '/GamblePatch/BetsGmPt.php');
+include_once(_BASEPATH . '/GamblePatch/NobleGmPt.php');
+include_once(_BASEPATH . '/GamblePatch/BullsGmPt.php');
 include_once(_LIBPATH . '/class_chExFunc.php');
 include_once(_LIBPATH . '/class_UserPayBack.php');
+
+include_once(_BASEPATH . '/Execute/DayChargeEvent.php');
 
 $UTIL = new CommonUtil();
 
@@ -155,6 +160,10 @@ do {
                     $gmPt = new ChoSunGmPt();
                 } else if ('BETS' == SERVER) {
                     $gmPt = new BetsGmPt();
+                } else if ('NOBLE' == SERVER) {
+                    $gmPt = new NobleGmPt();
+                }else if ('BULLS' == SERVER) {
+                    $gmPt = new BullsGmPt();
                 } else {
                     throw new Exception('fail GamblePatch !!!');
                 }
@@ -239,7 +248,9 @@ do {
                             }
                         }
                     //}
-
+                    if($n_is_reg_first_charge == "0"){
+                        $ch_point = ($n_reg_first_charge * $set_money) / 100;
+                    }
                     $p_ac_code = 10;
                     $af_point = $ch_point + $now_point;
                     $af_cash = $now_cash + $set_money;
@@ -273,6 +284,9 @@ do {
                             , $ch_point, $now_point, $af_point, $p_a_comment, $idx);
 
                     UserPayBack::AddCharge($member_idx,$set_money,$CASHAdminDAO);
+                    $execute = new DayChargeEvent;
+                    $execute->AddCharge($member_idx,1,$set_money,$admin_id,$CASHAdminDAO);
+                    
                     /* $a_comment = "머니 충전완료";
                       $ac_code = 1;
 
@@ -413,6 +427,10 @@ do {
                             $gmPt = new ChoSunGmPt();
                         } else if ('BETS' == SERVER) {
                             $gmPt = new BetsGmPt();
+                        } else if ('NOBLE' == SERVER) {
+                            $gmPt = new NobleGmPt();
+                        }else if ('BULLS' == SERVER) {
+                            $gmPt = new BullsGmPt();
                         } else {
                             throw new Exception('fail GamblePatch !!!');
                         }
@@ -437,7 +455,8 @@ do {
                         }
                         
                        UserPayBack::AddCharge($member_idx,$set_money,$CASHAdminDAO);
-                         
+                       $execute = new DayChargeEvent;
+                       $execute->AddCharge($member_idx,-1,$set_money,$admin_id,$CASHAdminDAO);  
                     }
                 }
                 break;

@@ -20,8 +20,6 @@ class MiniGameMemberBetModel extends Model {
         'bet_status', // 배팅 상태   -1: 게임 결과 전 2: 적중 - 정산 전  3: 적중 - 정산 완료 4: 적중 실패
         'total_bet_money', // 총 배팅 금액
         'bet_price', // 배팅률
-        'bet_other_price', // 반대 배팅률
-        'bet_other_price_draw',
         'create_dt', // 배팅 시간
         'update_dt', // 업데이트 시간
         'calculate_dt', // 정산 시간
@@ -48,8 +46,6 @@ class MiniGameMemberBetModel extends Model {
             'ls_markets_id' => $data['marketsId'],
             'ls_markets_name' => trim($data['marketsName']),
             'bet_price' => $data['betPrice'],
-            'bet_other_price' => $data['betOtherPrice'],
-            'bet_other_price_draw' => $data['betOtherPriceDraw'],
             'total_bet_money' => $totalMoney,
             'take_point' => $takePoint,
             'round' => $data['round'],
@@ -76,8 +72,8 @@ class MiniGameMemberBetModel extends Model {
 
             # 회원 정보 수정
             $memberModel = new MemberModel();
-            //$memberModel->memberChangeMoney($member->getIdx(), (int) $member->getMoney() - (int) $totalMoney);
-            $memberModel->memberChangeMoney($member->getIdx(), - (int) $totalMoney);
+            $memberModel->memberChangeMoney($member->getIdx(), (int) $member->getMoney() - (int) $totalMoney);
+            
             # 최종 배팅 시간
             $memberModel->updateBettingDate($member->getIdx());
             

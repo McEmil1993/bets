@@ -98,18 +98,13 @@ $BdsAdminDAO = new Admin_Bbs_DAO(_DB_NAME_WEB);
 $db_conn = $BdsAdminDAO->dbconnect();
 
 if($db_conn) {
-    $p_data_expt_sql = "SELECT set_type, set_type_val FROM t_game_config WHERE set_type = 'test_expt' ";
-    $result_game_config = $BdsAdminDAO->getQueryData_pre($p_data_expt_sql,[]);
-    $test_expt_member_idxs = $result_game_config[0]['set_type_val'];
-    
     // 게시물 전체갯수
     $p_data['sql'] = "SELECT COUNT(b.idx) AS CNT
                         FROM mini_game_member_bet AS b
                         LEFT JOIN mini_game_bet AS m ON m.markets_id = b.ls_markets_id
                         LEFT JOIN member AS a ON b.member_idx = a.idx
                         LEFT JOIN mini_game AS g ON g.id = b.ls_fixture_id";
-    $p_data['sql'] .= " WHERE (CASE WHEN b.member_idx IN($test_expt_member_idxs) THEN b.member_idx IN($test_expt_member_idxs) AND b.bet_status = 3 ELSE 1 = 1 END)";
-    $p_data['sql'] .= " AND b.create_dt >= '".$p_data['db_srch_s_date']."' AND  b.create_dt <= '".$p_data['db_srch_e_date']."' and ";
+    $p_data['sql'] .= " WHERE b.create_dt >= '".$p_data['db_srch_s_date']."' AND  b.create_dt <= '".$p_data['db_srch_e_date']."' and ";
     
     $p_data['sql'] .= $srch_basic;
     $p_data['sql'] .= ";";
@@ -152,8 +147,7 @@ if($db_conn) {
                         LEFT JOIN mini_game_bet AS m ON m.markets_id = b.ls_markets_id
                         LEFT JOIN member AS a ON b.member_idx = a.idx
                         LEFT JOIN mini_game AS g ON g.id = b.ls_fixture_id";
-        $p_data['sql'] .= " WHERE (CASE WHEN b.member_idx IN($test_expt_member_idxs) THEN b.member_idx IN($test_expt_member_idxs) AND b.bet_status = 3 ELSE 1 = 1 END)";
-        $p_data['sql'] .= " AND b.create_dt >= '".$p_data['db_srch_s_date']."' AND  b.create_dt <= '".$p_data['db_srch_e_date']."' and ";
+        $p_data['sql'] .= " WHERE b.create_dt >= '".$p_data['db_srch_s_date']."' AND  b.create_dt <= '".$p_data['db_srch_e_date']."' and ";
         $p_data['sql'] .= $srch_basic.' order by b.create_dt desc';
         $p_data['sql'] .= " LIMIT ".$p_data['start'].", ".$p_data['num_per_page']." ";
         $p_data['sql'] .= ";";

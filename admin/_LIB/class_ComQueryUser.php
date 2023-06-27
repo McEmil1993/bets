@@ -5,7 +5,7 @@ class ComQueryUser {
     // 입출금 정산 쿼리 
     public static function doComChExQuery($db_srch_s_date, $db_srch_e_date) {
         $param = array($db_srch_s_date, $db_srch_e_date,$db_srch_s_date, $db_srch_e_date);
-      
+   
         $sql = " SELECT 'ch' AS stype, 
                         DATE(update_dt) AS up_dt,
                         count(member_money_charge_history.idx) as user_cnt,
@@ -16,10 +16,8 @@ class ComQueryUser {
                         ON 
                             member_money_charge_history.member_idx = T1.idx  
                         LEFT JOIN member as parent ON T1.recommend_member = parent.idx";
-
         $sql .= " WHERE update_dt >= ? AND  update_dt <= ? ";
         $sql .= " AND T1.level <> 9 AND T1.u_business = 1 AND parent.u_business = 1 ";
-
         $sql .= " AND member_money_charge_history.status = 3";
         $sql .= " GROUP BY up_dt";
         $sql .= " UNION ALL ";

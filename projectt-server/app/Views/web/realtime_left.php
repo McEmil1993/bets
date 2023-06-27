@@ -11,30 +11,32 @@
     <div class="search">
         <ul>
             <li>
-                <input name="league_name" id="league_name" type="text" class="input_search" placeholder="국가 및 팀명">
+                <input name="league_name" id="league_name" type="text" class="input_search" placeholder="국가 및 리그명">
             </li>
             <li><button type="button" class="search_btn" onclick="searchLeague()">검색</button></li>
         </ul>
     </div>
     <div class="con_box_left">
         <ul class="dropdown">
-            <li>
-                <div class="left_list1" onclick="getRealTimeGameLiveScoreList(0, 0)">
-                    <span class="menu_left">
-                        <img src="/assets_w/images/icon01.png" width="18">&nbsp;&nbsp;&nbsp;전체보기
-                    </span>
-                    <span class="menu_right">
-                        <span class="menu_right_box realTimeTotalCnt"><?= $realTimeTotalCnt ?></span></span>
-                    </span>
-                </div> 
-            </li>
+           
             <?php foreach ($sports as $key => $sport) { ?>
                 <li class="menu1">
                     <a href="javascript:void(0);">
                         <div class="left_list1" onclick="getRealTimeGameLiveScoreList(<?=$sport['id'].''?>, 0)">
                             <span class="menu_left">
-                                <img src="<?=$imageBasePath.'/sports/'?>/icon_game<?=$sport['id']?>.png" width="18">&nbsp;&nbsp;&nbsp; 
-                                <?= $sport['name']?>
+                                <!-- <img src="/assets_w/images/icon<?=$sport['id']?>.png" width="24">&nbsp;&nbsp;&nbsp; 
+                                <?php
+                                $image_path = "";
+                                if($sport['image_path'] != ""){
+                                    $image_path = $imageBasePath.'/sports/'.$sport['image_path'];
+                                }else{
+                                    $image_path = $imageBasePath.'/sports/'.'icon_game'.$sport['id'].'.png';
+                                }
+                                ?>
+
+                                <?= $sport['name']?> -->
+                                <img src="<?=$image_path?>" width="24">&nbsp;&nbsp;&nbsp; 
+                                <?= $sport['display_name']?>
                             </span>
                             <span class="menu_right">
                                 <span class="menu_right_box" id="sports_id_<?= $sport['id']?>" >0</span>

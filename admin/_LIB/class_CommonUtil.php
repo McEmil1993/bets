@@ -772,7 +772,7 @@ class CommonUtil {
     }
     
     // 계좌명의및 번호 변경시 24시간 동안 들어오는 환전은 환전관리 페이지에서 아이디 닉네임 예금주 글씨 굵게 빨간색
-    function getMemberInfoColor($pVal = null, $date_time) {
+    function getMemberInfoColor($pVal = null, $date_time, $is_monitor_charge) {
         if(!isset($date_time)){
             return $pVal;
         }
@@ -780,7 +780,7 @@ class CommonUtil {
         $checkTime = date("Y-m-d H:i:s", strtotime($date_time . "+" . 24 . " hour"));
         
         $retVal = "";
-        if($checkTime > date("Y-m-d H:i:s")) {
+        if($checkTime > date("Y-m-d H:i:s") || 'Y' == $is_monitor_charge) {
             $retVal = "<font color='red'>" . $pVal . "</font>";
         } else {
             $retVal = $pVal;

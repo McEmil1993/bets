@@ -44,9 +44,7 @@
 
 <div class="contents_wrap">
 	<div class="contents_box">
-
         <?= view('/web/common/betting_history_snb') ?>
-
         <?php if($_GET['bet_group'] < 3 || $_GET['bet_group'] == 9) : ?>
         <?php if(!empty($betList)) : ?>
         <?php foreach ($betList as $key => $bet) : ?>
@@ -58,7 +56,7 @@
             list($result, $class) = \App\Util\CodeUtil::bet_status_by_info_2($bet->bet_status, $bet->total_bet_money, $bet->take_money);
         ?>
 
-        <div class="con_box10 bet_history_wrap1" id="<?= $bet->idx;?>" >
+        <div class="con_box20 bet_history_wrap1" id="<?= $bet->idx;?>" >
             <div class="bet_history_tr">
                 <div class="bet_history_title title2">경기시간</div>
                 <div class="bet_history_title title2">종목</div>
@@ -84,34 +82,28 @@
                     }
 
                     if($gameName == "UFC") {
-                        $imageIconPath = "/assets_w/images/icon08.png";
+                        $imageIconPath = "/assets_w/images/icon_game09.png";
                     }
                     if($gameName == "야구") {
-                        $imageIconPath = "/assets_w/images/icon04.png";
+                        $imageIconPath = "/assets_w/images/icon_game04.png";
                     }
                     if($gameName == "핸드볼") {
-                        $imageIconPath = "/assets_w/images/icon05.png";
+                        $imageIconPath = "/assets_w/images/icon_game05.png";
                     }
                     if($gameName == "아이스 하키") {
-                        $imageIconPath = "/assets_w/images/icon06.png";
+                        $imageIconPath = "/assets_w/images/icon_game07.png";
                     }
                     if($gameName == "배구") {
-                        $imageIconPath = "/assets_w/images/icon05.png";
+                        $imageIconPath = "/assets_w/images/icon_game05.png";
                     }
                     if($gameName == "농구") {
-                        $imageIconPath = "/assets_w/images/icon03.png";
+                        $imageIconPath = "/assets_w/images/icon_game03.png";
                     }
                     if($gameName == "축구") {
-                        $imageIconPath = "/assets_w/images/icon02.png";
+                        $imageIconPath = "/assets_w/images/icon_game02.png";
                     }
-                    if($gameName == "이스포츠") {
-                        $imageIconPath = "/assets_w/images/icon07.png";
-                    }
-                    if($gameName == "골프") {
-                        $imageIconPath = "/assets_w/images/icon05.png";
-                    }
-                    if($gameName == "비치발리볼") {
-                        $imageIconPath = "/assets_w/images/icon05.png";
+                    if($gameName == "E-스포츠") {
+                        $imageIconPath = "/assets_w/images/icon_game08.png";
                     }
 
                 } else {
@@ -162,9 +154,9 @@
                 <div class="bet_history_td td2"><?=isset($detail['league_display_name'])? $detail['league_display_name']:$detail['league_name']?></div>
                 <div class="bet_history_td td2"><?= $marketsName ?></div>
                 <div class="bet_history_td td4">
-                    <span class="m_bet_l"><?=isset($detail['p1_display_name'])? $detail['p1_display_name']:$detail['p1_team_name']?></span>
-                    <span class="m_bet_vs"><img src="/assets_w/images/vs.png" width="24"></span>
-                    <span class="m_bet_r"><?=isset($detail['p2_display_name'])? $detail['p2_display_name']:$detail['p2_team_name']?></span>
+                    <span class="m_bet_l"><?=$detail['p1_display_name'] != '' ? $detail['p1_display_name']:$detail['p1_team_name']?></span>
+                    <span class="m_bet_vs"><img src="/assets_w/images/vs.png" width="32"></span>
+                    <span class="m_bet_r"><?=$detail['p2_display_name'] != '' ? $detail['p2_display_name']:$detail['p2_team_name']?></span>
                 </div>
                 <div class="bet_history_td td2"><?=$betNameDisplay?></div>
                 <div class="bet_history_td td1"><span class="font05"><?=number_format($detail['bet_price'], 2)?></span></div>
@@ -178,22 +170,36 @@
 
             <div class="bet_history" >
                 <ul class="bet_history_span">
-                    <li class="font08">전체배당(보너스포함)&nbsp;&nbsp;<span class="font10">x <?= number_format($bet->total_bet_price, 2) ?></span></li>
-                    <li class="font08">보너스&nbsp;&nbsp;<span><span class="font06">x <?= number_format($bet->bonus_price, 2) ?></span></li>
+                    <li class="font08">전체배당(보너스포함)&nbsp;&nbsp;<span class="font06">x <?= number_format($bet->total_bet_price, 2) ?></span></li>
+                    <li class="font08">보너스(아이템)&nbsp;&nbsp;
+                        <span class="font06">x <?= number_format($bet->bonus_price, 2) ?></span>
+                        <span class="font10">(x <?= number_format($bet->item_bonus_price, 2) ?>)</span>
+                    </li>
+                    <li class="font08">아이템&nbsp;&nbsp;<span class="font10">
+                    <?php
+                        if ($bet->item_idx == 0) {
+                            $itemName = '미사용';
+                        } else {
+                            $itemName = $bet->item_name;
+                        }
+                        echo $itemName;
+                    ?>
+
+                    </span></li>
                     <li class="font08">베팅슬립&nbsp;&nbsp;<span class="font03"><?=$bet->is_betting_slip?></span></li>
                     <li class="font08">베팅금액&nbsp;&nbsp;<span class="font03"><?= number_format($bet->total_bet_money) ?> 원</span></li>
-                    <li class="font08">당첨예상금액&nbsp;&nbsp;<span class="font03"><?= number_format($bet->total_bet_money * number_format($bet->total_bet_price, 2)) ?>원</span></li>
-                    <li class="font08">당첨금액&nbsp;&nbsp;<span class="font06"><?= number_format($bet->take_money) ?>원</span></li>
+                    <li class="font08">예상적중금액&nbsp;&nbsp;<span class="font03"><?= number_format($bet->total_bet_money * number_format($bet->total_bet_price, 2)) ?>원</span></li>
+                    <li class="font08">적중금액&nbsp;&nbsp;<span class="font06"><?= number_format($bet->take_money) ?>원</span></li>
                 </ul>
                 <ul class="bet_history_span">
-                    <li class="font08">베팅시간&nbsp;&nbsp; <span class="font03"><?=date("m-d", strtotime($bet->create_dt))?> (<?=DateTimeUtil::getWeekDay($bet->create_dt)?>) <?=date("m-d H:i", strtotime($bet->create_dt))?></span></li>
+                    <li class="font08">베팅시간&nbsp;&nbsp; <span class="font03"><?=date("m-d", strtotime($bet->create_dt))?> (<?=DateTimeUtil::getWeekDay($bet->create_dt)?>) <?=date("H:i:s", strtotime($bet->create_dt))?></span></li>
                     <li class="font08">베팅결과&nbsp;&nbsp; <span class="<?= $class ?>"><?= $result ?></span></li>
                 </ul>
             </div>
         </div> <!-- .bet_history_wrap1 -->
 
         <!-- mobile -->
-        <div class="con_box10 bet_history_wrap2">
+        <div class="con_box20 bet_history_wrap2">
 			<div class="bet_history_box">
                 <?php foreach ($bet->betDetail as $k => $detail) : ?>
 
@@ -207,34 +213,28 @@
                         }
 
                         if($gameName == "UFC") {
-                            $imageIconPath = "/assets_w/images/icon08.png";
+                            $imageIconPath = "/assets_w/images/icon_game09.png";
                         }
                         if($gameName == "야구") {
-                            $imageIconPath = "/assets_w/images/icon04.png";
+                            $imageIconPath = "/assets_w/images/icon_game04.png";
                         }
                         if($gameName == "핸드볼") {
-                            $imageIconPath = "/assets_w/images/icon05.png";
+                            $imageIconPath = "/assets_w/images/icon_game05.png";
                         }
                         if($gameName == "아이스 하키") {
-                            $imageIconPath = "/assets_w/images/icon06.png";
+                            $imageIconPath = "/assets_w/images/icon_game07.png";
                         }
                         if($gameName == "배구") {
-                            $imageIconPath = "/assets_w/images/icon05.png";
+                            $imageIconPath = "/assets_w/images/icon_game05.png";
                         }
                         if($gameName == "농구") {
-                            $imageIconPath = "/assets_w/images/icon03.png";
+                            $imageIconPath = "/assets_w/images/icon_game03.png";
                         }
                         if($gameName == "축구") {
-                            $imageIconPath = "/assets_w/images/icon02.png";
+                            $imageIconPath = "/assets_w/images/icon_game02.png";
                         }
-                        if($gameName == "이스포츠") {
-                            $imageIconPath = "/assets_w/images/icon07.png";
-                        }
-                        if($gameName == "골프") {
-                            $imageIconPath = "/assets_w/images/icon05.png";
-                        }
-                        if($gameName == "비치발리볼") {
-                            $imageIconPath = "/assets_w/images/icon05.png";
+                        if($gameName == "E-스포츠") {
+                            $imageIconPath = "/assets_w/images/icon_game08.png";
                         }
 
                     } else {
@@ -282,41 +282,61 @@
                 <div class="bet_history_top">
                     <div class="bet_history_top_l">
                         <div class="m_bet_sport"><img src="<?= $imageIconPath?>" width="18"></div>
+                        <img src="/assets_w/images/line.png" alt="">
                         <div class="m_bet_league"><?=isset($detail['league_display_name'])? $detail['league_display_name']:$detail['league_name']?></div>
+                        <img src="/assets_w/images/line.png" alt="">
                         <div class="m_bet_time"><?=date("m-d", strtotime($detail['fixture_start_date']))?> <?=date("H:i", strtotime($detail['fixture_start_date']))?></div>
                     </div>
                     <div class="bet_history_top_r">
-                        <div class="m_bet_bet"><span class="font03"><?= $marketsName ?></span></div>
-                        <div class="m_bet_result"><span class="font06"><?=$betNameDisplay.' (' .number_format($detail['bet_price'], 2).')'?></span></div>
+                        <div class="m_bet_bet">
+                            <span class="m_bet_type"><?= $marketsName ?></span>
+                            <img src="/assets_w/images/line.png" alt="">
+                            <span class="m_bet_mybet font06"><?=$betNameDisplay.' (' .number_format($detail['bet_price'], 2).')'?></span>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="bet_history_tr">
-                    <div class="bet_history_td td6">
-                        <div class="m_bet_l"><?=isset($detail['p1_display_name'])? $detail['p1_display_name']:$detail['p1_team_name']?></div>
-                        <div class="m_bet_vs"><img src="/assets_w/images/vs.png" width="24"></div>
-                        <div class="m_bet_r"><?=isset($detail['p2_display_name'])? $detail['p2_display_name']:$detail['p2_team_name']?></div>
+
+                    <div class="bet_history_td td10">
+                        <div class="m_bet_l"><?=$detail['p1_display_name'] != '' ? $detail['p1_display_name']:$detail['p1_team_name']?></div>
+                        <img src="/assets_w/images/vs.png" width="30">
+                        <div class="m_bet_r"><?=$detail['p2_display_name'] != '' ? $detail['p2_display_name']:$detail['p2_team_name']?></div>
+                        <span class="m_bet_result"><?= $result_score ?></span>
+                        <span class="<?= \App\Util\CodeUtil::bet_status_by_color_2($detail['bet_status']) ?>"><?= \App\Util\CodeUtil::memberBetStatusToStr($detail['bet_status']) ?></span>
                     </div>
-                    <div class="bet_history_td td3"><?= $result_score ?></div>
-                    <div class="bet_history_td td3"><span class="<?= \App\Util\CodeUtil::bet_status_by_color_2($detail['bet_status']) ?>"><?= \App\Util\CodeUtil::memberBetStatusToStr($detail['bet_status']) ?></span></div>
+                    <!-- <div class="bet_history_td td3"><?= $result_score ?></div> -->
+                    <!-- <div class="bet_history_td td3"></div> -->
                 </div>
                 <?php endforeach; ?>
 
 				<div class="bet_history_bottom">
-					<div class="m_bet_info"><span class="icon_info">베팅시간</span><span class="text_info"><?=date("m-d", strtotime($bet->create_dt))?> (<?=DateTimeUtil::getWeekDay($bet->create_dt)?>) <?=date("H:i", strtotime($bet->create_dt))?></span></div>
+                    <div class="m_bet_info"><span class="icon_info">베팅시간</span><span class="text_info"><span class="text_info_ellipsis"><?=date("m-d", strtotime($bet->create_dt))?> (<?=DateTimeUtil::getWeekDay($bet->create_dt)?>) <?=date("H:i", strtotime($bet->create_dt)) ?></span></span></div>
 					<div class="m_bet_info"><span class="icon_info">베팅금액</span><span class="text_info"><?= number_format($bet->total_bet_money) ?> 원</span></div>
-					<div class="m_bet_info"><span class="icon_info">전체배당</span><span class="text_info font10">x <?= number_format($bet->total_bet_price, 2) ?></span></div>
-                    <div class="m_bet_info"><span class="icon_info">보너스배당</span><span class="text_info font06">x <?= number_format($bet->bonus_price, 2) ?></span></div>
-					<div class="m_bet_info"><span class="icon_info">당첨예상금액</span><span class="text_info"><?= number_format($bet->total_bet_money * number_format($bet->total_bet_price, 2)) ?>원</span></div>
-					<div class="m_bet_info"><span class="icon_info">당첨금액</span><span class="text_info font06"><?= number_format($bet->take_money) ?>원</span></div>
+					<div class="m_bet_info"><span class="icon_info">전체배당</span><span class="text_info font06">x <?= number_format($bet->total_bet_price, 2) ?></span></div>
+                    <div class="m_bet_info"><span class="icon_info">보너스</span><span class="text_info font06">x <?= number_format($bet->bonus_price, 2) ?></span></div>
+                    <div class="m_bet_info"><span class="icon_info">아이템</span><span class="text_info font10">x <?= number_format($bet->item_bonus_price, 2) ?></span></div>
+                    <div class="m_bet_info"><span class="icon_info">아이템사용</span><span class="text_info font10">
+                    <?php
+                        if ($bet->item_idx == 0) {
+                            $itemName = '미사용';
+                        } else {
+                            $itemName = $bet->item_name;
+                        }
+                        echo $itemName;
+                    ?>
+                    </span></div>
+					<div class="m_bet_info"><span class="icon_info">예상적중금액  </span><span class="text_info"><?= number_format($bet->total_bet_money * number_format($bet->total_bet_price, 2)) ?>원</span></div>
+					<div class="m_bet_info"><span class="icon_info">적중금액</span><span class="text_info"><?= number_format($bet->take_money) ?>원</span></div>
                     <div class="m_bet_info"><span class="icon_info">배팅슬립</span><span class="text_info"><?=$bet->is_betting_slip?></span></div>
-					<div class="m_bet_info"><span class="icon_info">적중여부</span><span class="text_info"><span class="<?= $class ?>"><?= $result ?></span></span></div>
+                    <div class="m_bet_info"><span class="icon_info">적중여부</span><span class="text_info"><span><?= $result ?></span></span></div>
+					<!-- <div class="m_bet_info"><span class="icon_info">적중여부</span><span class="text_info"><span class="<?= $class ?>"><?= $result ?></span></span></div> -->
 				</div>
 			</div>
 		</div>
         <!-- mobile end -->
 
-        <div class="con_box10" style="margin-bottom: 1.5%;">
+        <div class="con_box20" style="margin-bottom: 1.5%;">
             <div class="btn_wrap_right">
                 <ul>
                     <?php if($checkButton) : ?>
@@ -352,15 +372,14 @@
                     <div class="bet_history_tr">
                         <div class="bet_history_title title2">일자</div>
                         <div class="bet_history_title title3">종목</div>
-                        <div class="bet_history_title title2">회차</div>
-                        <div class="bet_history_title title3">선택게임</div>
-                        <div class="bet_history_title title2">베팅금액</div>
-                        <div class="bet_history_title title2">회차결과</div>
+                        <div class="bet_history_title title2 mini_none">회차</div>
+                        <div class="bet_history_title title3 mini_none">선택게임</div>
+                        <div class="bet_history_title title2 mini_none">베팅금액</div>
+                        <div class="bet_history_title title2 mini_none">회차결과</div>
                         <div class="bet_history_title title2">당첨금</div>
                         <div class="bet_history_title title2">적중여부</div>
                     </div>
                 </div>
-
 
                 <?php if(!empty($betList)) : ?>
                 <?php foreach ($betList as $key => $bet) : ?>
@@ -374,39 +393,26 @@
                         $arrResult = json_decode($bet['result_score'], true);
                     }
                     $gameResult = \App\Util\StatusUtil::getMiniGameResultString($bet['bet_type'], $arrResult);
-                    
+//print_r($bet);                    
                     $gameName = '파워볼';
-                    $gameType = '';
                     $round = 0;
                     if($bet['bet_type'] == 4){
                         $gameName = '파워사다리';
-                        $gameType = '미니게임';
                         $round = $bet['cnt'];
                     }else if($bet['bet_type'] == 5){
                         $gameName = '키노사다리';
-                        $gameType = '미니게임';
                         $round = $bet['cnt'];
                     }else if($bet['bet_type'] == 6){
-                        $virtualLeague = $arrResult['league'];
-                        $virtualLeagueNames = [
-                            'Premiership' => '프리미어쉽',
-                            'Superleague' => '슈퍼리그',
-                            'World Cup' => '월드컵',
-                            'Euro Cup' => '유로컵',
-                        ];
-                        $gameName = $virtualLeagueNames[$virtualLeague];
-                        $gameType = '가상게임';
-                        $round = $arrResult['oid'];
+                        $gameName = '가상축구';
+                        $round = $bet['cnt'];
                     }else if($bet['bet_type'] == 15){
                         $gameName = '파워볼';
-                        $gameType = '미니게임';
                         $start_dt = explode(' ', $arrResult['sdate']);
                         $cnt_date = $start_dt[1];
                         $cnt_date_arr = explode(':', $cnt_date);
                         $round = round(((+$cnt_date_arr[0] * 60) + +$cnt_date_arr[1]) / 5) + 1;
                     }else{
-                        $gameName = '파워볼';
-                        $gameType = '미니게임';
+                        $gameName = 'EOS 파워볼';
                         $round = $bet['cnt'];
                     }
                     
@@ -430,11 +436,11 @@
                 <!-- 그룹1 -->
                 <div class="bet_history_tr">
                     <div class="bet_history_td td2"><?=date("m-d", strtotime($bet['create_dt']))?> (<?=DateTimeUtil::getWeekDay($bet['create_dt'])?>) <?=date("H:i:s", strtotime($bet['create_dt']))?></div>
-                    <div class="bet_history_td td3"><?=$gameType?> / <?=$gameName?></div>
-                    <div class="bet_history_td td2"><?=$round?> 회</div>
-                    <div class="bet_history_td td3"><?=$bet['ls_markets_name']?> (x<?=number_format($bet['bet_price'], 2)?>)</div>
-                    <div class="bet_history_td td2"><?=number_format($bet['total_bet_money'])?>원</div>
-                    <div class="bet_history_td td2"><?=$gameResult?></div>
+                    <div class="bet_history_td td3">미니게임 / <?=$gameName?></div>
+                    <div class="bet_history_td td2 mini_none"><?=$round?> 회</div>
+                    <div class="bet_history_td td3 mini_none"><?=$bet['ls_markets_name']?> (x<?=number_format($bet['bet_price'], 2)?>)</div>
+                    <div class="bet_history_td td2 mini_none"><?=number_format($bet['total_bet_money'])?>원</div>
+                    <div class="bet_history_td td2 mini_none"><?=$gameResult?></div>
                     <div class="bet_history_td td2"><span class="font06"><?=number_format($bet['take_money'])?>원</span></div>
                     <div class="bet_history_td td2"><span class="<?=$statusColor?>"><?=$status?></span></div>
                 </div>
@@ -571,6 +577,66 @@
     });
 
     $(function () {
+        let htmls = ``
+        let htmls2 = ``
+        if(location.href.includes("betting_history?menu=b&bet_group=2") || location.href.includes("betting_history?menu=b&bet_group=1")){
+            
+            if($(".bet_history_wrap1").attr('id')){
+                htmls = ``
+            }
+            else{
+                htmls = `
+                <div class="con_box20 bet_history_wrap1">
+                    <div class="bet_history_tr">
+                        <div class="bet_history_title title2">경기시간</div>
+                        <div class="bet_history_title title2">종목</div>
+                        <div class="bet_history_title title2">리그명</div>
+                        <div class="bet_history_title title2">경기타입</div>
+                        <div class="bet_history_title title4">팀</div>
+                        <div class="bet_history_title title2">선택게임</div>
+                        <div class="bet_history_title title1">배당률</div>
+                        <div class="bet_history_title title1">스코어</div>
+                        <div class="bet_history_title title2">적중여부</div>
+                    </div>
+                </div>
+                <?php include('common/page_num.php'); ?>
+                `
+                htmls2 = `
+                <div class="con_box20 bet_history_wrap2">
+                    <div class="bet_history_box">
+                        <div class="bet_history_top" style="display:block; text-align: center;">기록이 없습니다.</div>
+                    </div>
+                </div>
+                `
+                $(".contents_box").append(htmls2)
+                $(".contents_box").append(htmls)
+            }
+        }
+        setTimeout(() => {
+            if($(".page_wrap").hasClass("page_wrap") === true){
+                htmls = ``
+            }else{
+                htmls2 = `
+                <div class="con_box20 bet_history_wrap2">
+                    <div class="bet_history_box">
+                        <div class="bet_history_top" style="display:block; text-align: center;">기록이 없습니다.</div>
+                    </div>
+                </div>
+                <?php include('common/page_num.php'); ?>
+                `
+                $(".contents_box").append(htmls2)
+            }    
+        }, 50);
+        if($(document).width() < 500){
+            if($(".bet_history_tr").length > 1){
+            htmls = ``
+            }else{
+                $(".scroll_h_wrap").remove()
+            }
+        }
+        
+        
+        
         if (getParam('menu') == 'b') {
             $('#tab1').attr('style', 'display: none;');
             $('#tab2').attr('style', 'display: block;');

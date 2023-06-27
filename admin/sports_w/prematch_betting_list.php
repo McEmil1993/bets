@@ -606,14 +606,14 @@ foreach ($db_dataArr as $key => $item) {
                                         <td><?= $item2['fixture_start_date'] ?></td>
                                         <td><?= $item2['fixture_league_name'] ?></td>
                                         <?php  if(0 == $_SESSION['u_business']){?>
-                                        <td><a href="prematch_manager_detail.php?fixture_start_date=<?= urlencode($item2['fixture_start_date']) ?>&fixture_id=<?= $item2['ls_fixture_id'] ?>" target='_blank'><?= isset($item2['fixture_participants_1_name']) ? $item2['fixture_participants_1_name'] : $item2['p1_team_name'] ?></a></td>
+                                        <td><a href="prematch_manager_detail.php?fixture_start_date=<?= urlencode($item2['fixture_start_date']) ?>&fixture_id=<?= $item2['ls_fixture_id'] ?>" target='_blank'><?= ($item2['fixture_participants_1_name'] != "") ? $item2['fixture_participants_1_name'] : $item2['p1_team_name'] ?></a></td>
                                         <td><?= $item2['bet_price'] ?></td>
-                                        <td><a href="prematch_manager_detail.php?fixture_start_date=<?= urlencode($item2['fixture_start_date']) ?>&fixture_id=<?= $item2['ls_fixture_id'] ?>" target='_blank'><?= isset($item2['fixture_participants_2_name']) ? $item2['fixture_participants_2_name'] : $item2['p2_team_name'] ?></a></td>
+                                        <td><a href="prematch_manager_detail.php?fixture_start_date=<?= urlencode($item2['fixture_start_date']) ?>&fixture_id=<?= $item2['ls_fixture_id'] ?>" target='_blank'><?= ($item2['fixture_participants_2_name'] != "") ? $item2['fixture_participants_2_name'] : $item2['p2_team_name'] ?></a></td>
                                         <td><?= $betNameDisplay ?></td>
                                         <?php } else {?>
-                                        <td><a target='_blank'><?= isset($item2['fixture_participants_1_name']) ? $item2['fixture_participants_1_name'] : $item2['p1_team_name'] ?></a></td>
+                                        <td><a target='_blank'><?= ($item2['fixture_participants_1_name'] != "") ? $item2['fixture_participants_1_name'] : $item2['p1_team_name'] ?></a></td>
                                         <td><?= $item2['bet_price'] ?></td>
-                                        <td><a target='_blank'><?= isset($item2['fixture_participants_2_name']) ? $item2['fixture_participants_2_name'] : $item2['p2_team_name'] ?></a></td>
+                                        <td><a target='_blank'><?= ($item2['fixture_participants_2_name'] != "") ? $item2['fixture_participants_2_name'] : $item2['p2_team_name'] ?></a></td>
                                         <td><?= $betNameDisplay ?></td>
                                         <?php } ?>
         <?php   

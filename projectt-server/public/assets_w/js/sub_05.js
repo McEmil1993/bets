@@ -119,15 +119,37 @@ function delMsg(message_idx) {
 
 function searchBtnClick(betGroup) {
 
+    // let today = getFormatDate(new Date());
+    // let betFromDate = getAddDate(today, -7);
+    // let betToDate = getAddDate(today, 1);
+
+    // $('#loadingCircle').show();
+    // location.href = '/web/betting_history?menu=b&bet_group=' + betGroup +
+    //         '&betFromDate=' + betFromDate +
+    //         '&betToDate=' + betToDate +
+    //         '&clickItemNum=' + betGroup;
+
+
     let today = getFormatDate(new Date());
     let betFromDate = getAddDate(today, -7);
     let betToDate = getAddDate(today, 1);
 
     $('#loadingCircle').show();
-    location.href = '/web/betting_history?menu=b&bet_group=' + betGroup +
-            '&betFromDate=' + betFromDate +
-            '&betToDate=' + betToDate +
-            '&clickItemNum=' + betGroup;
+
+    if (betGroup == 4) {
+        location.href = '/web/betting_history?prd_type=C&prd_id=1&clickItemNum=' + betGroup;
+    }else if (betGroup == 5) {
+        location.href = '/web/betting_history?prd_type=S&prd_id=201&clickItemNum=' + betGroup;
+    }else if (betGroup == 8) {
+        location.href = '/web/betting_history?prd_type=e&prd_id=101&clickItemNum=' + betGroup;
+    }else if (betGroup == 9) {
+        location.href = '/web/betting_history?clickItemNum=' + betGroup;
+    }else{
+        location.href = '/web/betting_history?menu=b&bet_group=' + betGroup +
+        '&betFromDate=' + betFromDate +
+        '&betToDate=' + betToDate +
+        '&clickItemNum=' + betGroup;
+    }
 }
 
 

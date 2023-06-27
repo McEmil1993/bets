@@ -11,10 +11,20 @@ class BettingRulesController extends BaseController {
     use ResponseTrait;
 
     public function index() {
+        $member_idx = session()->get('member_idx');
         //$viewRoot = strpos($_SERVER['REQUEST_URI'], 'web/') > 0 ? 'web' : 'web';
         $chkMobile = CodeUtil::rtn_mobile_chk();
 
         $viewRoot = "PC" == $chkMobile ? 'web' : 'web';
+
+        if (false == session()->has('member_idx') || !isset($member_idx)) {
+            $url = base_url("/$viewRoot/index");
+            echo "<script>
+            alert('로그인 후 이용해주세요.');
+            window.location.href='$url';
+            </script>";
+            return;
+        }
 
         if (0 < session()->get('tm_unread_cnt')) {
             //echo "<script>alert('미확인 쪽지를 확인 바랍니다.'); </script>";

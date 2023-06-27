@@ -17,7 +17,7 @@ i{transition:all 0.2s ease}
 
 .wrap{position:relative; padding:0; margin:0; width:100%; min-width:360px; min-height:100%}
 .login_wrap{
-    position:relative; background:#102a42; padding:0; margin:0; width:100%; min-width:340px; min-height:100%;
+    position:relative; background:#242829; padding:0; margin:0; width:100%; min-width:340px; min-height:100%;
 }
 .login_bg{
     width:100%; height:100%; min-height:800px;
@@ -50,13 +50,13 @@ button[type=submit]{border:none; outline:none; border-radius:3px; width:100%; cu
 .confing_box input{width: 100%; border-top: none; border-left: none; border-right: none;}
 
 .sidebar{position:absolute; z-index:1000; min-height:1600px;}
-.sidebar,.side_bg{background:#102a42; top:0; left:0; bottom:0; width:200px}
+.sidebar,.side_bg{background:#242829; top:0; left:0; bottom:0; width:200px}
 
-.situation_wrap {background-color: #102a42; width: 100%; box-sizing: border-box; border-top: 1px solid #1e486e; border-right: 1px solid #1e486e;}
+.situation_wrap {background-color: #242829; width: 100%; box-sizing: border-box; border-top: 1px solid #363c3d; border-right: 1px solid #1e486e;}
 .situation_title {padding: 10px 0; text-align: center; font-size: 14px; color: #fff; box-sizing: border-box;}
 .situation_wrap table td {width: 100px; height: 20px !important; line-height: 20px; padding: 0 5px; box-sizing: border-box; text-align: left; color: #aaa; }
 .situation_wrap table tr td:last-child{text-align:right;}
-.situation_table {padding: 10px 0; border-top: 1px solid #1e486e;}
+.situation_table {padding: 10px 0; border-top: 1px solid #242829;}
 
 /* Side top */
 .tinfo_wrap{position:relative; height:70px;}
@@ -88,13 +88,13 @@ button[type=submit]{border:none; outline:none; border-radius:3px; width:100%; cu
 .tinfo_wrap .t_info .member a:hover{background:#8ea3b6}
 
 /* Side GNB */
-.sidebar .nav{border-top:1px solid #1e486e; background-color:#102a42;}
+.sidebar .nav{border-top:1px solid #313131; background-color:#242829;}
 .sidebar .nav .caret{
     display:inline-block; width:0; height:0; margin:20px 10px 0 0; vertical-align:middle;
     border-left:4px solid #999; border-top:4px solid transparent; border-bottom:4px solid transparent; box-sizing: border-box;
 }
 .sidebar .nav .has-sub>a{position:relative; display:block; height:50px; line-height:50px}
-.sidebar .nav .sub-menu{display:none; background:#0a1c2e; color:#999; padding:10px 0}
+.sidebar .nav .sub-menu{display:none; background:#0f0f0f; color:#999; padding:10px 0}
 .sidebar .nav .sub-menu a{display:block}
 .sidebar .nav .sub-menu li{line-height:30px}
 .sidebar .nav .sub-menu b{color:rgba(255,255,255,0.3); height:30px; line-height:28px; font-size:11px; margin:0 10px 0 30px; vertical-align:middle}
@@ -103,7 +103,7 @@ button[type=submit]{border:none; outline:none; border-radius:3px; width:100%; cu
 
 .sidebar .nav .active .ontab{
     position:absolute; left:0; width:0; height:100%;
-    border-right:3px solid #e71707;
+    border-right:3px solid #47a1ed;
 }
 .sidebar .active .caret{border-top:4px solid #fff; border-right:4px solid transparent; border-left:4px solid transparent; box-sizing: border-box;}
 .sidebar .active .sub-menu{display:block}
@@ -117,7 +117,7 @@ button[type=submit]{border:none; outline:none; border-radius:3px; width:100%; cu
 
 
 
-.tree { background-color:#262d40;}
+.tree { background-color:#242829;}
 .tree ul {padding-left: 20px; }
 .tree li,
 .tree li > a,
@@ -241,7 +241,7 @@ a.btn_reserve:hover{background:#8ea3b6}
 
 .cline{border-top:1px solid #dfdfdf;}
 
-.tline{border-top:1px solid #e71707; overflow-x: auto;}
+.tline{border-top:1px solid #ffcc00; overflow-x: auto;}
 .tline.scroll_tline {-ms-overflow-style: none; scrollbar-width: none;}
 .tline.scroll_tline::-webkit-scrollbar {display: none;}
 .tline_flexbox {display: flex;}
@@ -481,7 +481,7 @@ table.ui-datepicker-calendar td:last-child a,table.ui-datepicker-calendar th:las
 .con_tabs li{float:left; display:block; padding:5px 10px 5px 10px; background-color:#bbb; margin-right:5px; border-top:1px solid #e71707;}
 .con_tabs li a{color:#fff; text-decoration:none; }
 .con_tabs li.current{background-color:#e1e1e1;}
-.con_tabs li.current a{color:#000; text-decoration:none; }
+.con_tabs li.current a{color:#242829; text-decoration:none; }
 .con_tabs li a.remove{color:#f00; margin-left:10px;}
 .con_content{background-color:#e1e1e1;}
 
@@ -525,11 +525,11 @@ table.ui-datepicker-calendar td:last-child a,table.ui-datepicker-calendar th:las
 .admin_title_logo {
     text-align: center;
     padding: 20px 0;
-    background:#102a42;
+    background:#242829;
 }
 .admin_title_logo img {
     display: inline-block;
-    max-width: 50%;
+    max-width: 80%;
 }
 
 /* sport menu */
@@ -547,4 +547,11 @@ table.ui-datepicker-calendar td:last-child a,table.ui-datepicker-calendar th:las
 }
 .input__btn input {
     display: inline-block;
+}
+
+
+/* 플레이스 홀더 폰트 조정 */
+input::placeholder {
+    font: 12px sans-serif;
+    font-style: italic;
 }

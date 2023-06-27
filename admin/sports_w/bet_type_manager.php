@@ -52,7 +52,7 @@ if ($db_conn) {
     }
     
     // 스포츠 리스트
-    $sp = $LSportsAdminDAO->getSportsList(1);
+    $sp = $LSportsAdminDAO->getSportsList(2);
     
     // 프리매치, 실시간 목록 조회
     $p_data['sql'] = "SELECT count(*) as CNT FROM lsports_markets where is_delete = 0 and bet_group = $bet_type";

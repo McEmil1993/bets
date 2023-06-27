@@ -316,8 +316,7 @@ $end_date = date("Y/m/d");
                     	<th>번호</th>
                         <th>아이디</th>
                         <th>닉네임</th>
-                        <th>사용머니(베팅금)</th>
-                        <th>결과금</th>
+                        <th>사용머니</th>
                         <th>이전머니</th>
                         <th>보유머니</th>
                         <th>포인트</th>
@@ -341,10 +340,10 @@ if($total_cnt > 0) {
             $db_money = "";
             switch (strtoupper($row['m_kind'])) {
                 case 'P': 
-                    $db_money = "<font color='blue'><b>".number_format($row['r_money'])."</b></font>";
+                    $db_money = "<font color='red'><b>".number_format($row['r_money'])."</b></font>";
                     break;
                 case 'M': 
-                    $db_money = "<font color='red'><b>-".number_format($row['r_money'])."</b></font>";
+                    $db_money = "<font color='blue'><b>-".number_format($row['r_money'])."</b></font>";
                     break;
                 default:
                     $db_money = number_format($row['r_money']);
@@ -388,13 +387,10 @@ if($total_cnt > 0) {
                 case 999: $db_ac_code_str = "기타"; break;
             }
             
-            if(7 == $row['ac_code'] && ($row['coment'] == '카지노' || $row['coment'] == '슬롯')) continue;
-            
             $no = $total_cnt-$num;
             $be_r_money = $row['be_r_money'];
             $af_r_money = $row['af_r_money'];
             $point = $row['point'];
-            $win_money = 0;
             if(1000 == $row['ac_code'] || 1001 == $row['ac_code']){
                 if(1000 == $row['ac_code']){
                     $gameName = '카지노 '.$prdList[$row['PRD_ID']];
@@ -403,27 +399,25 @@ if($total_cnt > 0) {
                 }
                 // 사용머니(당첨금)
                 //$db_money = $row['BET_MNY'];
-                $win_money = $row['RSLT_MNY'] + $row['BET_MNY'];
+                $db_money = $row['RSLT_MNY'] + $row['BET_MNY'];
                 /*if($row['RSLT_MNY'] < 0)
-                    $win_money = $row['RSLT_MNY'] + $row['BET_MNY'];*/
+                    $db_money = $row['RSLT_MNY'] + $row['BET_MNY'];*/
 
                 // 이전머니
                 //$be_r_money = $row['HLD_MNY'];
                 //$af_r_money = $row['HLD_MNY'];
-                $be_r_money = $row['HLD_MNY'] + $row['RSLT_MNY'] - $win_money; //+ $row['BET_MNY'];
+                $be_r_money = $row['HLD_MNY'] + $row['RSLT_MNY'] - $db_money; //+ $row['BET_MNY'];
                 $af_r_money = $row['HLD_MNY'] + $row['RSLT_MNY'];
                 
                 $row['coment'] = $gameName.' 배팅';
                 if($row['TYPE'] == 'W'){
-                    $win_money = "<font color='blue'><b>".number_format($row['RSLT_MNY'] + $row['BET_MNY'])."</b></font>";
+                    $db_money = "<font color='red'><b>".number_format($row['RSLT_MNY'] + $row['BET_MNY'])."</b></font>";
                     //$be_r_money = $row['HLD_MNY'] - ($row['RSLT_MNY'] + $row['BET_MNY']);
                     $row['coment'] = $gameName.' 적중';
-                    $db_ac_code_str = '적중';
                 }else if($row['TYPE'] == 'L'){
-                    $win_money = 0;
+                    $db_money = 0;
                     //$be_r_money = $row['HLD_MNY'] + $row['BET_MNY'];
                     $row['coment'] = $gameName.' 낙첨';
-                    $db_ac_code_str = '낙첨';
                 }else if($row['TYPE'] == 'C'){
                     $row['coment'] = $gameName.' 취소';
                 }else if('I' == $row['TYPE']){
@@ -445,13 +439,12 @@ if($total_cnt > 0) {
                     <tr onmouseover="this.style.backgroundColor='#FDF2E9';" onmouseout="this.style.backgroundColor='#ffffff';">
                     	<td><?=$no?></td>
                     	<td style='text-align:left;'>
-                    		<a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>');"><?=$db_id?></a>
+                    		<a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>', '5');"><?=$db_id?></a>
                     	</td>
                         <td style='text-align:left;'>
-                        	<a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>');"><?=$db_nick?></a>
+                        	<a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>', '5');"><?=$db_nick?></a>
                         </td>
                         <td style='text-align:right;'><?=$db_money?></td>
-                        <td style='text-align:right;'><?=$win_money?></td>
                         <td style='text-align:right;'><?=number_format($be_r_money)?></td>
                         <td style='text-align:right;'><?=number_format($af_r_money)?></td>
                         <td style='text-align:right;'><?=number_format($row['point'])?></td>

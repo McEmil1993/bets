@@ -85,7 +85,7 @@ function getBetSlipCount() {
         }
 
         for (let slip of betSlip) {
-            if(slip.betPrice > limit_folder_bonus && slip.betPrice >= 1.20){
+            if(slip.betPrice > limit_folder_bonus){
                 betCount += 1;
             }else{
                 isLimitFolder = true;

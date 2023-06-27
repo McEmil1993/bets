@@ -1,26 +1,34 @@
 <div class="footer_wrap">
 	<div class="footer_box">
-		<div class="footer_customer">
-            <div id="domain_mobile">
-                <a target="_blank" href="https://xn--tl3bs23a.com/"><img src="/images/bets_banner_mobile.jpg" width="95%"></a>
-            </div>
+  <div class="f_domain"><a href="https://불스주소.com/"  target="_blank" ><img src="/assets_w/images/m_domain.png"></a></div>
+		<div class="customer">
 			<ul>
-				<li><img src="/assets_w/images/sns_telegram.png"><span class="footer_customer_font">@BETSKRCS</span></li>
+				<li><img src="/assets_w/images/sns_telegram.png"><span class="customer_company">telegram</span><a href="https://t.me/BULLS" target="_blank"><span class="customer_font">&nbsp;@BULLS</span></a></li>
 			</ul>
 		</div>
-    	<img src="/assets_w/images/f_partners.png"><br>COPYRIGHT ⓒ 2006~2022 BETS All RIGHT RESERVED.
+      <img src="/assets_w/images/logo.png" class="f_logo">Copyright (C) All rights reserved.<br><img src="/assets_w/images/f_partners.png" class="f_partners">
     </div>
 </div><!-- footer -->
+</div><!-- wrap -->
 
-<?php if(isset($_SESSION['session_key'])){ ?>
+<a href="#myAnchor" class="go-top">▲</a>
 
-<a href="/web/apply?menu=c" class="footer_btn footer_btn1"><img src="/assets_w/images/footer_btn1.png"></a>
-<a href="/web/exchange" class="footer_btn footer_btn2"><img src="/assets_w/images/footer_btn2.png"></a>
-<?php } ?>
-<div id="loadingCircle" class="loding_wrap">
-    <div class="loading_logo"><img src="/assets_w/images/logo.png" alt="logo"></div>
-    <div class="loding_circle"></div>
+<div id="loadingCircle" class="loader_wrap">
+	<div class="Loader">
+	  <div class="Loader-circle"></div>
+	  <div class="Loader-blob"></div>
+	</div>
 </div>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display: none;">
+  <defs>
+    <filter id="tooltip-filter">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+      <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+    </filter>
+  </defs>
+</svg>
+
 <script>
     if(location.pathname != '/web/sports'){
         //console.log('sessionStorage clear : ' + location.pathname);

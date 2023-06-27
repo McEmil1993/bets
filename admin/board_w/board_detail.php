@@ -1,30 +1,22 @@
 <?php 
 include_once($_SERVER['DOCUMENT_ROOT'].'/_LIB/base_config.php');
-
 include_once(_BASEPATH.'/common/_common_inc_class.php');
 include_once(_DAOPATH.'/class_Admin_Common_dao.php');
 include_once(_DAOPATH.'/class_Admin_Bbs_dao.php');
-//////// login check start
-include_once(_BASEPATH.'/common/login_check.php');
-//////// login check end
-
 
 $UTIL = new CommonUtil();
 
-if(0 != $_SESSION['u_business']){
-    die();
-}
+//////// login check start
+include_once(_BASEPATH.'/common/login_check.php');
+//////// login check end
 
 
 $BdsAdminDAO = new Admin_Bbs_DAO(_DB_NAME_WEB);
 $db_conn = $BdsAdminDAO->dbconnect();
 
 if ($db_conn) {
-        if(false === GameCode::checkAdminType($_SESSION,$BdsAdminDAO)){
-           die();
-        }
-        $idx = $BdsAdminDAO->real_escape_string($_GET['idx']);
-	$p_data['sql'] = " SELECT a.idx, a.member_idx, a.a_id, a.title, a.contents, a.create_dt, a.display, b.nick_name";
+    $idx = $BdsAdminDAO->real_escape_string($_GET['idx']);
+	$p_data['sql'] = " SELECT a.idx, a.pdf_attachment, a.member_idx, a.a_id, a.title, a.contents, a.create_dt, a.display, b.nick_name";
 	$p_data['sql'] .= " FROM menu_board a ";
 	$p_data['sql'] .= " LEFT JOIN member b ON a.a_id = b.id ";
 	$p_data['sql'] .= " WHERE a.idx = $idx";
@@ -120,7 +112,7 @@ $(document).ready(function() {
                                     </div>
                             	</td>
                     		</tr>
-							<tr>
+							<tr class="wysiswyg">
 								<th style="width: 150px; text-align:left">내 용</th>
 								<td>
 									<?php 
@@ -141,6 +133,38 @@ $(document).ready(function() {
 									?>
 								</td>
 							</tr>
+
+							<!-- PDF UPLOAD -->
+                    		<tr>
+                        		<th style="width: 150px; text-align:left">PDF Attachment (Optional)</th>
+								<td  style="white-space: normal; !important">
+									<div class="confing_box">
+									
+
+										<div style="display: none; text-align: center;" class="upload-pdf-loading">
+											<div>Uploading PDF Please Wait</div>
+											<div>
+												<img style="margin: auto;" src="https://media.tenor.com/tEBoZu1ISJ8AAAAC/spinning-loading.gif" />
+											</div>
+										</div>
+
+										<!-- check if embed is enabled -->
+										<?php if ($db_dataArr[0]['pdf_attachment'] != ""): ?>
+											<div class="upload-pdf-container" style="display: none"><input accept="application/pdf" type="file" id="pdf_attachment" name="pdf_attachment" value="" /></div>
+											<div class="remove-pdf" style="text-align: left;"><button type="button">Remove PDF</button></div>
+											<div>
+												<input readonly type="text" id="pdf_attachment_url" name="pdf_attachment_url" value="<?=$db_dataArr[0]['pdf_attachment']?>" />
+												<div class="upload-pdf-content"><p><embed src="<?=$db_dataArr[0]['pdf_attachment']?>#toolbar=0&navpanes=0" width="100%" height="500px" />
+											</div>
+										<?php else: ?>
+											<div class="upload-pdf-container"><input accept="application/pdf" type="file" id="pdf_attachment" name="pdf_attachment" value="" /></div>
+											<div class="remove-pdf" style="text-align: left; display: none;"><button type="button">Remove PDF</button></div>
+											<div><input readonly type="text" id="pdf_attachment_url" name="pdf_attachment_url" value="" /></div>
+											<div class="upload-pdf-content"></div>
+										<?php endif; ?>
+									</div>
+								</td>
+                    		</tr>
                 		</table>
 
 						<table class="mlist">
@@ -195,12 +219,68 @@ $(document).ready(function() {
 	<script>
 	let content_readonly = false;
 
-	$(document).ready(function() {
+
+	$(document).ready(function()
+	{
+		//PDF ATTACHMENT
+		$(".remove-pdf").click(() =>
+		{
+			$(".wysiswyg").show();
+			$(".upload-pdf-container").show();
+			$(".remove-pdf").hide();
+			$(".upload-pdf-content").html('');
+			$("#pdf_attachment_url").val('');
+			$("#pdf_attachment").val('');
+		})
+
+		$("#pdf_attachment").change(() =>
+		{
+			let form_data 	= new FormData();
+			let pdf_file 	= $("#pdf_attachment")[0].files
+
+			form_data.append('pdf_attachment', pdf_file[0]);
+			
+
+			$(".upload-pdf-loading").show();
+			$(".upload-pdf-content").hide();
+			
+			
+			$.ajax(
+			{
+				type:'POST',
+				url: '/board_w/_border_detail_upload_pdf.php',
+				data: form_data,
+				dataType: 'json',
+				cache:false,
+				contentType: false,
+				processData: false,
+				success:function(data)
+				{
+					$(".upload-pdf-loading").hide();
+					$(".upload-pdf-content").show();
+
+					let html_to_append = `<p><embed src="${data.full_path}#toolbar=0&navpanes=0" width="100%" height="500px" />`;
+
+					$(".upload-pdf-content").html(html_to_append);
+					$("#pdf_attachment_url").val(data.full_path);
+					$(".upload-pdf-container").hide();
+					$(".remove-pdf").show();
+				},
+				error: function(data)
+				{
+					console.log("error");
+					console.log(data);
+				}
+			});
+		});
+
 		// 공지 등록
 		$("#adm_btn_notice_send").click(function() {
 			var str_msg = '수정 하시겠습니까?';
 			var idx = $("#idx").val();
 			var msg_title = $("#send_m_title").val();
+			var pdf_attachment = $("#pdf_attachment_url").val();
+			
 			
 			// 제목 길이 체크
 			if (msg_title.length < 3) {
@@ -213,10 +293,7 @@ $(document).ready(function() {
 			oEditors.getById["b_content"].exec("UPDATE_CONTENTS_FIELD", []);
 
 			var msg_content = $("#b_content").val();
-			//alert(msg_content);
-			//var url_bcontent = encodeURIComponent(msg_content);
-			//alert(url_bcontent);
-			
+
 			if (msg_content.length < 3) {
 				alert('내용을 입력해 주세요.');
 				$('#b_content').select();
@@ -224,26 +301,39 @@ $(document).ready(function() {
 				return;
 			}
 			
+			
 			var result = confirm(str_msg);
 			if (result) {
 				var prctype = "reg";
 				
-				$.ajax({
+				$.ajax(
+				{
 					type: 'post',
 					dataType: 'json',
 					url: '/board_w/_board_prc_update.php',
-					data: { 'msg_title': msg_title, 'msg_content': encodeURIComponent(msg_content), 'idx': idx },
-					success: function (result) {
-						if(result['retCode'] == "1000"){
+					data:
+					{ 
+						'msg_title': msg_title,
+						'msg_content': encodeURIComponent(msg_content),
+						'idx': idx,
+						'pdf_attachment': encodeURIComponent(pdf_attachment),
+					},
+					success: function (result)
+					{
+						if(result['retCode'] == "1000")
+						{
 							alert('수정하였습니다.');
 							location.replace('/board_w/board_list.php');
 							return;
-						} else {
+						}
+						else
+						{
 							alert(result['retMsg']);
 							return;
 						}
 					},
-					error: function (request, status, error) {
+					error: function (request, status, error)
+					{
 						alert('수정에 실패하였습니다(1).');
 						return;
 					}

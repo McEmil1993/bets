@@ -17,9 +17,7 @@ $BdsAdminDAO = new Admin_Bbs_DAO(_DB_NAME_WEB);
 $db_conn = $BdsAdminDAO->dbconnect();
 
 if ($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$BdsAdminDAO)){
-        die();
-    }
+
     $today = date("Y/m/d");
     $before_week = date("Y/m/d", strtotime("-1 week", time()));
     $before_month = date("Y/m/d", strtotime("-1 month", time()));

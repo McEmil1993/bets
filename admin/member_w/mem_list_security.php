@@ -180,7 +180,7 @@ if ($db_conn) {
 
     if ($total_cnt > 0) {
         $p_data['sql'] = "SELECT a.idx, a.id, a.nick_name, a.u_business, a.money, a.point, a.betting_p, a.is_recommend, a.call ";
-        $p_data['sql'] .= ", pt.id as p_id, pt.u_business as p_bu, ppt.id as pp_id, ppt.u_business as pp_bu, pppt.id as ppp_id, pppt.u_business as ppp_bu ";
+        $p_data['sql'] .= ", pt.id as p_id, pt.nick_name as p_nick_name, pt.u_business as p_bu, ppt.id as pp_id, ppt.u_business as pp_bu, pppt.id as ppp_id, pppt.u_business as ppp_bu ";
         $p_data['sql'] .= ", a.status, a.level, a.auto_level, a.last_login, a.MICRO, a.AG, a.recommend_code, a.recommend_member ";
         $p_data['sql'] .= ", a.account_number, a.account_name, a.account_bank, a.is_monitor, a.is_monitor_charge, a.is_monitor_security ";
         $p_data['sql'] .= ", a.is_monitor_bet, a.dis_id, a.dis_line_id, a.reg_time ";
@@ -432,15 +432,15 @@ if ($p_data['srch_key'] == 's_idnick') {
                                                 </td>
                                                 <td style='text-align:left'></td>
                                                 <td style='text-align:left'></td>
-                                            <?php }else if(TOP_DISTRIBUTOR == $row['p_bu']){ ?>
+                                            <?php }else if(TOP_DISTRIBUTOR == $row['p_bu'] && 1 != $row['u_business']){ ?>
                                                 <td style='text-align:left'>
-                                                    <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['p_id'] ?>');"><?= $row['p_id'] ?></a>
+                                                    <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['p_id'] ?>');"><?= $row['p_nick_name'] ?></a>
                                                 </td>
                                                 <td style='text-align:left'>
                                                     <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['id'] ?>');"><?= $row['id'] ?></a>
                                                 </td>
                                                 <td style='text-align:left'></td>
-                                            <?php }else if(DISTRIBUTOR == $row['p_bu']){ ?>
+                                            <?php }else if(DISTRIBUTOR == $row['p_bu'] && 1 != $row['u_business']){ ?>
                                                 <td style='text-align:left'>
                                                     <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['pp_id'] ?>');"><?= $row['pp_id'] ?></a>
                                                 </td>
@@ -450,7 +450,7 @@ if ($p_data['srch_key'] == 's_idnick') {
                                                 <td style='text-align:left'>
                                                     <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['id'] ?>');"><?= $row['id'] ?></a>
                                                 </td>
-                                            <?php }else if(1 != $row['p_bu']){ ?>
+                                            <?php }else if(1 != $row['u_business']){ ?>
                                                 <td style='text-align:left'>
                                                     <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['ppp_id'] ?>');"><?= $row['ppp_id'] ?></a>
                                                 </td>
@@ -461,9 +461,31 @@ if ($p_data['srch_key'] == 's_idnick') {
                                                     <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['p_id'] ?>');"><?= $row['p_id'] ?></a>
                                                 </td>
                                             <?php }else{ ?>
-                                                <td style='text-align:left'></td>
-                                                <td style='text-align:left'></td>
-                                                <td style='text-align:left'></td>
+                                                <?php if(TOP_DISTRIBUTOR == $row['p_bu']){ ?>
+                                                    <td style='text-align:left'>
+                                                        <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['p_id'] ?>');"><?= $row['p_nick_name'] ?></a>
+                                                    </td>
+                                                    <td style='text-align:left'></td>
+                                                    <td style='text-align:left'></td>
+                                                <?php }else if(DISTRIBUTOR == $row['p_bu']){ ?>
+                                                    <td style='text-align:left'>
+                                                        <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['pp_id'] ?>');"><?= $row['pp_id'] ?></a>
+                                                    </td>
+                                                    <td style='text-align:left'>
+                                                        <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['p_id'] ?>');"><?= $row['p_id'] ?></a>
+                                                    </td>
+                                                    <td style='text-align:left'></td>
+                                                <?php }else{ ?>
+                                                    <td style='text-align:left'>
+                                                        <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['ppp_id'] ?>');"><?= $row['ppp_id'] ?></a>
+                                                    </td>
+                                                    <td style='text-align:left'>
+                                                        <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['pp_id'] ?>');"><?= $row['pp_id'] ?></a>
+                                                    </td>
+                                                    <td style='text-align:left'>
+                                                        <a href="javascript:;" onClick="popupWinPost('/member_w/pop_disinfo.php', 'popdisinfo', 800, 1400, 'disinfo', '<?= $row['p_id'] ?>');"><?= $row['p_id'] ?></a>
+                                                    </td>
+                                                <?php } ?>
                                             <?php } ?>
                                             <td style='text-align:left'>
                                                 <a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php', 'popuserinfo', 800, 1400, 'userinfo', '<?= $db_m_idx ?>');"><?= $row['id'] ?></a>

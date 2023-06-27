@@ -17,9 +17,7 @@ $MEMAdminDAO = new Admin_Member_DAO(_DB_NAME_WEB);
 $db_conn = $MEMAdminDAO->dbconnect();
 
 if($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$MEMAdminDAO)){
-        die();
-    }
+    
     $p_data['sql'] = " SELECT idx, u_level, set_type, set_type_val, title, reg_time FROM t_game_config ";
     
     $db_dataArr = $MEMAdminDAO->getQueryData($p_data);

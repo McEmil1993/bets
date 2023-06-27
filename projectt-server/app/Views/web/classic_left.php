@@ -12,7 +12,7 @@
     <div class="search">
         <ul>
             <li>
-                <input name="league_name" id="league_name" type="text" class="input_search" placeholder="국가 및 팀명">
+                <input name="league_name" id="league_name" type="text" class="input_search" placeholder="국가 및 리그명">
             </li>
             <li style="float:right;"><a onclick="searchLeague()"><span class="search_btn">검색</span></a></li>
         </ul>

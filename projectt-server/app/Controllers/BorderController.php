@@ -15,6 +15,8 @@ use App\GamblePatch\KwinGmPt;
 use App\GamblePatch\BetGoGmPt;
 use App\GamblePatch\ChoSunGmPt;
 use App\GamblePatch\BetsGmPt;
+use App\GamblePatch\NobleGmPt;
+use App\GamblePatch\BullsGmPt;
 
 class BorderController extends BaseController {
 
@@ -33,13 +35,29 @@ class BorderController extends BaseController {
             $this->gmPt = new ChoSunGmPt();
         } else if ('BETS' == config(App::class)->ServerName) {
             $this->gmPt = new BetsGmPt();
+        } else if ('NOBLE' == config(App::class)->ServerName) {
+            $this->gmPt = new NobleGmPt();
+        } else if ('BULLS' == config(App::class)->ServerName) {
+            $this->gmPt = new BullsGmPt();
         }
     }
 
     public function index() {
-       
-        $chkMobile = CodeUtil::rtn_mobile_chk();
+        $member_idx = session()->get('member_idx');
+
         $viewRoot = "PC" == $chkMobile ? 'web' : 'web';
+
+        $chkMobile = CodeUtil::rtn_mobile_chk();
+
+        if (false == session()->has('member_idx') || !isset($member_idx)) {
+            $url = base_url("/$viewRoot/index");
+            echo "<script>
+        	alert('로그인 후 이용해주세요.');
+        	window.location.href='$url';
+        	</script>";
+            return;
+        } 
+
         if (0 < session()->get('tm_unread_cnt')) {
             $url = base_url("/web/note");
             echo "<script>
@@ -81,7 +99,7 @@ class BorderController extends BaseController {
 
         $result_game_config = $boardModel->db->query($sql)->getResult();
 
-        if ('Y' == $result_game_config[0]->set_type_val) {
+        if ('Y' == $result_game_config[0]->set_type_val && 9 != $member->getLevel()) {
             $url = base_url("/$viewRoot/");
             echo "<script>
             alert('게시판 기능 점검중입니다.');

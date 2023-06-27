@@ -11,6 +11,8 @@ use App\GamblePatch\KwinGmPt;
 use App\GamblePatch\BetGoGmPt;
 use App\GamblePatch\ChoSunGmPt;
 use App\GamblePatch\BetsGmPt;
+use App\GamblePatch\NobleGmPt;
+use App\GamblePatch\BullsGmPt;
 
 class GmoneyController extends BaseController {
 
@@ -29,15 +31,29 @@ class GmoneyController extends BaseController {
             $this->gmPt = new ChoSunGmPt();
         } else if ('BETS' == config(App::class)->ServerName) {
             $this->gmPt = new BetsGmPt();
+        } else if ('NOBLE' == config(App::class)->ServerName) {
+            $this->gmPt = new NobleGmPt();
+        } else if ('BULLS' == config(App::class)->ServerName) {
+            $this->gmPt = new BullsGmPt();
         }
     }
 
     public function index() {
 
         $id = session()->get('id');
-        if ($id == NULL) {
-            return redirect()->to(base_url("/$viewRoot/"));
-        }
+
+        $chkMobile = CodeUtil::rtn_mobile_chk();
+
+        $viewRoot = "PC" == $chkMobile ? 'web' : 'web';
+
+        if (false == session()->has('id') || !isset($id)) {
+            $url = base_url("/$viewRoot/index");
+            echo "<script>
+        	alert('로그인 후 이용해주세요.');
+        	window.location.href='$url';
+        	</script>";
+            return;
+        }   
 
         $chkMobile = CodeUtil::rtn_mobile_chk();
         $viewRoot = "PC" == $chkMobile ? 'web' : 'web';
@@ -188,6 +204,8 @@ class GmoneyController extends BaseController {
             $ukey = md5($member->getIdx() . strtotime('now'));
             $this->gmPt->insertLog($ukey, $member->getIdx(), AC_GM_BUYITEM, $itemId, $resultData[0]->price, $bf_g_money, $af_g_money, 'M', '아이템 구매', $itemIdx, 0, $memberModel, $this->logger);
             $memberModel->db->transComplete();
+            $this->initMemberData(session(), $member_idx);
+
         } catch (\mysqli_sql_exception $e) {
             $this->logger->error('buyItem [MYSQL EXCEPTION] message (code) : ' . $e->getMessage() . ' (' . $e->getCode() . ')');
             $this->logger->error('::::::::::::::: buyItem query : ' . $memberModel->getLastQuery());

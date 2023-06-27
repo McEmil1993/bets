@@ -40,7 +40,7 @@ class CommonStatsQuery {
     }
 
     // 프리매치 - 싱글 - 배팅합계    
-    public static function getTotalSumPreMatchSingleBetMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumPreMatchSingleBetMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = "SELECT 
                         IFNULL(SUM(total_bet_money),0) AS pre_bet_sum_s
                         FROM member AS T1
@@ -55,12 +55,12 @@ class CommonStatsQuery {
                         AND B.bet_type = 1
                         AND B.bet_status = 3
                         AND total_bet_money != take_money ";
-        $sql .= $date_where;
+
         return $sql;
     }
 
     // 프리매치 - 싱글 - 당첨합계
-    public static function getTotalSumPreMatchSingleTakeMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumPreMatchSingleTakeMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = "SELECT IFNULL(SUM(take_money),0) AS pre_take_sum_s
                         FROM member AS T1
                         LEFT JOIN 
@@ -74,12 +74,11 @@ class CommonStatsQuery {
                         AND B.bet_type = 1
                         AND B.bet_status = 3
                         AND total_bet_money != take_money ";
-        $sql .= $date_where;
         return $sql;
     }
 
     // 프리매치 - 다폴더 - 배팅합계
-    public static function getTotalSumPreMatchMultiBetMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumPreMatchMultiBetMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = "SELECT IFNULL(SUM(total_bet_money),0) AS pre_bet_sum_d
                             FROM member AS T1
                             LEFT JOIN 
@@ -93,12 +92,11 @@ class CommonStatsQuery {
         AND B.bet_type = 1
         AND B.bet_status = 3
         AND total_bet_money != take_money";
-        $sql .= $date_where;
         return $sql;
     }
 
     // 프리매치 - 다폴더 - 당첨합계
-    public static function getTotalSumPreMatchMultiTakeMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumPreMatchMultiTakeMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = "SELECT IFNULL(SUM(take_money),0) AS pre_take_sum_d
                             FROM member AS T1
                             LEFT JOIN 
@@ -111,12 +109,11 @@ class CommonStatsQuery {
                             AND B.bet_type = 1
                             AND B.bet_status = 3
                             AND total_bet_money != take_money";
-        $sql .= $date_where;
         return $sql;
     }
 
     // 실시간 싱글 - 배팅합계
-    public static function getTotalSumInplaySingleBetMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumInplaySingleBetMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = "SELECT IFNULL(SUM(total_bet_money),0) AS real_bet_sum_s
                             FROM member AS T1
                             LEFT JOIN 
@@ -129,12 +126,11 @@ class CommonStatsQuery {
                             AND B.bet_type = 2
                             AND B.bet_status = 3
                             AND total_bet_money != take_money";
-        $sql .= $date_where;
         return $sql;
     }
 
     // 실시간 싱글 - 당첨합계
-    public static function getTotalSumInplaySingleTakeMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumInplaySingleTakeMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = "SELECT IFNULL(SUM(take_money),0) AS real_take_sum_s
                             FROM member AS T1
                             LEFT JOIN 
@@ -147,12 +143,11 @@ class CommonStatsQuery {
                             AND B.bet_type = 2
                             AND B.bet_status = 3
                             AND B.total_bet_money != B.take_money";
-        $sql .= $date_where;
         return $sql;
     }
 
     // 실시간 - 다폴더 - 배팅합계
-    public static function getTotalSumInplayMultiBetMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumInplayMultiBetMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = "SELECT IFNULL(SUM(total_bet_money),0) AS real_bet_sum_d
                             FROM member AS T1
                             LEFT JOIN 
@@ -166,12 +161,11 @@ class CommonStatsQuery {
                             AND B.bet_type = 2
                             AND B.bet_status = 3
                             AND total_bet_money != take_money";
-        $sql .= $date_where;
         return $sql;
     }
 
     // 실시간 - 다폴더 - 당첨합계
-    public static function getTotalSumInplayMultiTakeMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumInplayMultiTakeMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = "SELECT IFNULL(SUM(take_money),0) AS real_take_sum_d
                             FROM member AS T1
                             LEFT JOIN 
@@ -184,13 +178,12 @@ class CommonStatsQuery {
                             AND B.bet_type = 2
                             AND B.bet_status = 3
                             AND total_bet_money != take_money";
-        $sql .= $date_where;
         return $sql;
     }
 
     
      // 클래식 - 배팅합계
-    public static function getTotalSumClassicBetMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumClassicBetMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = "SELECT IFNULL(SUM(total_bet_money),0) AS total_classic_bet_money
                             FROM member AS T1
                             LEFT JOIN 
@@ -204,12 +197,11 @@ class CommonStatsQuery {
                             AND B.bet_type = 1
                             AND B.bet_status = 3
                             AND total_bet_money != take_money";
-        $sql .= $date_where;
         return $sql;
     }
 
     // 클래식  - 당첨합계
-    public static function getTotalSumClassicTakeMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumClassicTakeMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = "SELECT IFNULL(SUM(take_money),0) AS total_classic_win_money
                             FROM member AS T1
                             LEFT JOIN 
@@ -222,14 +214,13 @@ class CommonStatsQuery {
                             AND B.bet_type = 1
                             AND B.bet_status = 3
                             AND total_bet_money != take_money";
-        $sql .= $date_where;
         return $sql;
     }
 
     
     
     // 미니게임 - 배팅합계
-    public static function getTotalSumMiniGameBetMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumMiniGameBetMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = "SELECT IFNULL(SUM(total_bet_money),0) AS mini_bet_sum_d
                             FROM member AS T1
                             LEFT JOIN 
@@ -239,13 +230,12 @@ class CommonStatsQuery {
         $sql .= " WHERE T1.level <> 9 AND T1.u_business = 1 AND MG.bet_status = 3";
         $sql .= " AND calculate_dt >= '$db_srch_s_date'  AND calculate_dt <= '$db_srch_e_date' ";
         $sql .= " AND total_bet_money != take_money ";
-        $sql .= $date_where;
 
         return $sql;
     }
 
     // 미니게임 - 당첨합계
-    public static function getTotalSumMiniGameTakeMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumMiniGameTakeMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = "SELECT IFNULL(SUM(take_money),0) AS mini_take_sum_d
                             FROM member AS T1
                             LEFT JOIN 
@@ -255,13 +245,12 @@ class CommonStatsQuery {
         $sql .= " WHERE T1.level <> 9 AND T1.u_business = 1";
         $sql .= " AND calculate_dt >= '$db_srch_s_date'  AND calculate_dt <= '$db_srch_e_date' ";
         $sql .= " AND total_bet_money != take_money ";
-        $sql .= $date_where;
 
         return $sql;
     }
 
     // 카지노,슬롯 배팅금,당첨금 
-    public static function getTotalSumCasinoSlotMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumCasinoSlotMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = " SELECT 
         'bet_tot_casino' AS `stype`,
         IFNULL(SUM(`CBH`.`BET_MNY`), 0) AS `total_bet_money`,
@@ -277,9 +266,8 @@ class CommonStatsQuery {
                 AND `CBH`.`MOD_DTM` <= '$db_srch_e_date' 
                 AND `MB`.`level` <> 9
                 AND CBH.TYPE IN ('W', 'L')
-                AND `MB`.`u_business` = 1"; 
-        $sql .= $date_where;
-        $sql .= " UNION ALL SELECT 
+                AND `MB`.`u_business` = 1 
+        UNION ALL SELECT 
             'bet_tot_slot' AS `stype`,
             IFNULL(SUM(`CBH`.`BET_MNY`), 0) AS `total_bet_money`,
             IFNULL(SUM(CASE
@@ -295,13 +283,12 @@ class CommonStatsQuery {
                 AND `MB`.`level` <> 9
                 AND  CBH.TYPE IN ('W', 'L')
                 AND `MB`.`u_business` = 1";
-        $sql .= $date_where;
 
         return $sql;
     }
 
     // 이스포츠 / 키론 / 해시  배팅금,당첨금 
-    public static function getTotalSumEsportsHashMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {
+    public static function getTotalSumEsportsHashMoneyQuery($db_srch_s_date, $db_srch_e_date) {
         $sql = " SELECT 
         'bet_tot_espt' AS `stype`,
         IFNULL(SUM(`CBH`.`BET_MNY`), 0) AS `total_bet_money`,
@@ -317,9 +304,8 @@ class CommonStatsQuery {
                 AND `CBH`.`MOD_DTM` <= '$db_srch_e_date' 
                 AND `MB`.`level` <> 9
                 AND CBH.TYPE IN ('W', 'L')
-                AND `MB`.`u_business` = 1";
-        $sql .= $date_where;
-        $sql .= " UNION ALL SELECT 
+                AND `MB`.`u_business` = 1 
+        UNION ALL SELECT 
             'bet_tot_hash' AS `stype`,
             IFNULL(SUM(`CBH`.`BET_MNY`), 0) AS `total_bet_money`,
             IFNULL(SUM(CASE
@@ -335,22 +321,6 @@ class CommonStatsQuery {
                 AND `MB`.`level` <> 9
                 AND  CBH.TYPE IN ('W', 'L')
                 AND `MB`.`u_business` = 1";
-        $sql .= $date_where;
-        return $sql;
-    }
-    
-    // 홀덤  배팅금,당첨금 
-    public static function getTotalSumHoldemMoneyQuery($db_srch_s_date, $db_srch_e_date, $date_where) {        
-        $sql = " SELECT IFNULL(SUM(CBH.BET_MONEY), 0)AS total_bet_money,                                                /* 배팅금 총계 */
-                        IFNULL(SUM(CBH.WIN_MONEY), 0)AS total_win_money,                                                /* 당첨금 총계 */
-                        IFNULL( IFNULL(SUM(CBH.BET_MONEY), 0) - IFNULL(SUM(CBH.WIN_MONEY), 0), 0) AS total_lose_money   /* 차액 총계 */
-                FROM member MB
-                        LEFT JOIN HOLDEM_BET_HIST CBH ON MB.idx = CBH.MBR_IDX
-                WHERE CBH.REG_DTM >= '$db_srch_s_date'
-                AND CBH.REG_DTM <= '$db_srch_e_date'
-                AND MB.level <> 9
-                AND MB.u_business = 1";
-        $sql .= $date_where;
         return $sql;
     }
 
@@ -403,12 +373,7 @@ class CommonStatsQuery {
 -- classic 
         IFNULL(bet.total_classic_bet_money, 0) AS total_classic_bet_money,
         IFNULL(bet.total_classic_win_money, 0) AS total_classic_win_money,
-        IFNULL(bet.total_classic_lose_money, 0) AS total_classic_lose_money,
-        
--- 홀덤
-        IFNULL(mb_holdem.total_bet_money, 0) AS total_holdem_bet_money,
-        IFNULL(mb_holdem.total_win_money, 0) AS total_holdem_win_money,
-        IFNULL(IFNULL(mb_holdem.total_bet_money, 0) - IFNULL(mb_holdem.total_win_money, 0), 0) AS total_holdem_lose_money
+        IFNULL(bet.total_classic_lose_money, 0) AS total_classic_lose_money
         
 FROM (SELECT m.idx, m.id, m.nick_name,m.dis_id from member AS m WHERE m.level != 9  and m.u_business = 1) AS mb
 
@@ -586,19 +551,6 @@ LEFT JOIN
        
          ON 
              mb.idx =  mb_hash.MBR_IDX ";
-        
-        $sql .= "LEFT JOIN (SELECT 
-        `CBH`.MBR_IDX,
-        IFNULL(SUM(`CBH`.`BET_MONEY`), 0) AS `total_bet_money`,
-        IFNULL(SUM(`CBH`.`WIN_MONEY`), 0) AS `total_win_money`
-        FROM
-             `HOLDEM_BET_HIST` `CBH` 
-        WHERE
-            `CBH`.`REG_DTM` >= '$db_srch_s_date'
-             AND `CBH`.`REG_DTM` <= '$db_srch_e_date'  GROUP BY `CBH`.MBR_IDX ) as mb_holdem
-       
-         ON 
-             mb.idx =  mb_holdem.MBR_IDX ";
 
         if ($member_id == '')
             $sql .= " WHERE 1 = 1 ";

@@ -130,8 +130,9 @@ let check_kor_complete = /^[가-힣]+$/; // 완성형 한글
 let doubleSubmitFlag = false;
 
 $(document).ready(function() {
+    
     function disableKrTxt(e) {
-        
+        // alert('비밀번호는 영문자만 포함해야 합니다.');
         const regex = /[\u3131-\uD79D]/ugi;
         if ($(e.target).val().match(regex)) {
             alert('비밀번호는 영문자만 포함해야 합니다.');
@@ -139,9 +140,14 @@ $(document).ready(function() {
             
         }
     }
-    
     $('#join_password').keyup(disableKrTxt)
     $('#join_password_r').keyup(disableKrTxt)
+
+
+
+
+
+
     
     $('.joinBtn').on('click', function(){
 
@@ -165,6 +171,21 @@ $(document).ready(function() {
             alert('비밀번호는 4 ~ 12자 이내 사용해주세요.');
             return;
         }
+
+
+        // Checking if the input password has Hangul character
+        const regex = /[\u3131-\uD79D]/ugi;
+        if (
+            $('#join_password').val().match(regex) &&
+            $('#join_password_r').val().match(regex)) {
+            alert('비밀번호는 영문자만 포함해야 합니다.');
+            return;
+        }
+        
+
+        
+
+        
 
         if ($('#join_password').val() != $('#join_password_r').val()) {
             alert('비밀번호 확인이 틀립니다.');
@@ -301,11 +322,11 @@ $(document).ready(function() {
         const id = format_noSpace(id_input.val()); // 공백 제거
 
         if( id.length < 4 ){
-            alert("아이디를 4자 이상 입력해주세요");
+            alert("<?= $alert_id?>");
             id_input.select();
             return false;
         }
-;
+
         if( !check_eng.test(id) ){
             alert("아이디는 영문이 포함되어 있어야 합니다.");
             id_input.select();

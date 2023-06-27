@@ -111,10 +111,8 @@ defined('Q7_1X2')      || define('Q7_1X2', 349);   // 7Q 1X2
 
 
 defined('Q1_12')      || define('Q1_12', 202);  // 1Q 12
-defined('Q2_12')      || define('Q2_12', 203);   // 2Q 12
-defined('Q3_12')      || define('Q3_12', 204);   // 3Q 12
-defined('Q4_12')      || define('Q4_12', 205);   // 4Q 12
-defined('Q5_12')      || define('Q5_12', 206);   // 5Q 12
+defined('Q2_12')      || define('Q2_12', 42);   // 2Q 12
+defined('Q3_12')      || define('Q3_12', 43);   // 3Q 12
 
 defined('Q1_F_KILL')      || define('Q1_F_KILL', 669);   // 1Q first kill
 defined('Q1_F_DG')      || define('Q1_F_DG', 1170);   // 1Q first dragon
@@ -156,8 +154,7 @@ defined('VOLLEYBALL')   || define('VOLLEYBALL', 154830); // 배구
 defined('UFC')   || define('UFC', 154919); // ufc
 defined('ICEHOCKEY')   || define('ICEHOCKEY', 35232); // 아이스하키
 defined('ESPORTS')   || define('ESPORTS', 687890); // 이스포츠
-defined('TENNIS')   || define('TENNIS', 54094); // 테니스
-//
+
 // 마켓
 defined('1X2')   || define('1X2', 1); // 축구
 
@@ -249,6 +246,8 @@ defined('HOLDEM_QUERY_CREDIT') || define('HOLDEM_QUERY_CREDIT', 2002);
 
 
 defined('USER_PAY_BACK_REWARD_POINT') || define('USER_PAY_BACK_REWARD_POINT', 3001);
+defined('DAY_CHRGE_EVENT_REWARD_POINT') || define('DAY_CHRGE_EVENT_REWARD_POINT', 3002);
+defined('USER_PAY_BACK_REWARD_MYNUS_POINT') || define('USER_PAY_BACK_REWARD_MYNUS_POINT', 3003);
 
 
 
@@ -264,4 +263,12 @@ define('CONSTANTS_TYPE_SLOT', 'S');
 define('CONSTANTS_TYPE_ESPORTS', 'E');
 define('DELAY_BETTING_LIMIT', 30);
 
-define('MAX_PAY_BACK_POINT', 1000000);
+define('MAX_PAY_BACK_POINT', 300000);
+
+// provider define
+define('CONSTANTS_KPLAY', 1);
+define('CONSTANTS_KORGM', 2);
+define('CONSTANTS_SLOTBANK', 3);
+
+define('PRODUCT_TYPE_CASINO', 1);
+define('PRODUCT_TYPE_SLOT', 2);

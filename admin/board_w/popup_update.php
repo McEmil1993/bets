@@ -171,6 +171,13 @@ $(document).ready(function(){
 	$("#adm_btn_event_send").click(function(){
             // 선택한 파일이 있으면 이미지 서버에 전송
             let filename = '';
+
+            var popuplistImg = document.querySelector("#popuplistImgId");
+            var popuplistImgWidth = popuplistImg.naturalWidth;
+            var popuplistImgHeight = popuplistImg.naturalHeight;
+
+            if(popuplistImgWidth >= 450 && popuplistImgWidth <= 500 && popuplistImgHeight >= 550 && popuplistImgHeight <= 600){
+
             if(image_check){
             	$('#saveName').val(getCurrentDate() + "_" + document.getElementById("uploadfile").files[0].name);
                 //alert("파일을 첨부해 주세요.");
@@ -237,6 +244,10 @@ $(document).ready(function(){
             else {
                     return;
             }
+        } else {
+                alert("규정된 이미지 사이즈가 다릅니다");
+                console.log(popuplistImgWidth+"--"+popuplistImgHeight);
+            }
     });
 
     // 공지 취소
@@ -284,10 +295,12 @@ nhn.husky.EZCreator.createInIFrame({
     
     // 이미지 썸네일 추가 ADD KSG 
     function setThumbnail(event) {
+        $('.image_container').html('');
         var reader = new FileReader();
         
         reader.onload = function(event) {
             var img = document.createElement("img");
+            img.id = 'popuplistImgId';
             img.setAttribute("src", event.target.result);
             document.querySelector("div.image_container").appendChild(img);
             image_check = true;

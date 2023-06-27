@@ -1,11 +1,9 @@
 <?php 
 
 include_once($_SERVER['DOCUMENT_ROOT'].'/_LIB/base_config.php');
-
 include_once(_BASEPATH.'/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH.'/class_Admin_Common_dao.php');
-
 include_once(_DAOPATH.'/class_Admin_Cash_dao.php');
 
 $UTIL = new CommonUtil();
@@ -23,26 +21,51 @@ $db_exchange_tot_cnt = $db_exchange_tot_cash = $db_exchange_max_cash = $db_calcu
 if($db_conn) {
     $p_data['m_idx'] = $CASHAdminDAO->real_escape_string($p_data['m_idx']);
     $p_data['tab_num'] = $CASHAdminDAO->real_escape_string($p_data['tab_num']);
+    
+    // 통계 내역을 구한다.
+    $p_data['sql'] = "SELECT * ";
+    $p_data['sql'] .= " FROM total_member_cash ";
+    $p_data['sql'] .= " WHERE member_idx=".$p_data['m_idx'];
+    $db_dataTotalMemberCash = $CASHAdminDAO->getQueryData($p_data);
+    
+    $db_charge_total_count = (isset($db_dataTotalMemberCash[0]['charge_total_count']) ? $db_dataTotalMemberCash[0]['charge_total_count'] : 0);
+    $db_charge_total_money = (isset($db_dataTotalMemberCash[0]['charge_total_money']) ? $db_dataTotalMemberCash[0]['charge_total_money'] : 0);
+    $db_max_charge = (isset($db_dataTotalMemberCash[0]['max_charge']) ? $db_dataTotalMemberCash[0]['max_charge'] : 0);
+    
+    $db_exchange_total_count = (isset($db_dataTotalMemberCash[0]['exchange_total_count']) ? $db_dataTotalMemberCash[0]['exchange_total_count'] : 0);
+    $db_exchange_total_money = (isset($db_dataTotalMemberCash[0]['exchange_total_money']) ? $db_dataTotalMemberCash[0]['exchange_total_money'] : 0);
+    $db_max_exchange = (isset($db_dataTotalMemberCash[0]['max_exchange']) ? $db_dataTotalMemberCash[0]['max_exchange'] : 0);
+    
     // 충전/환전 완료된 내역으로 금액을 구한다.
     $p_data['sql'] = "SELECT COUNT(*) as charge_tot_cnt, SUM(money) as charge_tot_cash, MAX(money) as charge_max_cash ";
     $p_data['sql'] .= " FROM member_money_charge_history ";
     $p_data['sql'] .= " WHERE member_idx=".$p_data['m_idx']." AND STATUS=3";
+    $p_data['sql'] .= " AND status=3 and update_dt >= DATE_FORMAT(NOW(), '%Y-%m-%d 00:00:00') and update_dt <= NOW()";
     
     $db_dataCharge = $CASHAdminDAO->getQueryData($p_data);
     
     $db_charge_tot_cnt = (isset($db_dataCharge[0]['charge_tot_cnt']) ? $db_dataCharge[0]['charge_tot_cnt'] : 0);
     $db_charge_tot_cash = (isset($db_dataCharge[0]['charge_tot_cash']) ? $db_dataCharge[0]['charge_tot_cash'] : 0);
-    $db_charge_max_cash = (isset($db_dataCharge[0]['charge_max_cash']) ? $db_dataCharge[0]['charge_max_cash'] : 0);
+    //$db_charge_max_cash = (isset($db_dataCharge[0]['charge_max_cash']) ? $db_dataCharge[0]['charge_max_cash'] : 0);
+    
+    $db_charge_tot_cnt = $db_charge_tot_cnt + $db_charge_total_count;
+    $db_charge_tot_cash = $db_charge_tot_cash + $db_charge_total_money;
+    $db_charge_max_cash = $db_max_charge;
     
     $p_data['sql'] = "SELECT COUNT(*) as exchange_tot_cnt, SUM(money) as exchange_tot_cash, MAX(money) as exchange_max_cash ";
     $p_data['sql'] .= " FROM member_money_exchange_history ";
     $p_data['sql'] .= " WHERE member_idx=".$p_data['m_idx']." AND STATUS=3";
+    $p_data['sql'] .= " AND status=3 and update_dt >= DATE_FORMAT(NOW(), '%Y-%m-%d 00:00:00') and update_dt <= NOW()";
     
     $db_dataExchange = $CASHAdminDAO->getQueryData($p_data);
     
     $db_exchange_tot_cnt = (isset($db_dataExchange[0]['exchange_tot_cnt']) ? $db_dataExchange[0]['exchange_tot_cnt'] : 0);
     $db_exchange_tot_cash = (isset($db_dataExchange[0]['exchange_tot_cash']) ? $db_dataExchange[0]['exchange_tot_cash'] : 0);
-    $db_exchange_max_cash = (isset($db_dataExchange[0]['exchange_max_cash']) ? $db_dataExchange[0]['exchange_max_cash'] : 0);
+    //$db_exchange_max_cash = (isset($db_dataExchange[0]['exchange_max_cash']) ? $db_dataExchange[0]['exchange_max_cash'] : 0);
+    
+    $db_exchange_tot_cnt = $db_exchange_tot_cnt + $db_exchange_total_count;
+    $db_exchange_tot_cash = $db_exchange_tot_cash + $db_exchange_total_money;
+    $db_exchange_max_cash = $db_max_exchange;
     
     
     $db_calculate_tot = $db_charge_tot_cash - $db_exchange_tot_cash;

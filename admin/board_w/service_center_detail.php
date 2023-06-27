@@ -21,11 +21,6 @@ $BdsAdminDAO = new Admin_Bbs_DAO(_DB_NAME_WEB);
 $db_conn = $BdsAdminDAO->dbconnect();
 
 if($db_conn) {
-    
-    if(false === GameCode::checkAdminType($_SESSION,$BdsAdminDAO)){
-        die();
-    }
-    
     $idx = $BdsAdminDAO->real_escape_string($_GET['idx']);
     $p_data['sql'] = " SELECT a.idx, a.title, a.contents, a.create_dt, a.is_answer, a.is_status, a.is_view, a.answer, b.nick_name, b.id,b.level, b.idx as member_idx ";
     $p_data['sql'] .= "  FROM menu_qna a ";
@@ -236,7 +231,7 @@ $db_m_idx = $db_dataArr[0]['idx'];
             	<div>
                     <a href="javascript:;" id="adm_btn_answer_send" class="btn h30 btn_green" style="color: white"> 저장</a>
                     <a href="javascript:fn_del_answer(<?=$db_m_idx?>);" id="adm_btn_service_center_answer_del" class="btn h30 btn_green" style="color: white">답변삭제</a>
-                    <a href="/board_w/service_center_list.php" id="adm_btn_service_center_list" class="btn h30 btn_green" style="color: white">목록</a>
+                    <a href="javascript:void(0)" onclick="goBack()" id="adm_btn_service_center_list" class="btn h30 btn_green" style="color: white">목록</a>
                 </div>
             </div>
         </div>
@@ -420,6 +415,11 @@ function setTemplateMsg(seq) {
 		}
 	});
 }
+function goBack() {
+	window.history.back();
+}
+
+
 </script>
 </body>
 </html>

@@ -52,4 +52,19 @@ class TGameConfigModel extends Model
 
         return $this->db->query($sql,[$member_level])->getResultArray();
     }
+
+    public function getSetType($set_type) {
+        $sql = "SELECT * FROM t_game_config WHERE set_type = ?";
+        $res = $this->db->query($sql,[$set_type])->getResult();
+        $str = '';
+        if (is_array($res) || is_object($res))
+        {
+            foreach($res as $i){
+                $str = $i->set_type_val;
+            }
+    
+        }
+        return $str;
+        
+    }
 }

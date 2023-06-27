@@ -1,5 +1,6 @@
 <?php
 
+
 header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
 header('Pragma: no-cache'); // HTTP 1.0.
 header('Expires: 0'); // Proxies.
@@ -8,7 +9,7 @@ header('Content-Type: json; charset=UTF-8');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
 
 include_once(_BASEPATH . '/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH . '/class_Admin_Common_dao.php');
 
 include_once(_DAOPATH . '/class_Admin_LSports_Bet_dao.php');
@@ -17,7 +18,9 @@ include_once(_BASEPATH . '/GamblePatch/GambelGmPt.php');
 include_once(_BASEPATH . '/GamblePatch/KwinGmPt.php');
 include_once(_BASEPATH . '/GamblePatch/ChoSunGmPt.php');
 include_once(_BASEPATH . '/GamblePatch/BetsGmPt.php');
-//include_once(_LIBPATH . '/class_UserPayBack.php');
+include_once(_BASEPATH . '/GamblePatch/NobleGmPt.php');
+include_once(_BASEPATH . '/GamblePatch/BullsGmPt.php');
+include_once(_LIBPATH . '/class_UserPayBack.php');
 $UTIL = new CommonUtil();
 
 if (!isset($_SESSION)) {
@@ -136,7 +139,7 @@ try {
     }
 
     GameCode::decUpdateChargeBetMoney($arrMbBtResult[0]['create_dt'], $arrMbBtResult[0]['member_idx'], $type, $arrMbBtResult[0]['total_bet_money'], $ALBetDAO);
-    //UserPayBack::AddBetting($arrMbBtResult[0]['member_idx'],-$take_money,$ALBetDAO);
+    UserPayBack::AddBetting($arrMbBtResult[0]['member_idx'],-$take_money,$ALBetDAO);
     // 아이템을 사용했다면 아이템도 사용 취소를 해줘야 한다.
     $gmPt = null;
     if ('KWIN' == SERVER) {
@@ -147,6 +150,10 @@ try {
 	$gmPt = new ChoSunGmPt();
     } else if ('BETS' == SERVER) {
         $gmPt = new BetsGmPt();
+    } else if ('NOBLE' == SERVER) {
+        $gmPt = new NobleGmPt();
+    }else if ('BULLS' == SERVER) {
+        $gmPt = new BullsGmPt();
     } else {
         throw new Exception('fail GamblePatch !!!');
     }

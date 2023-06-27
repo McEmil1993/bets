@@ -1,24 +1,42 @@
 <?php
 /*
   |--------------------------------------------------------------------------
+  | DEV SETTING
+  |--------------------------------------------------------------------------
+ */
+
+/*
+  |--------------------------------------------------------------------------
   | ERROR DISPLAY
   |--------------------------------------------------------------------------
-  | Don't show ANY in production environments. Instead, let the system catch
-  | it and display a generic error message.
+  | In development, we want to show as many errors as possible to help
+  | make sure they don't make it to production. And save us hours of
+  | painful debugging.
  */
-ini_set('display_errors', '0');
+
+ini_set('display_errors', '1');
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
+
+/*
+  |--------------------------------------------------------------------------
+  | DEBUG BACKTRACES
+  |--------------------------------------------------------------------------
+  | If true, this constant will tell the error screens to display debug
+  | backtraces along with the other error information. If you would
+  | prefer to not see this, set this value to false.
+ */
+defined('SHOW_DEBUG_BACKTRACE') || define('SHOW_DEBUG_BACKTRACE', true);
 
 /*
   |--------------------------------------------------------------------------
   | DEBUG MODE
   |--------------------------------------------------------------------------
   | Debug mode is an experimental flag that can allow changes throughout
-  | the system. It's not widely used currently, and may not survive
-  | release of the framework.
+  | the system. This will control whether Kint is loaded, and a few other
+  | items. It can always be used within your own application too.
  */
 
-defined('CI_DEBUG') || define('CI_DEBUG', 0);
+defined('CI_DEBUG') || define('CI_DEBUG', 1);
 
 /*
   |--------------------------------------------------------------------------
@@ -26,20 +44,20 @@ defined('CI_DEBUG') || define('CI_DEBUG', 0);
   |--------------------------------------------------------------------------
  */
 // 데이타베이스 설정
-define('GAME_DB_HOST', '210.175.73.245');
-define('GAME_DB_ID', 'betsdev');
-define('GAME_DB_PASSWORD', 'Mh9aCd5DslUWHujP');
-define('GAME_DB_PORT', 3306);
-define('GAME_DB_DATABASE', 'mydb_bets');
+define('GAME_DB_HOST', '54.250.249.165');
+define('GAME_DB_ID', 'nova_dev');
+define('GAME_DB_PASSWORD', 'ZwgUG8f9XTwvXM');
+define('GAME_DB_PORT', 2380);
+define('GAME_DB_DATABASE', 'mydb_bulls');
 
-define('LOG_DB_HOST', '210.175.73.245');
-define('LOG_DB_ID', 'betsdev');
-define('LOG_DB_PASSWORD', 'Mh9aCd5DslUWHujP');
-define('LOG_DB_PORT', 3306);
-define('LOG_DB_DATABASE', 'mydb_bets');
+define('LOG_DB_HOST', '54.250.249.165');
+define('LOG_DB_ID', 'nova_dev');
+define('LOG_DB_PASSWORD', 'ZwgUG8f9XTwvXM');
+define('LOG_DB_PORT', 2380);
+define('LOG_DB_DATABASE', 'mydb_bulls');
 
-define('MAIN_DB_HOST', '210.175.73.245');
-define('MAIN_DB_ID', 'betsdev');
-define('MAIN_DB_PASSWORD', 'Mh9aCd5DslUWHujP');
-define('MAIN_DB_PORT', 3306);
-define('MAIN_DB_DATABASE', 'main_bets_db');
+define('MAIN_DB_HOST', '54.250.249.165');
+define('MAIN_DB_ID', 'nova_dev');
+define('MAIN_DB_PASSWORD', 'ZwgUG8f9XTwvXM');
+define('MAIN_DB_PORT', 2380);
+define('MAIN_DB_DATABASE', 'main_bulls_db');

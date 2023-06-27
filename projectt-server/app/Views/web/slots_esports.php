@@ -1,18 +1,24 @@
 <?= view('/web/common/header') ?>
 <?php
-use App\Util\DateTimeUtil;
 use App\Util\StatusUtil;
-//echo 'segment : '.$segment;
 ?>
-<div id="wrap"> 
-    <?= view('/web/common/header_wrap') ?>
-    <div class="title">
-        <a href="#" class="btn__modal-show1"><img src="/assets_w/images/es_btn1.png"></a>
-        <a href="#" class="btn__modal-show2"><img src="/assets_w/images/es_btn2.png"></a>
-        <a href="#" class="btn__modal-show3"><img src="/assets_w/images/es_btn3.png"></a>
-    </div>
+<div id="wrap">
+<?= view('/web/common/header_wrap') ?>
 
-    <div id="contents_wrap" style="width:100%; height:100%;">
+<div class="title_wrap"><div class="title">E-스포츠</div></div>
+
+<div  class="contents_wrap">
+    <div class="contents_box"> 
+		<div class="e_sport_btn_wrap">
+			<ul>
+				<li><a href="#" class="btn__modal-show1">E-SPORTS <span>화면구성 설명</span></a></li>
+				<li><a href="#" class="btn__modal-show2">E-SPORTS <span>단폴더 베팅방법</span></a></li>
+				<li><a href="#" class="btn__modal-show3">E-SPORTS <span>다폴더 베팅방법</span></a></li>
+			</ul>
+		</div>
+	</div>
+
+    <div class="" style="width:100%; height:100%;">
         <!-- act popup -->
         <div class="modal__popup popup_1">
             <div class="popup__container">
@@ -35,59 +41,12 @@ use App\Util\StatusUtil;
                 </div>
             </div>
         </div>
-
-        
     </div>
-</div><!-- wrap -->
-    <script>
-    </script>
-</body>
-<style>
 
-.system_logo {
-            display: block;
-            width: 180px;
-            margin: 60px auto;
-        }
-        .system_loding {
-            padding: 60px 0 40px;
-            background-color: #343434;
-            text-align: center;
-        }
-        .loding_img {
-            display: block;
-            width: 153px;
-            margin: 0 auto;
-            padding: 0 0 60px;
-        }
-        .system_title {
-            padding-bottom: 20px;
-            font-size: 36px;
-            color: #fff;
-        }
-        .system_description {
-            padding-bottom: 20px;
-            font-size: 18px;
-            color: #a9a9a9;
-            letter-spacing: -1px;
-        }
-        .system_description_2 {
-            padding-bottom: 20px;
-            font-size: 18px;
-            color: #FFFFFF;
-            letter-spacing: -1px;
-        }
-        .system_time {
-            max-width: 580px;
-            margin: 0 auto 20px;
-            padding: 20px 0;
-            text-align: center;
-            font-size: 24px;
-            background-color: #000;
-            color: #fff;
-            border-radius: 10px;
-        }
-</style>
+</div><!-- contents_wrap -->
+
+<?= view('/web/common/footer_wrap') ?>
+
 
 <script>
     $('.popup_1').hide();
@@ -105,10 +64,10 @@ use App\Util\StatusUtil;
     }).done(function (response) {
         console.log(response);
         if(response['result_code'] == 1){
-            const iframe = $('<iframe class="myFrame" style="width:100%;height:72vh;"></iframe>');
+            const iframe = $('<iframe class="con_box30 myFrame" style="width:100%;height:72vh;"></iframe>');
             iframe.attr('allowfullscreen', true);
             iframe.attr('src', response['data']['launch_url']);
-            $('#contents_wrap').append(iframe);
+            $('.contents_box').append(iframe);
         }else if(response['result_code'] == -1){
             //let mes = "<img src='/images/logo.png' alt='logo' class='system_logo'>";
             let mes = "<div class='system_loding'>";

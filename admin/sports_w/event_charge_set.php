@@ -142,6 +142,7 @@ include_once(_BASEPATH.'/common/head.php');
     foreach ($db_dataArr as $key => $value) {
 ?>
                     <tr>
+
                         <td><input id="level_<?=$value['level']?>" type="number" class="" style="width: 100%" placeholder="" value="<?=$value['level']?>" readonly/></td>
                         <input id="current_bonus_<?=$value['level']?>" type="hidden" class="" style="width: 100%" placeholder="" value="<?=number_format($value['bonus'])?>" readonly/>
                         <td><input id="bonus_<?=$value['level']?>" type="number" class="" style="width: 100%" placeholder="" value="<?=number_format($value['bonus'])?>"/></td>
@@ -149,6 +150,7 @@ include_once(_BASEPATH.'/common/head.php');
                         <td><input id="max_bonus_<?=$value['level']?>" type="number" class="" style="width: 100%" placeholder="" value="<?=$value['max_bonus']?>"/></td>
                         <input id="current_pay_back_value_<?=$value['level']?>" type="hidden" class="" style="width: 100%" placeholder="" value="<?= number_format($value['pay_back_value'], 1) ; ?>" readonly/>
                         <td><input id="pay_back_value_<?=$value['level']?>" type="number" class="" style="width: 100%" placeholder="" value="<?= number_format($value['pay_back_value'], 1) ;?>"/></td>
+
 <?php 
     }
 ?>
@@ -252,7 +254,9 @@ function setConfig() {
         let max_bonus = $('#max_bonus_' + level).val();
         let current_pay_back_value = $('#current_pay_back_value_' + level).val();
         let pay_back_value = $('#pay_back_value_' + level).val();
-        if(current_bonus !== bonus || current_max_bonus !== max_bonus || current_pay_back_value !== pay_back_value){
+        
+
+        if(current_bonus !== bonus || current_max_bonus !== max_bonus || current_pay_back_value !== pay_back_value ){
            let obj = new Object();
            obj = {'level':level, 'bonus':bonus, 'max_bonus':max_bonus, 'pay_back_value':pay_back_value};
            arrChargeEventData.push(obj);

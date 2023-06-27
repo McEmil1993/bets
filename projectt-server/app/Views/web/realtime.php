@@ -17,12 +17,14 @@
 
 
 <?= view('/web/common/header_wrap') ?>
+
+<div class="title_wrap"><div class="title">LIVE 스포츠</div></div>
+
 <div id="sports_wide_wrap" class="realtime_wrap">
     
     <?= view('web/realtime_left')?>
 
     <div class="sports_wide_center">
-
 
         <div class="sports_list_title">
             <div class="sports_list_title2">
@@ -42,21 +44,39 @@
                     <?php } ?>
                 </select>
             </div>
+
+            <!-- 2022 03 25 daniel -->
+            <!-- <div class="sports_list_title3">
+            	<ul>
+                    <li><a href="javascript:sports_select(0)"><span id="sports_img_0" class=""><img src="/assets_w/images/icon01.png" width="20">&nbsp; 전체</span></a></li>
+                    <li><a href="javascript:sports_select(6046)"><span id="sports_img_6046" class=""><img src="/assets_w/images/icon02.png" width="20">&nbsp; 축구</span></a></li>
+                    <li><a href="javascript:sports_select(48242)"><span id="sports_img_48242" class=""><img src="/assets_w/images/icon03.png" width="20">&nbsp; 농구</span></a></li>                    
+                    <li><a href="javascript:sports_select(154914)"><span id="sports_img_154914" class=""><img src="/assets_w/images/icon04.png" width="20">&nbsp; 야구</span></a></li>
+                    <li><a href="javascript:sports_select(154830)"><span id="sports_img_154830" class=""><img src="/assets_w/images/icon05.png" width="20">&nbsp; 배구</span></a></li>
+                    <li><a href="javascript:sports_select(35232)"><span id="sports_img_35232" class=""><img src="/assets_w/images/icon06.png" width="20">&nbsp; 아이스하키</span></a></li>
+                   <li><a href="javascript:sports_select(687890)"><span id="sports_img_687890" class=""><img src="/assets_w/images/icon07.png" width="20">&nbsp; 이스포츠</span></a></li>
+                </ul>
+            </div> -->
+            
             <div class="sports_list_title3">
             	<ul>
-                    <li>
-                        <a href="javascript:sports_select(0)">
-                            <span id="sports_img_0" class="">
-                            <img src="/assets_w/images/icon01.png" width="18">&nbsp; 전체</span>
-                        </a>
-                    </li>
+                    
                     <?php foreach ($sports as $key => $sport) { ?>
                     <li>
                         <a href="javascript:sports_select(<?=$sport['id'].''?>)">
                             <span id="sports_img_<?=$sport['id'].''?>">
-                                <img src="<?=$imageBasePath.'/sports/'?>/icon_game<?=$sport['id']?>.png" width="18">
+                                <?php
+                                $image_path = "";
+                                if($sport['image_path'] != ""){
+                                    $image_path = $imageBasePath.'/sports/'.$sport['image_path'];
+                                }else{
+                                    $image_path = $imageBasePath.'/sports/'.'icon_game'.$sport['id'].'.png';
+                                }
+                                ?>
+
+                                <img src="<?=$image_path?>" width="24">
                                 &nbsp;
-                                <?= $sport['name']?>
+                                <?= $sport['display_name']?>
                             </span>
                         </a>
                     </li>
@@ -104,6 +124,7 @@
             <div class="sports_cart_title">
                 BETTING SLIP
                 <span class="sports_cart_title_right">
+                    <span class="sports_cart_title2">배당변경 자동적용 &nbsp;&nbsp;</span>
                     <a href="#">
                         <img src="<?=$is_betting_slip=='ON'?'/assets_w/images/cart_fix1.png':'/assets_w/images/cart_fix2.png'?>" onClick="setBettingSlip(this, '<?=$is_betting_slip?>')">
                     </a>
@@ -162,7 +183,7 @@
                             <td class="sports_cart_style1">베팅금액 <span class="sports_cart_style2"><input class="input3" id="betting_slip_money" style="text-align:right; width:150px;" value="0"></span></td>
                         </tr>
                         <tr>
-                            <td class="sports_cart_style1">예상당첨금 <span class="sports_cart_style2 will_win_money">0</span></td>
+                            <td class="sports_cart_style1">예상적중금 <span class="sports_cart_style2 will_win_money">0</span></td>
                         </tr>
                         <!--<tr>
                             <td class="sports_cart_style1">베팅금액 <span class="sports_cart_style2"><input class="input3" style="text-align:right; width:150px;"></span></td>
@@ -195,7 +216,7 @@
             </div>
         </div><!-- .cart_wrap -->
         <div id="domain_pc">
-            <a target="_blank" href="https://xn--tl3bs23a.com/"><img src="/images/bets_banner_pc.jpg"></a>
+            <a target="_blank" href="https://불스주소.com/"><img src="/assets_w/images/bulls_domain.png"></a>
         </div>
         <div class="cart_bg"></div>
     </div><!-- sports_wide_right -->
@@ -466,7 +487,12 @@
                     
                     // 경기목록
                     //console.log('mainGame', mainGame);
-
+                    let mainGame_live_results_p1 = mainGame.live_results_p1;
+                    let mainGame_live_results_p2 = mainGame.live_results_p2;
+                    if(mainGame.live_results_p1 == '' || mainGame.live_results_p1 == null){
+                        mainGame_live_results_p1 = 0;
+                        mainGame_live_results_p2 = 0;
+                    }
                     // title
                     html = `
                         <li id='live_game_display_${mainGame['fixture_sport_id']}'
@@ -475,46 +501,62 @@
                         >
 
 
-                            <div class="live_game_display_ttl" onClick='onDisplayFixture(${fixtureKey})'>
-                                <div class="live_game_display_left">
-                                            <img src='${sportsImagePath}' width='18'>
-                                            ${mainGame['fixture_league_name']}
+                            <div class="live_game_display_ttl" onClick='onDisplayFixture(${fixtureKey})'>                        
+                                <div class="sport_live_type">
+                                    <img src='${sportsImagePath}' width='24'>
+                                </div>
+                                <div class="sport_live_team1">
+                                    <font class="live_team1">${mainGame['fixture_participants_1_name']}</font>
+                                    <span class="item_score">${mainGame_live_results_p1}</span>
+                                </div>
+                                <div class="sport_live_tie">
+                                    <span class="item_hyphen">VS</span>
+                                </div>
+                                <div class="sport_live_team2">
+                                    <span class="item_score">${mainGame_live_results_p2}</span>
+                                    <font class="live_team2">${mainGame['fixture_participants_2_name']}</font>
+                                </div>
+                                <div class="sport_live_league">
+                                    <span>${mainGame['fixture_league_name']}</span>
+                                </div>
+                                <div class="sport_live_time">
+                                    <span class="item_state">${mainGame.live_current_period_display}</span>
+                                    <font>${$time}</font>
+                                </div>
+                                <div class="sport_live_more">
+                                    <span class="item_btn">+ ${fixture_list['game_count']}</span>
                                 </div>
                                 <div class="live_game_display_right">
+                                
 
                     `;
 
 
                     // title (승무패)
-                    if(  mainGame.bet_data.length <= 2 ){
-                        html += `
+                    // if(  mainGame.bet_data.length <= 2 ){
+                    //     html += `
                                         
-                                            <span class="item_win">승</span>
-                                            <span class="item_win"></span>
-                                            <span class="item_win">패</span>
-                                            <span class="item_btn"></span>
+                    //                         <span class="item_win">승</span>
+                    //                         <span class="item_win"></span>
+                    //                         <span class="item_win">패</span>
+                    //                         <span class="item_btn"></span>
                                         
-                        `;
-                    } else {
-                        html += `
+                    //     `;
+                    // } else {
+                    //     html += `
                                         
-                                            <span class="item_win">승</span>
-                                            <span class="item_win">무</span>
-                                            <span class="item_win">패</span>
-                                            <span class="item_btn"></span>
+                    //                         <span class="item_win">승</span>
+                    //                         <span class="item_win">무</span>
+                    //                         <span class="item_win">패</span>
+                    //                         <span class="item_btn"></span>
                                         
-                        `;
+                    //     `;
 
-                    }
+                    // }
 
 
                     // score data null check
-                    let mainGame_live_results_p1 = mainGame.live_results_p1;
-                    let mainGame_live_results_p2 = mainGame.live_results_p2;
-                    if(mainGame.live_results_p1 == '' || mainGame.live_results_p1 == null){
-                        mainGame_live_results_p1 = 0;
-                        mainGame_live_results_p2 = 0;
-                    }
+                    
                     
                     html += `
                                     </div>
@@ -524,11 +566,11 @@
                                             <div class="live_game_display_left">
                                                         <span class="item_date">
                                                                     <font>${$date}</font>
-                                                                    <font>${$time}</font>
+                                                                    
                                                         </span>
                                                         <span class="item_team">
-                                                                    <font>${mainGame['fixture_participants_1_name']}</font>
-                                                                    <font>${mainGame['fixture_participants_2_name']}</font>
+                                                                    
+                                                                    
                                                         </span>
                                             </div>
                                             <div class="live_game_display_right">
@@ -626,43 +668,41 @@
 
 
                     html += `
-                                        <span class="item_btn">+ ${fixture_list['game_count']}</span>
+                                        
                                     </div><!-- .live_game_display_right -->
                                 </div><!-- .live_game_display_cont -->
-
-
-
-
                                     <div class='live_box_wrap${classNum} live_box_wrap' style='clear:both; ${fixture_display}' id='display_fixture_${fixtureKey}'>
+                                    <div class="table_img_mob">
                                         <table width='100%' border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td class="mob_display" height='40' style='padding:0 0 0 10px; background:rgba(0,0,0,0.4);'>
-                                                    <img src='${leagueImagePath}' width='28'>
-                                                    <img src='/assets_w/images/live_line.png'>
+                                                <td class="mob_display" height='40' style='padding:0 0 0 10px; background: #2b2b2b;'>
+                                                    <img src='${leagueImagePath}' style="margin-right:5px;">
+                                                    
                                                     ${mainGame['fixture_league_name']}
-                                                    <img src='/assets_w/images/live_line.png'>
-                                                    <span class='font06'>${leagues_bet_money}</span>
+                                                    
+                                                    <span class='font06' style="margin-left:5px;">${leagues_bet_money}</span>
                                                 </td>
                                                 <td rowspan='3' width="65%" class="scoreboard_wrap">${getScoreBoard(sports_id, fixtureKey)}</td>
                                             </tr>
                                             <tr>
-                                                <td class="mob_display" height='60' style='padding:0 0 0 20px; border-bottom:1px solid rgba(255,255,255,0.2);'>
-                                                    <img src='/assets_w/images/live_home.png'>
+                                                <td class="mob_display" height='60' style='padding:0 0 0 10px'>
+                                                    <span class="img_font">HOME</span>
                                                     <span class='live_font1'>${mainGame['fixture_participants_1_name']}</span>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="mob_display" height='60' style='padding:0 0 0 20px'>
-                                                    <img src='/assets_w/images/live_away.png'>
+                                                <td class="mob_display" height='60' style='padding:0 0 0 10px'>
+                                                    <span class="img_font">AWAY</span>
                                                     <span class='live_font1'>${mainGame['fixture_participants_2_name']}</span>
                                                 </td>
                                             </tr>
                                         </table>
                                     </div>
-
+                                    </div>
                                     <div class="sports_s_right ${fixture_displayClass}" style="${fixture_display}">
                                         <ul class="dropdown3"></ul>
                                     </div>
+                                    
                         </li>
                     `;
 
@@ -789,7 +829,7 @@
             callGameLiveScoreList = setTimeout(function(){
                 getRealTimeGameLiveScoreList(active1, active2);
                 clearTimeout(callGameLiveScoreList);
-            }, 1000);
+            }, 2000);
 
             isAsyncGetRealTimeGameLiveScoreList = false;
             contentHeight();
@@ -1703,16 +1743,18 @@ console.log('betName : '+betName);
 <!-- 12/8 라이브스포츠 아코디언 js 수정 -->
 <script>
     $(document).ready(function(){
+        $(".bet_list1_wrap_in_new").css('display', 'block');
 
-        $(document).on("click", ".dropdown3 .bet_list1_wrap_in_title", function(e){
-            e.preventDefault();
-            // console.log( $(this).parents(".bet_list1_wrap").find(".bet_list1_wrap_in_new").slideToggle() );
-            const target = $(this).parents(".bet_list1_wrap").find(".bet_list1_wrap_in_new");
-            //console.log(target);
-            $(this).parents(".bet_list1_wrap").find(".bet_list1_wrap_in_new").slideToggle();
-            return false;
+        // $(document).on("click", ".dropdown3 .bet_list1_wrap_in_title", function(e){
+        //     e.preventDefault();
+        //     // console.log( $(this).parents(".bet_list1_wrap").find(".bet_list1_wrap_in_new").slideToggle() );
+        //     // $(this).parents(".bet_list1_wrap").find(".bet_list1_wrap_in_new").css('display', 'block');
+        //     //console.log(target);
+        //     // $(this).parents(".bet_list1_wrap").find(".bet_list1_wrap_in_new").slideToggle();
 
-        });
+        //     return false;
+
+        // });
 
         // $('.dropdown3 .bet_list1_wrap_in_title').each(function(){
         //     $(this).click(function(){

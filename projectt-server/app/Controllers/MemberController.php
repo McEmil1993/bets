@@ -26,8 +26,6 @@ class MemberController extends BaseController {
         $mLoginModel = new MemberLoginHistoryModel();
 
         try {
-            //  Sanitize posts
-            $_POST = $memberModel->filterSanitize($_POST);
             $id = isset($_POST['id']) ? $_POST['id'] : NULL;
             $password = isset($_POST['password']) ? $_POST['password'] : NULL;
 
@@ -54,7 +52,7 @@ class MemberController extends BaseController {
 
             if ('Y' == $result_game_config[0]->set_type_val && 9 != $findMember->getLevel()) {
                 $memberModel->db->transRollback();
-                // return $this->fail(config(App::class)->CheckMessage);
+                //return $this->fail(config(App::class)->CheckMessage);
             }
 
             if (password_verify($password, $findMember->getPassword()) == false) {
@@ -96,8 +94,8 @@ class MemberController extends BaseController {
                                         `log_type`,
                                         `reg_time`
                                         )
-                                      VALUES ('system', ?, FN_GET_IP_COUNTRY(?), ?, ?, ?, ?, now())";
-                    $memberModel->db->query($sql, [$client_ip,$client_ip,$findMember->getId(),$findMember->getNickName(),$fDetail,94]);
+                                      VALUES ('system', '$client_ip', FN_GET_IP_COUNTRY('$client_ip'), '".$findMember->getId()."', '".$findMember->getNickName()."', '$fDetail', 94, now())";
+                    $memberModel->query($sql);
 
                     $sql = "INSERT INTO `member_update_history`(
                                         `a_id`,
@@ -107,8 +105,8 @@ class MemberController extends BaseController {
                                         `after_data`,
                                         `create_dt`
                                         )
-                                      VALUES ('system',?, '보안 모니터링 상태(산업용 아이피)', 'N', 'Y', now())";
-                    $memberModel->db->query($sql, [$findMember->getIdx()]);
+                                      VALUES ('system', ".$findMember->getIdx().", '보안 모니터링 상태(산업용 아이피)', 'N', 'Y', now())";
+                    $memberModel->query($sql);
                 }
             }
 
@@ -176,9 +174,16 @@ class MemberController extends BaseController {
 
                 if (false == $b_find) {
                     $id = $l_game_type['id'];
+                    $status = 'ON';
+                    
+                    // 실시간 단폴더는 OFF로 한다.
+                    if(2 == $id){
+                        $status = 'OFF';
+                    }
+                    
                     $member_idx = $findMember->getIdx();
-                    $insert_sql = "insert into member_game_type(member_idx, game_type) values(?,?)";
-                    $memberModel->db->query($insert_sql, [$member_idx, $id]);
+                    $insert_sql = "insert into member_game_type(member_idx, game_type, status) values(?,?,?)";
+                    $memberModel->db->query($insert_sql, [$member_idx, $id, $status]);
                 }
             }
 
@@ -339,7 +344,7 @@ $this->logger->error('rememberId : '.$rememberId);
                 $this->logger->info('join : join_point'.$arr_config['join_point']);
                 $point = $arr_config['join_point']; //20000;
             }
-$this->logger->error('point : '.$point);
+            //$this->logger->error('point : '.$point);
             $joinMember = [
                 'id' => $memberIdx,
                 'nick_name' => $nickName,
@@ -359,10 +364,10 @@ $this->logger->error('point : '.$point);
             ];
 
             $joinResult = $memberModel->insert($joinMember);
+            
 
             // 가입축하 쪽지 발송
             $memberModel->sendJoinMessage($memberIdx);
-
             $sql = "select * from lsports_game_type ";
             $result_lsports_game_type = $memberModel->db->query(
                             $sql
@@ -374,12 +379,9 @@ $this->logger->error('point : '.$point);
                     $status = 'ON';
                     
                     // 실시간 단폴더는 OFF로 한다.
-                    if ('Gamble' == config(App::class)->ServerName || 'NOVA' == config(App::class)->ServerName || 'NOBLE' == config(App::class)->ServerName) {
-                        if(2 == $id){
-                            $status = 'OFF';
-                        }
+                    if(2 == $id){
+                        $status = 'OFF';
                     }
-                    
 
                     $member_idx = $joinResult;
                     $insert_sql = "insert into member_game_type(member_idx, game_type, status) values(?,?,?)"; 
@@ -590,7 +592,7 @@ $this->logger->error('point : '.$point);
 
             $result_game_config = $memberModel->db->query($sql)->getResult();
 
-            if ('Y' == $result_game_config[0]->set_type_val && 9 != session()->get('level')) {
+            if ('Y' == $result_game_config[0]->set_type_val && 10 != session()->get('level')) {
                 $this->logger->critical('::::::::::::::: duplicateLoginCheck check_server : ');
                 $memberModel->db->transRollback();
                 return $this->fail(config(App::class)->CheckMessage);
@@ -1137,10 +1139,15 @@ $this->logger->error('point : '.$point);
                 return redirect()->to(base_url("/$viewRoot/index"));
             }
 
+            // 추천인 리스트를 가져온다.
+            $sql_count = "SELECT id FROM member where recommend_member = ? ";
+            $recommendCountList = $memberModel->db->query($sql_count, [$member_idx])->getResultArray();
+            $recommendAllCount = count($recommendCountList);
+            
             // 전체 갯수 8 9  126 127
             $param = array($member_idx);
             $member_idx = $member->getIdx();
-            $cntSql = "SELECT count(*) AS cnt FROM t_log_cash WHERE member_idx = $member_idx AND ac_code IN(5,6,8,9,10,11,123,124,126,127,202,203) AND (r_money <> 0 OR point <> 0) 
+            $cntSql = "SELECT count(*) AS cnt FROM t_log_cash WHERE member_idx = $member_idx AND ac_code IN(5,6,8,9,10,11,123,124,126,127,202,203,3001,3002) AND (r_money <> 0 OR point <> 0) 
                        AND reg_time BETWEEN DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00'), INTERVAL -1 WEEK) AND DATE_FORMAT(NOW(),'%Y-%m-%d 23:59:59')";
             $pointCnt = $memberModel->db->query($cntSql)->getResultArray();
             //$cnt = true === isset($pointCnt) ? count($pointCnt): 0;
@@ -1151,7 +1158,7 @@ $this->logger->error('point : '.$point);
                       FROM t_log_cash as tlc
                          , (SELECT @rownum := ?) AS r
                      WHERE tlc.member_idx = ?
-					   AND tlc.ac_code IN (5,6,8,9,10,11,126,127,202,203)
+					   AND tlc.ac_code IN (5,6,8,9,10,11,126,127,202,203,3001,3002)
                        AND (r_money != 0 or `point` != 0)
                        AND tlc.reg_time BETWEEN DATE_ADD(DATE_FORMAT(NOW() , '%Y-%m-%d 00:00:00'), INTERVAL -1 WEEK ) AND DATE_FORMAT(NOW(), '%Y-%m-%d 23:59:59')
                      ORDER BY tlc.reg_time DESC) a LIMIT ?, 10";
@@ -1167,7 +1174,8 @@ $this->logger->error('point : '.$point);
             'totalCnt' => $cnt,
             'pointList' => $pointList,
             'page' => $page,
-            'num_per_page' => 10
+            'num_per_page' => 10,
+            'recommendAllCount'=> $recommendAllCount
         ]);
     }
 
@@ -1285,25 +1293,4 @@ $this->logger->error('point : '.$point);
         ]);
     }
 
-    // 토큰 리프래시
-    public function tokenCheck() {
-        $memberModel = new MemberModel();
-        $memberIdx = session()->get('member_idx');
-        $findMember = $memberModel->getMemberWhereIdx($memberIdx);
-
-        if ($findMember == null) {
-            $memberModel->db->transRollback();
-            return $this->fail('조회되는 유저가 없습니다.');
-        }
-        
-        $response = [
-            'result_code' => 200,
-            'messages' => '정상',
-            'data' => [
-                'keep_login_access_token' => $findMember->get_keep_login_access_token()
-            ]
-        ];
-
-        return $this->respond($response, 200);
-    }
 }

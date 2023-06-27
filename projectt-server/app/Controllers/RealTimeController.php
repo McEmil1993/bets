@@ -23,6 +23,8 @@ use App\GamblePatch\KwinGmPt;
 use App\GamblePatch\BetGoGmPt;
 use App\GamblePatch\ChoSunGmPt;
 use App\GamblePatch\BetsGmPt;
+use App\GamblePatch\NobleGmPt;
+use App\GamblePatch\BullsGmPt;
 use App\Util\accessLogRedis;
 
 class RealTimeController extends BaseController {
@@ -42,6 +44,10 @@ class RealTimeController extends BaseController {
             $this->gmPt = new ChoSunGmPt();
         } else if ('BETS' == config(App::class)->ServerName) {
             $this->gmPt = new BetsGmPt();
+        } else if ('NOBLE' == config(App::class)->ServerName) {
+            $this->gmPt = new NobleGmPt();
+        } else if ('BULLS' == config(App::class)->ServerName) {
+            $this->gmPt = new BullsGmPt();
         }
     }
 
@@ -275,9 +281,8 @@ class RealTimeController extends BaseController {
             //$this->logger->critical("!!!!!!!!!!!!!!!!!! ***************** real index Time : $t_time");
         }
 
-        //if ('Y' == $arr_config['service_real']) {
 
-        if ('Y' == $arr_config['service_real']) {
+        if ('Y' == $arr_config['service_real'] && 9 != $member->getLevel()) {
 
             // return view("$viewRoot/inspection");
 
@@ -305,7 +310,6 @@ class RealTimeController extends BaseController {
                 'is_betting_slip' => $member->getIsBettingSlip()
                     ]
             );
-
         }
     }
 
@@ -797,8 +801,7 @@ class RealTimeController extends BaseController {
                         $live_results_p2 += $value['Results'][1]['Value'];
                     }
                 }
-
-            }else if(ESPORTS == $fixture_sport_id && ($value['livescore'] == '' || $value['livescore'] == null || $value['livescore'] == '[object Object]')){
+            } else if (ESPORTS == $fixture_sport_id && ($value['livescore'] == '' || $value['livescore'] == null)) {
                 $live_results_p1 = $live_results_p2 = 0;
             } else {
                 //$totalLiveScore = $arrLivescore['Scoreboard']['Results'][0]['Value'] + $arrLivescore['Scoreboard']['Results'][1]['Value'];
@@ -966,8 +969,8 @@ class RealTimeController extends BaseController {
                 $livescore = json_decode($result[0]->livescore, true);
                 $LivescoreExtraData = $livescore['LivescoreExtraData'];
                 
-                $this->logger->info("!!!!!!!!!!!!!!!!!! ***************** checkRealTimeGameLiveScore redis_LivescoreExtraData: ==> ".json_encode($redis_LivescoreExtraData));
-                $this->logger->info("!!!!!!!!!!!!!!!!!! ***************** checkRealTimeGameLiveScore LivescoreExtraData: ==> ".json_encode($LivescoreExtraData));
+                //$this->logger->info("!!!!!!!!!!!!!!!!!! ***************** checkRealTimeGameLiveScore redis_LivescoreExtraData: ==> ".json_encode($redis_LivescoreExtraData));
+                //$this->logger->info("!!!!!!!!!!!!!!!!!! ***************** checkRealTimeGameLiveScore LivescoreExtraData: ==> ".json_encode($LivescoreExtraData));
 
                 $redis_turn = 1;
                 $turn = 1;

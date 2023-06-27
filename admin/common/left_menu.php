@@ -1,4 +1,3 @@
-
 <?php
 
 if (!isset($_SESSION)) {
@@ -35,9 +34,8 @@ $menu_hash_menu1_chk = $menu_hash_menu2_chk = $menu_hash_menu3_chk = "mte i_radi
 
 // site config
 $menu_config_1_chk = $menu_config_2_chk = $menu_config_3_chk = $menu_config_4_chk = $menu_config_5_chk = "mte i_radio_button_unchecked vam";
-$menu_config_6_chk = $menu_config_7_chk = $menu_config_8_chk = $menu_config_9_chk = $menu_config_10_chk = $menu_config_11_chk = $menu_config_12_chk = $menu_config_13_chk = $menu_config_14_chk = $menu_config_15_chk  = "mte i_radio_button_unchecked vam";
-
-$menu_config_17_chk = "mte i_radio_button_unchecked vam";
+$menu_config_6_chk = $menu_config_7_chk = $menu_config_8_chk = $menu_config_9_chk = $menu_config_10_chk = "mte i_radio_button_unchecked vam";
+$menu_config_11_chk = $menu_config_12_chk = $menu_config_13_chk = $menu_config_14_chk = $menu_config_15_chk = $menu_config_16_chk = "mte i_radio_button_unchecked vam";
 
 // stats 
 $menu_stats_1_chk = $menu_stats_2_chk = $menu_stats_3_chk = $menu_stats_4_chk = $menu_stats_5_chk = $menu_stats_6_chk = $menu_stats_7_chk = $menu_stats_8_chk = $menu_stats_9_chk = "mte i_radio_button_unchecked vam";
@@ -90,12 +88,11 @@ switch ($menu_name) {
         $menu_stats_act = "active";
         $menu_stats_8_chk = "mte i_radio_button_checked vam";
         break;
-    
-    case "stats_day_list_new_tm":
+    case "stats_day_list_real_time":
         $menu_stats_act = "active";
         $menu_stats_9_chk = "mte i_radio_button_checked vam";
         break;
-    ////////
+    //////// site config
     case "adm_log_list":
         $menu_config_act = "active";
         $menu_config_1_chk = "mte i_radio_button_checked vam";
@@ -160,12 +157,9 @@ switch ($menu_name) {
         $menu_config_act = "active";
         $menu_config_15_chk = "mte i_radio_button_checked vam";
         break;
-
-
-
-    case "set_rolling_by_level": // 사이트관리 - 레벨별 롤링콤푸 설정
+    case "set_alert_list":
         $menu_config_act = "active";
-        $menu_config_17_chk = "mte i_radio_button_checked vam";
+        $menu_config_16_chk = "mte i_radio_button_checked vam";
         break;
     //////// money type start
     case "charge_list": // 충전
@@ -423,20 +417,20 @@ $imgName = LOGIN_BG;
                 <?php if(0 == $u_business){ ?>
                 <tr>
                     <td><a href="/sports_w/prematch_betting_list.php" style="color:#AAAAAA">신규 스포츠 베팅</a></td>
-                    <td id="today_bet_sports" class="tblue">0</td>
+                    <td id="today_bet_sports" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td><a href="/sports_w/prematch_betting_list.php?betting_type=ON" style="color:#AAAAAA">신규 클래식 베팅</a></td>
-                    <td id="today_bet_classic" class="tblue">0</td>
+                    <td id="today_bet_classic" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td><a href="/sports_w/realtime_betting_list.php" style="color:#AAAAAA">신규 실시간 베팅</a></td>
-                    <td id="today_bet_real" class="tblue">0</td>
+                    <td id="today_bet_real" class="tgray">0</td>
                 </tr>
                 <?php }  ?>
                 <tr>
                     <td>총 입금</td>
-                    <td id="tot_ch_money_3" class="tblue">0</td>
+                    <td id="tot_ch_money_3" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td>총 출금</td>
@@ -446,29 +440,29 @@ $imgName = LOGIN_BG;
                 <tr><td colspan="2"></td></tr>
                 <tr>
                     <td><a href="/sports_w/prematch_betting_list.php?betting_type=OFF&betting_key=1&betting_val=0" style="color:#AAAAAA">남은 스포츠 베팅</a></td>
-                    <td id="tot_bet_sports_ing" class="tblue">0</td>
+                    <td id="tot_bet_sports_ing" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td><a href="/sports_w/prematch_betting_list.php?betting_type=ON&betting_key=1&betting_val=0" style="color:#AAAAAA">남은 클래식 베팅</a></td>
-                    <td id="tot_bet_classic_ing" class="tblue">0</td>
+                    <td id="tot_bet_classic_ing" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td><a href="/sports_w/realtime_betting_list.php?betting_key=1&betting_val=0" style="color:#AAAAAA">남은 실시간 베팅</a></td>
-                    <td id="tot_bet_real_ing" class="tblue">0</td>
+                    <td id="tot_bet_real_ing" class="tgray">0</td>
                 </tr>
                 <tr>
-                    <td><a href="#" style="color:#aaa;">남은 카지노 베팅</a></td>
-                    <td id="total_casino_ing_bet_money" class="tblue">0</td>
+                    <td><a href="/game_w/casino_betting_list.php" style="color:#aaa;">남은 카지노 베팅</a></td>
+                    <td id="total_casino_ing_bet_money" class="tgray">0</td>
                 </tr>
                 <tr>
-                    <td><a href="#" style="color:#aaa;">남은 슬롯 베팅</a></td>
-                    <td id="total_slot_ing_bet_money" class="tblue">0</td>
+                    <td><a href="/game_w/slot_betting_list.php" style="color:#aaa;">남은 슬롯 베팅</a></td>
+                    <td id="total_slot_ing_bet_money" class="tgray">0</td>
                 </tr>
                 <tr><td colspan="2"></td></tr>
 
                 <tr>
                     <td>스포츠 베팅</td>
-                    <td id="tot_bet_sports" class="tblue">0</td>
+                    <td id="tot_bet_sports" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td>스포츠 당첨</td>
@@ -476,7 +470,7 @@ $imgName = LOGIN_BG;
                 </tr>
                 <tr>
                     <td>클래식 베팅</td>
-                    <td id="tot_bet_classic" class="tblue">0</td>
+                    <td id="tot_bet_classic" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td>클래식 당첨</td>
@@ -484,7 +478,7 @@ $imgName = LOGIN_BG;
                 </tr>
                 <tr>
                     <td>실시간 베팅</td>
-                    <td id="tot_bet_real" class="tblue">0</td>
+                    <td id="tot_bet_real" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td>실시간 당첨</td>
@@ -494,7 +488,7 @@ $imgName = LOGIN_BG;
                 <?php if('ON' == IS_EOS_POWERBALL){ ?>
                     <tr>
                         <td>EOS 파워볼 베팅</td>
-                        <td id="tot_bet_mini_eos_power" class="tblue">0</td>
+                        <td id="tot_bet_mini_eos_power" class="tgray">0</td>
                     </tr>
                     <tr>
                         <td>EOS 파워볼 당첨</td>
@@ -504,7 +498,7 @@ $imgName = LOGIN_BG;
                 <?php if('ON' == IS_POWERBALL){ ?>
                     <tr>
                         <td>파워볼 베팅</td>
-                        <td id="tot_bet_mini_power" class="tblue">0</td>
+                        <td id="tot_bet_mini_power" class="tgray">0</td>
                     </tr>
                     <tr>
                         <td>파워볼 당첨</td>
@@ -514,7 +508,7 @@ $imgName = LOGIN_BG;
 
                 <tr>
                     <td>파워사다리 베팅</td>
-                    <td id="tot_bet_mini_pladder" class="tblue">0</td>
+                    <td id="tot_bet_mini_pladder" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td>파워사다리 당첨</td>
@@ -523,7 +517,7 @@ $imgName = LOGIN_BG;
 
                 <tr>
                     <td>키노사다리 베팅</td>
-                    <td id="tot_bet_mini_kladder" class="tblue">0</td>
+                    <td id="tot_bet_mini_kladder" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td>키노사다리 당첨</td>
@@ -532,7 +526,7 @@ $imgName = LOGIN_BG;
 
                 <tr>
                     <td>가상축구 베팅</td>
-                    <td id="tot_bet_mini_b_soccer" class="tblue">0</td>
+                    <td id="tot_bet_mini_b_soccer" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td>가상축구 당첨</td>
@@ -541,7 +535,7 @@ $imgName = LOGIN_BG;
 
                 <tr>
                     <td>카지노 배팅</td>
-                    <td id="tot_casino_bet" class="tblue">0</td>
+                    <td id="tot_casino_bet" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td>카지노 당첨</td>
@@ -549,7 +543,7 @@ $imgName = LOGIN_BG;
                 </tr>
                 <tr>
                     <td>슬롯게임 배팅</td>
-                    <td id="tot_slot_bet" class="tblue">0</td>
+                    <td id="tot_slot_bet" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td>슬롯게임 당첨</td>
@@ -569,7 +563,7 @@ $imgName = LOGIN_BG;
 <?php if ('ON' == IS_ESPORTS_KEYRON) { ?>
                     <tr>
                         <td>이스포츠 배팅</td>
-                        <td id="tot_espt_bet" class="tblue">0</td>
+                        <td id="tot_espt_bet" class="tgray">0</td>
                     </tr>
                     <tr>
                         <td>이스포츠 당첨</td>
@@ -580,7 +574,7 @@ $imgName = LOGIN_BG;
 <?php if ('ON' == IS_HASH) { ?>
                     <tr>
                         <td>해시게임 배팅</td>
-                        <td id="tot_hash_bet" class="tblue">0</td>
+                        <td id="tot_hash_bet" class="tgray">0</td>
                     </tr>
                     <tr>
                         <td>해시게임 당첨</td>
@@ -605,14 +599,30 @@ $imgName = LOGIN_BG;
                     <td>회원보유 포인트</td>
                     <td id="tot_mem_point" class="tred">0</td>
                 </tr>
+                <tr>
+                    <td>총판 보유머니</td>
+                    <td id="disMoney" class="tred">0</td>
+                </tr>
+                <tr>
+                    <td>총판 포인트</td>
+                    <td id="disPoint" class="tred">0</td>
+                </tr>
                 <?php }?>
                 <?php if(0 == $u_business){ ?>
                 <tr>
                     <td>현재 접속자</td>
-                    <td id="tot_user_conn" class="tblue">0</td>
+                    <td id="tot_user_conn" class="tgray">0</td>
                 </tr>
                 <tr>
                     <td>총판지급액</td>
+                    <td id="tot_distributor_point_given" class="tred">0</td>
+                </tr>
+                <tr>
+                    <td>총판 보유머니</td>
+                    <td id="tot_distributor_money" class="tred">0</td>
+                </tr>
+                <tr>
+                    <td>총판 포인트</td>
                     <td id="tot_distributor_point" class="tred">0</td>
                 </tr>
                 <?php } ?>
@@ -663,7 +673,7 @@ $imgName = LOGIN_BG;
             <a href="/sports_w/prematch_manager.php" rel="스포츠" class="disableLink">
                 <b class="ontab fl"></b>
                 <b class="caret fr"></b>
-                <i class="mte i_trending_up vam ml20 mr10"></i>
+                <i class="mte i_directions_run vam ml20 mr10"></i>
                 <h5>스포츠</h5>
             </a>
             <ul class="sub-menu">
@@ -684,18 +694,16 @@ $imgName = LOGIN_BG;
             <a href="/mini_game_w/mini_game_list.php" class="disableLink">
                 <b class="ontab fl"></b>
                 <b class="caret fr"></b>
-                <i class="mte i_monetization_on vam ml20 mr10"></i>
+                <i class="mte i_games vam ml20 mr10"></i>
                 <h5>미니게임</h5>
             </a>
             <ul class="sub-menu">
                 <?php if(0 == $u_business){ ?>
-                    <li><a href="/mini_game_w/mini_game_list.php"><b class="<?= $menu_mini_game_menu1_chk ?>"></b>내역</a></li>
+                    <li><a href="/mini_game_w/mini_game_list.php"><b class="<?= $menu_mini_game_menu1_chk ?>"></b>미니게임 결과</a></li>
+                    <li><a href="/mini_game_w/mini_game_config.php"><b class="<?= $menu_mini_game_menu4_chk ?>"></b>미니게임 설정</a></li>
                 <?php } ?>
-                <li><a href="/mini_game_w/mini_game_betting_list.php"><b class="<?= $menu_mini_game_menu2_chk ?>"></b>베팅내역</a></li>
+                <li><a href="/mini_game_w/mini_game_betting_list.php"><b class="<?= $menu_mini_game_menu2_chk ?>"></b>미니게임 베팅내역</a></li>
                 <li><a href="/mini_game_w/mini_game_b_soccer_betting_list.php"><b class="<?= $menu_mini_game_menu3_chk ?>"></b>가상축구 베팅내역</a></li>
-                <?php if(0 == $u_business){ ?>
-                <li><a href="/mini_game_w/mini_game_config.php"><b class="<?= $menu_mini_game_menu4_chk ?>"></b>설정</a></li>
-                <?php } ?>
             </ul>
         </li>
 <?php if (IMAGE_PATH != 'asbet') { ?>
@@ -703,7 +711,7 @@ $imgName = LOGIN_BG;
                 <a href="/game_w/casino_betting_list.php" class="disableLink">
                     <b class="ontab fl"></b>
                     <b class="caret fr"></b>
-                    <i class="mte i_monetization_on vam ml20 mr10"></i>
+                    <i class="mte i_casino vam ml20 mr10"></i>
                     <h5>카지노게임</h5>
                 </a>
                 <!-- <a href="/game_w/casino_betting_list_sb.php" class="disableLink">
@@ -731,7 +739,7 @@ $imgName = LOGIN_BG;
                     <a href="/game_w/baccara_betting_list.php" class="disableLink">
                         <b class="ontab fl"></b>
                         <b class="caret fr"></b>
-                        <i class="mte i_monetization_on vam ml20 mr10"></i>
+                        <i class="mte i_trending_up vam ml20 mr10"></i>
                         <h5>해쉬게임</h5>
                     </a>
                     <ul class="sub-menu">
@@ -775,12 +783,12 @@ $imgName = LOGIN_BG;
                 <li><a href="/siteconfig_w/site_config.php"><b class="<?= $menu_config_8_chk ?>"></b>사이트 설정</a></li>
                 <li><a href="/siteconfig_w/level_charge_type.php"><b class="<?= $menu_config_10_chk ?>"></b>레벨별 충전방식 설정</a></li>
                 <li><a href="/siteconfig_w/set_bet_amount_by_level.php"><b class="<?= $menu_config_11_chk ?>"></b>레벨별 베팅금액 설정</a></li>
-                <li><a href="/siteconfig_w/set_rolling_by_level.php"><b class="<?= $menu_config_17_chk ?>"></b>레벨별 롤링콤푸 설정</a></li>
                 <li><a href="/sports_w/event_charge_set.php"><b class="<?= $menu_config_12_chk ?>"></b>이벤트충전 설정</a></li>
                 <!-- <li><a href="/siteconfig_w/average_dividend_provider.php"><b class="<?= $menu_config_13_chk ?>"></b>배당사 설정</a></li>-->
                 <li><a href="/member_w/user_level_setting.php"><b class="<?= $user_level_setting ?>"></b>레벨등업설정</a></li>
-                <li><a href="/siteconfig_w/inspection.php"><b class="<?= $menu_config_14_chk ?>"></b>점검문자설정</a></li>
+                <li><a href="/siteconfig_w/inspection.php"><b class="<?= $menu_config_14_chk ?>"></b>점검문자 설정</a></li>
                 <li><a href="/siteconfig_w/casino_prd_list.php"><b class="<?= $menu_config_15_chk ?>"></b>카지노게임사설정</a></li>
+                <li><a href="/siteconfig_w/set_alert_list.php"><b class="<?= $menu_config_16_chk ?>"></b>알림문자 설정</a></li>
             </ul>
         </li>
         <?php } ?>
@@ -814,7 +822,7 @@ $imgName = LOGIN_BG;
                 <li><a href="/board_w/banner_list.php"><b class="<?= $menu_board_menu_6_chk ?>"></b>메인배너관리</a></li>
                 <li><a href="/board_w/popup_list.php"><b class="<?= $menu_board_menu_9_chk ?>"></b>메인팝업관리</a></li>
                 <li><a href="/board_w/event_list.php"><b class="<?= $menu_board_menu_1_chk ?>"></b>이벤트</a></li>
-                <!-- <li><a href="/board_w/betting_list.php"><b class="<?= $menu_board_menu_2_chk ?>"></b>배팅규정</a></li> --> 
+                <!-- <li><a href="/board_w/betting_list.php"><b class="<?= $menu_board_menu_2_chk ?>"></b>배팅규정</a></li> -->
                 <li><a href="/board_w/board_list.php"><b class="<?= $menu_board_menu_3_chk ?>"></b>공지사항</a></li>
                 <li><a href="/board_w/service_center_list.php"><b class="<?= $menu_board_menu_4_chk ?>"></b>고객센터</a></li>
                 <li><a href="/board_w/template_list.php"><b class="<?= $menu_board_menu_5_chk ?>"></b>템플릿관리</a></li>
@@ -899,7 +907,12 @@ $imgName = LOGIN_BG;
                         (document.getElementById("tot_user_conn") || {}).innerHTML = result['tot_user_conn'];
                         
                         // 총판지급액
-                        (document.getElementById("tot_distributor_point") || {}).innerHTML = result['tot_distributor_point'];
+                        (document.getElementById("tot_distributor_point_given") || {}).innerHTML = result['tot_distributor_point_given'];
+                         document.getElementById("tot_distributor_point").innerHTML = result['tot_distributor_point'];
+                         document.getElementById("tot_distributor_money").innerHTML = result['tot_distributor_money'];
+                    }else{
+                        document.getElementById("disMoney").innerHTML = result['disMoney'];
+                        document.getElementById("disPoint").innerHTML = result['disPoint'];
                     }
 
                     // 카지노

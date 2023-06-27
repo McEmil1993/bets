@@ -40,8 +40,8 @@
 		<div class="con_box10">
 			<div class="btn_wrap_center">
 				<ul class="display_flex">
-                    <li><a href="#"><span style="float:right" class="btn2_2" onClick="location.reload();">새로고침</span></a></li>
-					<li><a href="#"><span class="btn3_1" onClick="addQnA()">문의하기</span></a></li>
+                    <li><a href="#"><span class="btn3_1" onClick="addQnA()">문의하기</span></a></li>
+                    <li><a href="#"><span class="btn3_2" onClick="location.reload();">새로고침</span></a></li>
 				</ul>
 			</div>
 		</div>

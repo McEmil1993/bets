@@ -31,6 +31,9 @@ body {
 	font-family: 'Noto Sans KR', sans-serif;
 	background:#252525;
 	font-size: 13px;
+
+	/* highlight prevention */
+	-webkit-tap-highlight-color : transparent;
 }
 ol, ul, dl, dt, dd {list-style: none;}
 blockquote, q {quotes: none;}

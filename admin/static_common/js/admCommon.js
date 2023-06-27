@@ -87,11 +87,10 @@ function popupWinPost(pop_url,s_title_name,i_pop_h,i_php_w,kind=null,pseq=null,s
 	}
 	else if (kind=='userinfo') {
 		
-		/*if(window.ADMIN_userinfo_win) {
+		if(window.ADMIN_userinfo_win) {
 			ADMIN_userinfo_win.close();
-		}*/
+		}
 		
-                s_title_name = s_title_name+'_'+pseq;
 		ADMIN_userinfo_win = window.open("", s_title_name, 'width='+i_php_w+', height='+i_pop_h+', resizable=0, scrollbars=no, status=0, titlebar=0, toolbar=0, top='+popY+',left='+popX );
 		
 		if(ADMIN_userinfo_win == null){

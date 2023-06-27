@@ -8,6 +8,7 @@ use App\Models\MemberMoneyExchangeHistoryModel;
 use CodeIgniter\API\ResponseTrait;
 use App\Models\TotalMemberCashModel;
 use App\Util\UserPayBack;
+use App\Execute\DayChargeEvent;
 
 class MemberMoneyExchangeHistoryController extends BaseController
 {
@@ -58,8 +59,15 @@ class MemberMoneyExchangeHistoryController extends BaseController
             return $this->fail('보유금액보다 신청하신 금액이 많습니다.');
         }
         
-        // 환전 신청시간 후 3시간동안 재신청 못함
-        $str_sql_exchange = "SELECT create_dt FROM member_money_exchange_history where member_idx = ? and status in (1,3)  order by idx desc limit 1;";
+        // 신청,대기가 있는상태에서는 또 신청을 못한다.
+        $str_sql_exchange = "SELECT create_dt,status FROM member_money_exchange_history where member_idx = ? and status in (1,2)  order by idx desc limit 1;";
+        $result = $memberModel->db->query($str_sql_exchange, [$memberIdx])->getResultArray();
+        if(count($result) > 0){
+            return $this->fail("환전 신청 및 대기 상태인 요청이있으면 재신청이 불가능합니다.");
+        }
+        
+        // 환전 신청시간 후 1시간동안 재신청 못함
+        $str_sql_exchange = "SELECT create_dt,status FROM member_money_exchange_history where member_idx = ? and status = 3  order by idx desc limit 1;";
         $result = $memberModel->db->query($str_sql_exchange, [$memberIdx])->getResultArray();
        
         $currentDate = date("Y-m-d H:i:s");
@@ -90,10 +98,14 @@ class MemberMoneyExchangeHistoryController extends BaseController
             $memberMEHModel->db->transStart();
             $current_day = date("Y-m-d H:i:s");
             $memberMEHModel->exchangeRequest($current_day,$exchangeMoney, $findMember->getMoney());
-            //$memberModel->memberChangeMoney($memberIdx, $afterMoney);
-            $memberModel->memberChangeMoney($memberIdx, - $exchangeMoney);
+            $memberModel->memberChangeMoney($memberIdx, $afterMoney);
+            // $memberModel->memberChangeMoney($memberIdx,  $exchangeMoney);
             
-            UserPayBack::AddExchange($memberIdx,$exchangeMoney,$memberMEHModel);            
+
+            UserPayBack::AddExchange($memberIdx,$exchangeMoney,$memberMEHModel);  
+            $execute = new DayChargeEvent($this->logger);
+            $execute->AddExchange($memberIdx,$exchangeMoney);    
+
             $memberMEHModel->db->transComplete();
             session()->set('money', $afterMoney);
             

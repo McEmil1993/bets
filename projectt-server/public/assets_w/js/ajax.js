@@ -85,9 +85,7 @@ const result_done = function (call_name, response) {
             result_getRankList_ready(response);
             if(response.totalCnt){ paging(response.totalCnt, 'getRankList', 'pagination'); }
             break;
-        case 'tokenCheck_ready' : //  message
-            result_tokenCheck_ready(response);
-            break;
+			
         default:
             console.log('error call_name : '+call_name);
             break;

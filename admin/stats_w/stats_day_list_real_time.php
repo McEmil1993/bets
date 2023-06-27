@@ -28,16 +28,27 @@ $p_data['db_srch_e_date'] = str_replace('/', '-', $p_data['srch_e_date']);
 $db_srch_s_date = isset($p_data['db_srch_s_date']) ? $p_data['db_srch_s_date'] . " 00:00:00" : "NULL";
 $db_srch_e_date = isset($p_data['db_srch_e_date']) ? $p_data['db_srch_e_date'] . " 23:59:59" : "NULL";
 $dist_id = trim(isset($_REQUEST['dist_id']) ? $_REQUEST['dist_id'] : '');
+$dist_type = trim(isset($_REQUEST['dist_type']) ? $_REQUEST['dist_type'] : -1);
+$dist_name = trim(isset($_REQUEST['dist_name']) ? $_REQUEST['dist_name'] : '');
+
+
 $CASHAdminDAO = new Admin_Cash_DAO(_DB_NAME_WEB);
 $db_conn = $CASHAdminDAO->dbconnect();
-$dist_type = -1;
+
 if ($db_conn) {
+        
+    if('' != $dist_name){
+        $sql = "select id from member where nick_name = ? ";
+        $result_dist_name = $CASHAdminDAO->getQueryData_pre($sql,[$dist_name]);
+        $dist_id = $result_dist_name[0]['id'];
+    }
+
     // 정산 제외 유저 정보 가져오기
     $p_data['sql'] = "SELECT set_type, set_type_val FROM t_game_config WHERE set_type = 'users_excluded_from_settlement' ";
     $result_game_config = $CASHAdminDAO->getQueryData($p_data);
     $excluded_member_idx = $result_game_config[0]['set_type_val'];
     $where = '';
-    $sel_dist_idx = 0; // Selected Distributors
+    $sel_dist_idx = $dist_id; // Selected Distributors
     // 총판목록
     //$param = array();
     // 총판목록
@@ -73,6 +84,7 @@ if ($db_conn) {
         $where_dis = " AND parent.idx in($str_param)";
         $where_kplay = " AND PRT.idx in($str_param)";
     }
+
     // 총판유형별 검색
     if ($dist_type >= 0) {
         $arrDist = array();
@@ -152,7 +164,6 @@ if ($db_conn) {
     //CommonUtil::logWrite("stats_day_list_new_tm doSumChExCalc 1 sel_dist_idx : " . $sel_dist_idx, "info");
 
     // 일반유저의 입출금 현황도 가져온다.
-    //if (0 == $_SESSION['u_business']  && 0 == $sel_dist_idx && -1 == $dist_type) {
     if (0 == $_SESSION['u_business']  && 0 == $sel_dist_idx && -1 == $dist_type) {
         list($p_data['sql'], $param) = ComQueryUser::doComChExQuery($db_srch_s_date, $db_srch_e_date);
 
@@ -265,11 +276,14 @@ if ($db_conn) {
     $param = array_merge([$db_srch_s_date, $db_srch_e_date], $param_dis);
     array_push($param, $excluded_member_idx);
     $p_data['sql'] = ComQuery::doMiniBetQuery($db_srch_s_date, $db_srch_e_date, $excluded_member_idx, $where_dis);
+    CommonUtil::logWrite("stats_day_list_new_tm doMiniBetQuery query : " .  $p_data['sql'] , "info");     
+    
     $db_dataArr = $CASHAdminDAO->getQueryData_pre($p_data['sql'], $param);
     $db_dataArr = isset($db_dataArr) ? $db_dataArr : [];
     GameCode::doSumMiniBetCalc($db_dataArr, $stats_day, $shopConfig
             , $mini_bet_sum_d, $mini_take_sum_d, $mini_sum_d, $total_point, $total_point_sub, $sel_dist_idx);
 
+    
     // 카지노 
     $total_casino_bet_money = 0;
     $total_casino_win_money = 0;
@@ -355,11 +369,8 @@ if ($db_conn) {
 include_once(_BASEPATH . '/common/head.php');
 ?>
     <script>
-<<<<<<< HEAD
-=======
         const sel_dist_type =<?= $dist_type ?>;
 
->>>>>>> 13e60f5e (날짜별현황 총판별검색시 버그 수정)
         $(document).ready(function () {
             App.init();
             FormPlugins.init();
@@ -373,11 +384,8 @@ include_once(_BASEPATH . '/common/head.php');
                 $(this).addClass('current');
                 $("#" + tab_id).addClass('current');
             })
-<<<<<<< HEAD
-=======
 
             $('#dist_type').val(sel_dist_type).prop('selected', true);
->>>>>>> 13e60f5e (날짜별현황 총판별검색시 버그 수정)
         });
     </script>
     <script src="<?= _STATIC_COMMON_PATH ?>/js/admCommon.js"></script>
@@ -389,7 +397,8 @@ include_once(_BASEPATH . '/common/head.php');
         </form>
         <div class="wrap">
 <?php
-$menu_name = "stats_day";
+
+$menu_name = "stats_day_list_real_time";
 
 include_once(_BASEPATH . '/common/left_menu.php');
 
@@ -409,14 +418,6 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                     <form id="search" name="search" action='<?= $_SERVER['PHP_SELF'] ?>'>
                         <div class="panel_tit">
                             <div class="search_form fl">
-                                <div>
-                                    <select name="dist_id" id="sports_list" style="width: 100%">
-                                        <option value="">전체</option>
-<?php foreach ($distributorList as $key => $item) { ?>
-                                            <option value="<?= $item['id'] ?>"   <?php if ($dist_id == $item['id']): ?> selected<?php endif; ?>><?= $item['nick_name'] ?></option>
-<?php } ?>
-                                    </select>
-                                </div>
                                 <div class="daterange">
                                     <label for="datepicker-default"><i class="mte i_date_range mte-1x vat"></i></label>
                                     <input type="text" class="" name="srch_s_date" id="datepicker-default" placeholder="날짜선택" value="<?= $p_data['srch_s_date'] ?>"/>
@@ -430,6 +431,26 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                                 <div><a href="javascript:;" onClick="setDate('<?= $before_week ?>', '<?= $today ?>');" class="btn h30 btn_orange">1주일</a></div>
                                 <div><a href="javascript:;" onClick="setDate('<?= $before_month ?>', '<?= $today ?>');" class="btn h30 btn_green">한달</a></div>
                                 <div class="" style="padding-right: 10px;"></div>
+                                <div class="pl30">
+                                    <select class="mr30" name="dist_type" id="dist_type" style="width: 100%">
+                                        <option value="-1">전체</option>
+                                        <option value="0">기본</option>
+                                        <option value="1">죽장</option>
+                                        <option value="2">롤링</option>
+                                        <option value="3">배너</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <select name="dist_id" id="dist_id" style="width: 100%">
+                                        <option value="">전체</option>
+                                        <?php foreach ($distributorList as $key => $item) { ?>
+                                            <option value="<?= $item['id'] ?>"   <?php if ($dist_id == $item['id']): ?> selected<?php endif; ?>><?= $item['nick_name'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div>
+                                    <input type="text" name="dist_name" id="dist_name"  placeholder="총판명 입력" value="<?= $dist_name ?>"/>
+                                </div>
                                 <div><a href="javascript:goSearch();" class="btn h30 btn_red">검색</a></div>
                             </div>
                             <div class="search_form fr">
@@ -462,6 +483,7 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                                 <th colspan="3">미니게임</th>
                                 <th colspan="3">카지노</th>
                                 <th colspan="3">슬롯머신</th>
+                                <th colspan="3">E스포츠/키론</th>
                                 <th colspan="3">홀덤</th>
                                 <th colspan="3">해시게임</th>
                                 <th rowspan="2">포인트 적립</th>
@@ -477,6 +499,9 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                             </tr>
                             <tr>
 
+                                <th>베팅</th>
+                                <th>당첨</th>
+                                <th>차액</th>
                                 <th>베팅</th>
                                 <th>당첨</th>
                                 <th>차액</th>
@@ -556,7 +581,12 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                                 <td style='text-align:right;'><?= GameCode::strColorRet($total_slot_bet_money, 0) ?></td>
                                 <td style='text-align:right;'><?= GameCode::strColorRet(0, $total_slot_win_money) ?></td>
                                 <td style='text-align:right;'><?= GameCode::strColorRet($total_slot_lose_money, 0, 1) ?></td>
-
+                                
+                                <!-- E스포츠/키론 -->
+                                <td style='text-align:right;'><?= GameCode::strColorRet($total_espt_bet_money, 0) ?></td>
+                                <td style='text-align:right;'><?= GameCode::strColorRet($total_espt_win_money) ?></td>
+                                <td style='text-align:right;'><?= GameCode::strColorRet($total_espt_lose_money, 0, 1) ?></td>
+                                
                                 <!-- 홀덤 -->
                                 <td style='text-align:right;'><?= GameCode::strColorRet($total_holdem_bet_money, 0) ?></td>
                                 <td style='text-align:right;'><?= GameCode::strColorRet(0, $total_holdem_win_money) ?></td>
@@ -592,8 +622,10 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                                                 continue;
                                             }
 
-                                            $row['ch_val'] = $row['ch_val'] + $row['ch_val_user'];
-                                            $row['ex_val'] = $row['ex_val'] + $row['ex_val_user'];
+                                            //$row['ch_val'] = true === isset($row['ch_val']) ? $row['ch_val'] : 0  + $row['ch_val_user'];
+                                            //$row['ex_val'] = true === isset($row['ex_val']) ? $row['ex_val'] : 0  + $row['ex_val_user'];
+                                            $row['ch_val'] = (isset($row['ch_val']) ? $row['ch_val'] : 0)  + $row['ch_val_user'];
+                                            $row['ex_val'] = (isset($row['ex_val']) ? $row['ex_val'] : 0)  + $row['ex_val_user'];
 
                                             //CommonUtil::logWrite("roof ch_val 3 row : " . json_encode($row), "info");
 
@@ -668,7 +700,12 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                                             <td style='text-align:right;'><?= GameCode::strColorRet($row['total_slot_bet_money'] ?? 0, 0) ?></td>
                                             <td style='text-align:right;'><?= GameCode::strColorRet(0, $row['total_slot_win_money'] ?? 0) ?></td>
                                             <td style='text-align:right;'><?= GameCode::strColorRet($row['total_slot_lose_money'] ?? 0, 0, 1) ?></td>
-
+                                            
+                                            <!-- E스포츠/키론 -->
+                                            <td style='text-align:right;'><?= GameCode::strColorRet($row['total_espt_bet_money'] ?? 0, 0) ?></td>
+                                            <td style='text-align:right;'><?= GameCode::strColorRet($row['total_espt_win_money'] ?? 0, 0) ?></td>
+                                            <td style='text-align:right;'><?= GameCode::strColorRet($row['total_espt_lose_money'] ?? 0, 0) ?></td>
+                                            
                                             <!-- Holdem -->
                                             <td style='text-align:right;'><?= GameCode::strColorRet($row['total_holdem_bet_money'] ?? 0, 0) ?></td>
                                             <td style='text-align:right;'><?= GameCode::strColorRet(0, $row['total_holdem_win_money'] ?? 0) ?></td>
@@ -712,6 +749,39 @@ include_once(_BASEPATH . '/common/bottom.php');
 ?> 
     </body>
     <script>
+        $("#dist_type").on("change", function(){
+            let dist_type = $('#dist_type option:selected').val();
+            let getUrl = '/member_w/_ajax_distributor_list.php';
+            let param_val = {
+                    dist_type: dist_type
+                };
+            let $resultHTML = '';
+
+            $.ajax({
+                type: 'post',
+                dataType: 'json',
+                url: getUrl,
+                data:param_val,
+                success: function (data) {
+                    if(data['retCode'] == "1000"){
+                        $list = data['list'];
+                        $resultHTML += `<option value="">전체</option>`;
+                        for(let i=0; i<$list.length; i++){
+                            $resultHTML += `<option value="${$list[i].id}">${$list[i].nick_name}</option>`;
+                        }
+                        $("#dist_id").html($resultHTML);
+                    }else if(data['retCode'] == "2000") {
+                        $resultHTML += `<option value="">없음</option>`;
+                        $("#dist_id").html($resultHTML);
+                    }else {
+                        alert('실패하였습니다.');
+                    }
+                },
+                error: function (request, status, error) {
+                    alert('실패하였습니다.');
+                }
+            });
+        });
 
         function goPopupUserinfo(midx, selkind) {
             var fm = document.popForm;
@@ -729,6 +799,28 @@ include_once(_BASEPATH . '/common/bottom.php');
         }
 
         function goSearch() {
+            let dist_type = $('#dist_type option:selected').val();
+            let dist_id = $('#dist_id option:selected').val();
+            let dist_name = $('#dist_name').val();
+            
+            //lert(dist_type);
+            //alert(dist_id);
+            //alert(dist_name);
+            /*console.log('dist_type : '+dist_type);
+            console.log('dist_id : '+dist_id);
+            console.log('dist_name : '+dist_name);*/
+            //if('' != dist_name && (-1 != dist_type || '' != dist_id)){
+
+            if('' != dist_id && '' != dist_name ){
+                alert('총판유형, 총판 선택이 전체로 되어있어야 합니다.');
+                return;
+            }
+            
+            /*if('' == dist_id){
+                alert('총판 선택이 되어있어야 합니다.');
+                return;
+            }*/
+            
             var fm = document.search;
             fm.method = "get";
             fm.submit();

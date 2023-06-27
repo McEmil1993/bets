@@ -12,7 +12,7 @@
 			<div class="tab_wrap">
 				<ul>
 					<li><a href="javascript:fnLoadingMove('/web/member_info')"><span class="tabon">내정보</span></a></li>
-					<li><a href="javascript:fnLoadingMove('/web/change_password')"><span class="tab">비밀번호변경</span></a></li>
+					<!-- <li><a href="javascript:fnLoadingMove('/web/change_password')"><span class="tab">비밀번호변경</span></a></li> -->
 					<li><a href="javascript:fnLoadingMove('/web/recommend_member')"><span class="tab">추천회원리스트</span></a></li>
 					<li><a href="javascript:fnLoadingMove('/web/point_history')"><span class="tab">포인트내역</span></a></li>
 					<li><a href="javascript:fnLoadingMove('/web/note')"><span class="tab">쪽지함</span></a></li>
@@ -42,26 +42,28 @@
 				</div>			
 				<div class="write_tr cf">
 					<div class="write_title">닉네임</div>
-					<div class="write_basic"><span class="font07"><?= $member->nick_name ?></span></div>
+					<div class="write_basic"><span class="font10"><?= $member->nick_name ?></span></div>
 				</div>			
 				<div class="write_tr cf">
 					<div class="write_title">은행명</div>
-					<div class="write_basic"><?= $member->account_bank ?></div>
+					<div class="write_basic"><span class="font01"><?= $member->account_bank ?></span></div>
 				</div>			
 				<div class="write_tr cf">
 					<div class="write_title">계좌번호</div>
-					<div class="write_basic"><?= preg_replace('/(?<=.{2})./u','*',$member->account_number)?></div>
+					<div class="write_basic"><span class="font01"><?= preg_replace('/(?<=.{2})./u','*',$member->account_number)?></span></div>
 				</div>			
 				<div class="write_tr cf">
 					<div class="write_title">예금주</div>
 					<div class="write_basic">
-                        <?php $accountName;
+						<span class="font01">
+						<?php $accountName;
                         if(mb_strlen($member->account_name, 'utf-8') == 2) {
                             $accountName = preg_replace('/(?<=.{1})./u','*',$member->account_name);
                         }else {
                             $accountName = preg_replace('/.(?=.$)/u','*',$member->account_name);                	
                         }?>
                         <?= $accountName ?>
+						</span>
                     </div>
 				</div>			
 			</div>		

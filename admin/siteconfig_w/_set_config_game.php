@@ -6,9 +6,8 @@ header('Expires: 0'); // Proxies.
 header('Content-Type: text/html; charset=UTF-8');
 
 include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
-
 include_once(_BASEPATH . '/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH . '/class_Admin_Member_dao.php');
 $UTIL = new CommonUtil();
 if (!isset($_SESSION)) {

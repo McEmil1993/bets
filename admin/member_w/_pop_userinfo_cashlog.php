@@ -1,11 +1,9 @@
 <?php 
 
 include_once($_SERVER['DOCUMENT_ROOT'].'/_LIB/base_config.php');
-
 include_once(_BASEPATH.'/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH.'/class_Admin_Common_dao.php');
-
 include_once(_DAOPATH.'/class_Admin_Cash_dao.php');
 
 
@@ -70,7 +68,6 @@ $data_str_2 = "
 <tr>
 <td style='width: 55px;background-color:#6F6F6F;color:#fff'>번호</td>
 <td style='width: 70px;background-color:#6F6F6F;color:#fff'>사용 머니</td>
-<td style='width: 70px;background-color:#6F6F6F;color:#fff'>결과금</td>
 <td style='width: 80px;background-color:#6F6F6F;color:#fff'>보유 머니</td>
 <td style='width: 80px;background-color:#6F6F6F;color:#fff'>포인트</td>
 <td style='width: 80px;background-color:#6F6F6F;color:#fff'>지머니</td>
@@ -87,11 +84,11 @@ if($db_cashlist_cnt > 0) {
         $cash_type_color = '';
         
         if($db_dataCashList[$i]['m_kind'] == 'P') {
-            $cash_type_color = 'color:#0036FD;';
+            $cash_type_color = 'color:#FD0000;';
             $db_cash = number_format($db_dataCashList[$i]['r_money']);
         }
         else if($db_dataCashList[$i]['m_kind'] == 'M') {
-            $cash_type_color = 'color:#FD0000;';
+            $cash_type_color = 'color:#0036FD;';
             $db_cash = number_format(-$db_dataCashList[$i]['r_money']);
         }
         else {
@@ -100,14 +97,11 @@ if($db_cashlist_cnt > 0) {
         
         }
         
-        if(7 == $db_dataCashList[$i]['ac_code'] && ($db_dataCashList[$i]['coment'] == '카지노' || $db_dataCashList[$i]['coment'] == '슬롯')) continue;
-        
         $point = number_format($db_dataCashList[$i]['point']);
         $g_money = number_format($db_dataCashList[$i]['g_money']);
         $db_af_r_money = number_format($db_dataCashList[$i]['af_r_money']);
         $db_coment = $db_dataCashList[$i]['coment'];
         $db_reg_date = $db_dataCashList[$i]['reg_time'];
-        $win_cash = 0;
         
         if(1000 == $db_dataCashList[$i]['ac_code'] || 1001 == $db_dataCashList[$i]['ac_code']){
             if(1000 == $db_dataCashList[$i]['ac_code']){
@@ -117,38 +111,35 @@ if($db_cashlist_cnt > 0) {
             }
             // 사용머니
             //$db_cash = number_format($db_dataCashList[$i]['BET_MNY']);
-            $win_cash = $db_dataCashList[$i]['RSLT_MNY'] + $db_dataCashList[$i]['BET_MNY'];
+            $db_cash = $db_dataCashList[$i]['RSLT_MNY'] + $db_dataCashList[$i]['BET_MNY'];
 
             // 이전머니
             //$be_r_money = $db_dataCashList[$i]['HLD_MNY'];
             $db_af_r_money = number_format($db_dataCashList[$i]['HLD_MNY'] + $db_dataCashList[$i]['RSLT_MNY']);
 
-            // $db_coment = $gameName.' 배팅';
-            // if($db_dataCashList[$i]['TYPE'] == 'W'){
-            //     $win_cash = number_format($db_dataCashList[$i]['RSLT_MNY'] + $db_dataCashList[$i]['BET_MNY']);
-            //     //$be_r_money = $db_dataCashList[$i]['HLD_MNY'] - ($db_dataCashList[$i]['RSLT_MNY'] + $db_dataCashList[$i]['BET_MNY']);
-            //     $db_coment = $gameName.' 적중';
-            //     $cash_type_color = 'color:#0036FD;';
-            // }else if($db_dataCashList[$i]['TYPE'] == 'L'){
-            //     //$be_r_money = $db_dataCashList[$i]['HLD_MNY'] + $db_dataCashList[$i]['BET_MNY'];
-            //     $db_coment = $gameName.' 낙첨';
-            //     $cash_type_color = 'color:#FD0000;';
-            // }else if($db_dataCashList[$i]['TYPE'] == 'C'){
-            //     $db_coment = $gameName.' 취소';
-            // }else if('I' == $db_dataCashList[$i]['TYPE']){
-            //     $db_coment = $gameName.' 인게임보너스';
-            // }else if('P' == $db_dataCashList[$i]['TYPE']){
-            //     $db_coment = $gameName.' 프로모션보너스';
-            // }else if('J' == $db_dataCashList[$i]['TYPE']){
-            //     $db_coment = $gameName.' 잭팟보너스';
-            // }
-            // $db_coment .= '(배팅금 : '.$db_dataCashList[$i]['BET_MNY'].')';
+            $db_coment = $gameName.' 배팅';
+            if($db_dataCashList[$i]['TYPE'] == 'W'){
+                $db_cash = number_format($db_dataCashList[$i]['RSLT_MNY'] + $db_dataCashList[$i]['BET_MNY']);
+                //$be_r_money = $db_dataCashList[$i]['HLD_MNY'] - ($db_dataCashList[$i]['RSLT_MNY'] + $db_dataCashList[$i]['BET_MNY']);
+                $db_coment = $gameName.' 적중';
+            }else if($db_dataCashList[$i]['TYPE'] == 'L'){
+                //$be_r_money = $db_dataCashList[$i]['HLD_MNY'] + $db_dataCashList[$i]['BET_MNY'];
+                $db_coment = $gameName.' 낙첨';
+            }else if($db_dataCashList[$i]['TYPE'] == 'C'){
+                $db_coment = $gameName.' 취소';
+            }else if('I' == $db_dataCashList[$i]['TYPE']){
+                $db_coment = $gameName.' 인게임보너스';
+            }else if('P' == $db_dataCashList[$i]['TYPE']){
+                $db_coment = $gameName.' 프로모션보너스';
+            }else if('J' == $db_dataCashList[$i]['TYPE']){
+                $db_coment = $gameName.' 잭팟보너스';
+            }
+            $db_coment .= '(배팅금 : '.$db_dataCashList[$i]['BET_MNY'].')';
         }
         
         
         $data_str_2 .="<tr><td style='width: 55px;'>".($db_cashlist_cnt-$i)."</td>";
         $data_str_2 .="<td style='width: 70px;text-align:right;font-size: 0.75em;$cash_type_color'>$db_cash</td>";
-        $data_str_2 .="<td style='width: 70px;text-align:right;font-size: 0.75em;$cash_type_color'>$win_cash</td>";
         $data_str_2 .="<td style='width: 80px;text-align:right;font-size: 0.75em;'>$db_af_r_money</td>";
         $data_str_2 .="<td style='width: 80px;text-align:right;font-size: 0.75em;'>$point</td>";
         $data_str_2 .="<td style='width: 80px;text-align:right;font-size: 0.75em;'>$g_money</td>";

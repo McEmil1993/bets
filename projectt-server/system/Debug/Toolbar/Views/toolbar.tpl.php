@@ -26,7 +26,7 @@
 <script id="toolbar_js" type="text/javascript">
 	<?= file_get_contents(__DIR__ . '/toolbar.js') ?>
 </script>
-<div id="debug-icon" class="debug-bar-ndisplay">
+<!-- <div id="debug-icon" class="debug-bar-ndisplay">
 	<a id="debug-icon-link" href="javascript:void(0)">
 		<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
 			width="155.000000px" height="200.000000px" viewBox="0 0 155.000000 200.000000"
@@ -45,7 +45,7 @@
 			</g>
 		</svg>
 	</a>
-</div>
+</div> -->
 <div id="debug-bar">
 	<div class="toolbar">
 		<span id="toolbar-position"><a href="javascript: void(0)">&#8597;</a></span>

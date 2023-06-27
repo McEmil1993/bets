@@ -27,7 +27,7 @@
 			<div class="tab_wrap">
 				<ul>
 					<li><a href="javascript:fnLoadingMove('/web/member_info')"><span class="tab">내정보</span></a></li>
-					<li><a href="javascript:fnLoadingMove('/web/change_password')"><span class="tab">비밀번호변경</span></a></li>
+					<!-- <li><a href="javascript:fnLoadingMove('/web/change_password')"><span class="tab">비밀번호변경</span></a></li> -->
 					<li><a href="javascript:fnLoadingMove('/web/recommend_member')"><span class="tab">추천회원리스트</span></a></li>
 					<li><a href="javascript:fnLoadingMove('/web/point_history')"><span class="tabon">포인트내역</span></a></li>
 					<li><a href="javascript:fnLoadingMove('/web/note')"><span class="tab">쪽지함</span></a></li>
@@ -71,6 +71,8 @@
                     		case 127: $db_ac_code_str = "재정산으로 인한 적특 ->정산 시 지급으로 인한 관리자포인트 충전";$pointColor = $pointPlusFont;break;
                     		case 202: $db_ac_code_str = "정산포인트취소";$pointColor = $pointMinusFont;break;
                     		case 203: $db_ac_code_str = "정산추천인포인트취소";$pointColor = $pointMinusFont;break;
+                                case 3001: $db_ac_code_str = $val['coment'];$pointColor = $pointMinusFont;break;
+                                case 3002: $db_ac_code_str = $val['coment'];$pointColor = $pointMinusFont;break;
                     	}
                     	
                     ?>
@@ -88,8 +90,15 @@
                 <?php }?>                                           
             </table>             
             <?php if($recommendAllCount> 0){ include('common/page_num.php'); }?>
-        </div> 	
+        </div>
 	</div>
+    <div class="con_box10">
+        <div class="btn_wrap_center">
+            <ul>
+                <li><a href="javascript:pointToMoney(<?= session()->get('point') ?>)" id="a_point"><span class="btn3_1">포인트전환</span></a></li>
+            </ul>
+        </div>
+    </div> 
 </div>
 <!-- contents_wrap -->
 <?= view('/web/common/footer_wrap') ?>

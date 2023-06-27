@@ -155,7 +155,7 @@ include_once(_BASEPATH.'/common/iframe_head_menu.php');
                     </tr>
                 </table>                
                 
-                *PC적정 크기 : 1100 x 320 / *모바일적정 크기 : 340 x 170
+                *PC적정 크기 : 1920 x 400 / *모바일적정 크기 : 720 X 550
                 <br>
                 *최대 사용할 수 있는 배너는 5개 입니다.
                 <br>

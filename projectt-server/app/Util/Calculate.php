@@ -18,6 +18,8 @@ use App\GamblePatch\GambelGmPt;
 use App\GamblePatch\KwinGmPt;
 use App\GamblePatch\ChoSunGmPt;
 use App\GamblePatch\BetsGmPt;
+use App\GamblePatch\NobleGmPt;
+use App\GamblePatch\BullsGmPt;
 
 class Calculate {
 
@@ -424,12 +426,6 @@ class Calculate {
             case 'SLOT':
                 $sql = "UPDATE member_money_charge_history SET slot_bet_money = slot_bet_money + ? WHERE idx = ?";
                 break;
-            case 'CLASSIC_S':
-                $sql = "UPDATE member_money_charge_history SET classic_bet_s_money = classic_bet_s_money + ? WHERE idx = ?";
-                break;
-            case 'CLASSIC_D':
-                $sql = "UPDATE member_money_charge_history SET classic_bet_d_money = classic_bet_d_money + ? WHERE idx = ?";
-                break;
             case 'HOLDEM': 
                 $sql = "UPDATE member_money_charge_history SET holdem_bet_money = holdem_bet_money + ? WHERE idx = ?";
                 break;
@@ -480,6 +476,8 @@ class Calculate {
         }
 
         $model->db->query($sql, [$bet_money, $idx]);
+
+        $logger->info("success decUpdateChargeBetMoney member_idx :" . $member_idx . ' type =>' . $type . ' sql =>' . $sql);
     }
 
     public static function initShopCalculateResult($shopConfig, $value, $logger) {
@@ -919,8 +917,8 @@ class Calculate {
 
         return $sql;
     }
-    
-     public static function doResultProcessing($bet_type, $logger) {
+
+    public static function doResultProcessing($bet_type, $logger) {
         $memberBetDetailModel = new MemberBetDetailModel();
         try {
             $logger->error("doResultProcessing start type ==> " . $bet_type);
@@ -936,7 +934,7 @@ class Calculate {
             // member_bet_detail.bet_status 1 : 정산전, 2 : 적중 ,4 : 낙첨 ,5 : 취소 ,6: 적특
             // 정산 안된 데이터만 가져온다. 
 
-            $arr_in_st_mk = array(6, 9, 22, 23, 16, 95, 472, 1328, 1327, 1326, 1332, 1832, 2402, 1677);
+            $arr_in_st_mk = array(6, 9, 22, 23, 16, 95, 472, 1328, 1327, 1832, 2402, 1677);
             //$arr_in_e_st_st_mk = array(52, 202);
             $arr_in_e_st_st_mk = array(); // 이스포츠는 수동정산이다 
             $arr_in_real_st_mk = array(1, 2, 13, 17, 28, 52, 101, 102, 220, 221, 226, 342, 464);    // 실시간 연장포함 마켓,12 2nd Half Including Overtime
@@ -1029,108 +1027,7 @@ class Calculate {
             $memberBetDetailModel->db->transRollback();
         }
     }
-    
-    public static function doResultProcessing_old($bet_type, $logger) {
-        $memberBetDetailModel = new MemberBetDetailModel();
-
-        try {
-            $memberBetDetailModel->db->transStart();
-
-            $arrMbBetResult = $memberBetDetailModel->SelectMemberBetResultProcessing($bet_type); // 1인값이 있는지 체크한다.
-
-
-            if (true == empty($arrMbBetResult) || !isset($arrMbBetResult) || 0 === count($arrMbBetResult)) {
-                $memberBetDetailModel->db->transComplete();
-                return;
-            }
-
-
-            // member_bet.bet_status 1 : 정산전,3 : 정산 완료,5 : 취소
-            // member_bet_detail.bet_status 1 : 정산전, 2 : 적중 ,4 : 낙첨 ,5 : 취소 ,6: 적특
-            // 정산 안된 데이터만 가져온다. 
-
-            $arr_in_st_mk = array(6, 9, 22, 23, 16, 95, 472, 1328, 1327, 1832, 2402, 1677);
-            //$arr_in_e_st_st_mk = array(52, 202);
-            $arr_in_e_st_st_mk = array(); // 이스포츠는 수동정산이다 
-            $arr_in_real_st_mk = array(1, 2, 13, 17, 28, 52, 101, 102, 220, 221, 226, 342, 464);    // 실시간 연장포함 마켓,12 2nd Half Including Overtime
-
-            foreach ($arrMbBetResult as $value) {
-
-                if (ESPORTS == $value['fixture_sport_id'])
-                    continue; // 이스포츠 경기는 자동정산에서 제외한다.
-                $bet_status = 1;
-                //$value['result_extra'] = 0;
-                $bet_price = $value['bet_price'];
-
-                list($bet_status, $bet_price, $value['live_results_p1'], $value['live_results_p2']) = BetDataUtil::getBetStatus($value, $logger); // 2,4,6중 하나의 값을 갖는다.
-                //$value['result_extra'] = json_decode($value['livescore']);
-
-                if (1 == $bet_status)
-                    continue;
-
-                if ((2 == $bet_type && false == in_array($value['ls_markets_id'], $arr_in_real_st_mk)) ||
-                        (1 == $bet_type && true == in_array($value['ls_markets_id'], $arr_in_st_mk)) ||
-                        (1 == $bet_type && ESPORTS == $value['fixture_sport_id'] && true == in_array($value['ls_markets_id'], $arr_in_e_st_st_mk))
-                ) {
-                    switch ($value['bet_settlement']) {
-
-                        case -1: // 취소
-                            $bet_status = 1; // 취소된 경기는 수동정산처리를 하자 .
-                            break;
-
-                        case 0: // 경기중
-                            if (2 == $bet_type && 1 != $bet_status) {
-                                break;
-                            }
-                            $bet_status = 1;
-                            break;
-                        case 1: // 낙첨
-                            if (4 != $bet_status) {
-                                $bet_status = 1;
-                                break;
-                            }
-
-                            $bet_status = 4;
-                            break;
-                        case 2: // 적중
-                            if (2 != $bet_status) {
-                                $bet_status = 1;
-                                break;
-                            }
-
-                            $bet_status = 2;
-                            break;
-                        case 3: // 적특
-                            $bet_status = 6;
-                            break;
-                        default :
-                            $bet_status = 1;
-                            break;
-                    }
-                }
-
-                if (1 == $bet_status)
-                    continue;
-
-                //$logger->info('doResultProcessing market_id : ' . $value['ls_markets_id'] . ' bet_status :' . $bet_status . ' bet_price: ' . $bet_price . " idx :" . $value['idx']);
-                if (true === isset($value['live_results_p1']) && true === isset($value['live_results_p2'])) {
-                    $array_result_score = array('live_results_p1' => $value['live_results_p1'], 'live_results_p2' => $value['live_results_p2']);
-                    $array_result_score = json_encode($array_result_score);
-                } else {
-                    $array_result_score = '';
-                }
-
-                //$logger->info('doResultProcessing array_result_score : ' . json_encode($array_result_score) . ' bet_price : ' . $bet_price);
-                $memberBetDetailModel->UpdateMemberBetDetail($value['idx'], $bet_status, $array_result_score); // member_bet_detail 
-            }
-
-            $memberBetDetailModel->db->transComplete();
-        } catch (\mysqli_sql_exception $e) {
-            $logger->error('doResultProcessing [MYSQL EXCEPTION] message (code) : ' . $e->getMessage() . ' (' . $e->getCode() . ')');
-            $logger->error('::::::::::::::: doTotalCalculate query : ' . $memberBetDetailModel->getLastQuery());
-            $memberBetDetailModel->db->transRollback();
-        }
-    }
+        
     // 수동적특한 배당은 자동 정산시 해당유저한테 배팅금액을 돌려준다.
     public static function renew_doTotalCalculate($bet_type, $logger) {
         $memberModel = new MemberModel();
@@ -1151,7 +1048,11 @@ class Calculate {
                 $gmPt = new ChoSunGmPt();
             } else if ('BETS' == config(App::class)->ServerName) {
                 $gmPt = new BetsGmPt();
-            }
+            } else if ('NOBLE' == config(App::class)->ServerName) {
+                $gmPt = new NobleGmPt();
+            } else if ('BULLS' == config(App::class)->ServerName) {
+                $gmPt = new BullsGmPt();
+            } 
 
             $arr_config = $gmPt->getConfigData();
 
@@ -1191,10 +1092,10 @@ class Calculate {
                 }
 
                 // 처리한 데이터
-                $sql = "SELECT money FROM member WHERE idx = ? for update ";
-                $arrResultMbBet = $memberBetDetailModel->db->query($sql, [$member_idx])->getResultArray();
-                $money = $arrResultMbBet[0]['money'];
-                //$money = $valueMbBet['money'];
+                //$sql = "SELECT money FROM member WHERE idx = ? for update ";
+                //$arrResultMbBet = $memberBetDetailModel->db->query($sql, [$member_idx])->getResultArray();
+                //$money = $arrResultMbBet[0]['money'];
+                $money = $valueMbBet['money'];
                 $ukey = md5($member_idx . strtotime('now'));
 
                 if (0 < $lose_count) { // 낙첨처리 
@@ -1220,7 +1121,6 @@ class Calculate {
                 //if ($take_money > 0) {
                 $p_data['sql'] = "update member set money = money + ? where idx = ? ";
                 $memberModel->db->query($p_data['sql'], [$take_money, $member_idx]);
-
                 //}
 
                 $memberBetModel->UpdateMemberBetBonus($bet_idx, 3, $take_money, $bonus_price, $item_idx, 0, 0, $gm_bonus);
@@ -1249,11 +1149,6 @@ class Calculate {
         //$memberBetModel = new MemberBetModel();
         $MiniGameMemberBetModel = new MiniGameMemberBetModel();
         $tLogCashModel = new TLogCashModel();
-        
-        $sql = "SELECT set_type_val FROM t_game_config where set_type = 'test_expt'";
-        $arrConfig = $MiniGameMemberBetModel->db->query($sql)->getResultArray();
-        $arrTestExpt = explode(',', $arrConfig[0]['set_type_val']);
-        
         $sql = "SELECT 
               mini_mb_bt.idx as mb_bt_idx,
               mini_mb_bt.member_idx,
@@ -1266,8 +1161,6 @@ class Calculate {
               mini_mb_bt.ls_markets_name,
               mini_mb_bt.bet_status as mb_bt_dt_bet_status,
               mini_mb_bt.bet_price,
-              mini_mb_bt.bet_other_price,
-              mini_mb_bt.bet_other_price_draw,
               mini_mb_bt.create_dt,
               game.result,
               game.result_score,
@@ -1311,65 +1204,18 @@ class Calculate {
                 // 해당 데이터를 업데이트 한다.
                 $result_score = '';
                 $member_idx = $value['member_idx'];
-                $logMarktesName = $value['ls_markets_name'];
 
                 $ukey = md5($member_idx . strtotime('now'));
                 if ($bet_status === 4) { // 낙첨시 주는 포인트 lose_self_per,lose_recomm_per
-                                        if(6 == $value['bet_type'] && in_array($member_idx, $arrTestExpt)){
-                        $otherMarketsId = $value['ls_markets_id'];
-                        if("ou" == $data_object->type){
-                            if('오버' == $value['ls_markets_name']){
-                                $logMarktesName = '언더';
-                                $otherMarketsId = 13005;
-                            }else{
-                                $logMarktesName = '오버';
-                                $otherMarketsId = 13004;
-                            }
-                            $value['bet_price'] = $value['bet_other_price'];
-                        }else{
-                            // 승
-                            if ($data_object->scorea < $data_object->scoreh) {
-                                $logMarktesName = '승';
-                                $otherMarketsId = 13001;
-                                if(13002 == $value['ls_markets_id']){
-                                    $value['bet_price'] = $value['bet_other_price'];
-                                }else if(13003 == $value['ls_markets_id']){
-                                    $value['bet_price'] = $value['bet_other_price'];
-                                }
-                            // 무
-                            }else if ($data_object->scorea == $data_object->scoreh) {
-                                $logMarktesName = '무';
-                                $otherMarketsId = 13002;
-                                if(13001 == $value['ls_markets_id']){
-                                    $value['bet_price'] = $value['bet_other_price_draw'];
-                                }else if(13003 == $value['ls_markets_id']){
-                                    $value['bet_price'] = $value['bet_other_price_draw'];
-                                }
-                            }else{
-                                $logMarktesName = '패';
-                                $otherMarketsId = 13003;
-                                if(13001 == $value['ls_markets_id']){
-                                    $value['bet_price'] = $value['bet_other_price'];
-                                }else if(13002 == $value['ls_markets_id']){
-                                    $value['bet_price'] = $value['bet_other_price_draw'];
-                                }
-                            }
-                        }
-                        
-                        $p_data['sql'] = "update mini_game_member_bet set bet_price = ".$value['bet_price'].","
-                                . " ls_markets_id = $otherMarketsId, ls_markets_name = '$logMarktesName' where idx = ".$value['mb_bt_idx'];
-                        $MiniGameMemberBetModel->db->query($p_data['sql']);
-                    }else{
-                        //$memberModel->log_lose_bet_bonus_point($member_idx, $value['total_bet_money']);
-                        $MiniGameMemberBetModel->UpdateMemberMiniGameBet($value['mb_bt_idx'], 3, 0);
+                    //$memberModel->log_lose_bet_bonus_point($member_idx, $value['total_bet_money']);
+                    $MiniGameMemberBetModel->UpdateMemberMiniGameBet($value['mb_bt_idx'], 3, 0);
 
-                        $a_comment = "정산 낙첨 [" . $value['game'] . "] " . $value['ls_fixture_id'] . " " . $value['ls_markets_name'] . " ";
+                    $a_comment = "정산 낙첨 [" . $value['game'] . "] " . $value['ls_fixture_id'] . " " . $value['ls_markets_name'] . " ";
 
-                        $a_comment = addslashes($a_comment);
+                    $a_comment = addslashes($a_comment);
 
-                        $tLogCashModel->insertCashLog_mem_idx($ukey, $member_idx, 7, $value['mb_bt_idx'], 0, $value['money'], 'R', $a_comment);
-                        continue;
-                    }
+                    $tLogCashModel->insertCashLog_mem_idx($ukey, $member_idx, 7, $value['mb_bt_idx'], 0, $value['money'], 'R', $a_comment);
+                    continue;
                 }
 
                 // 결과가 다 반영안됐다 
@@ -1383,14 +1229,13 @@ class Calculate {
                 if ($take_money > 0) {
                     $p_data['sql'] = "update member set money = money + $take_money where idx = $member_idx";
                     $memberModel->db->query($p_data['sql']);
-                    
                     //$logger->debug($p_data['sql']);
                 }
 
                 /* 1:충전,2:환전,3:베팅,4:베팅취소,5:포인트전환(추가),6:포인트차감,10:포인트충전,7:베팅결과처리,8:이벤트충전,9:이벤트차감,101:충전요청,102:환전요청,103:계좌조회,
                  * 111:충전요청취소,112:환전요청취소,113:충전취소,114:환전취소,121:관리자충전,122:관리자회수,123:관리자 포인트 충전, 124:관리자 포인트 회수,998:데이터복구,999:기타 
                  */
-                $a_comment = "정산 적중 [" . $value['game'] . "] " . $value['ls_fixture_id'] . " " . $logMarktesName . " ";
+                $a_comment = "정산 적중 [" . $value['game'] . "] " . $value['ls_fixture_id'] . " " . $value['ls_markets_name'] . " ";
 
                 if (6 === $value['bet_type']) {
                     $a_comment .= $data_object->home . " VS " . $data_object->away;

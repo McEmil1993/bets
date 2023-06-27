@@ -72,17 +72,14 @@ $db_conn = $CASHAdminDAO->dbconnect();
 
 if($db_conn) {
     
-    if(false === GameCode::checkAdminType($_SESSION,$CASHAdminDAO)){
-        die();
-    }
-    
     $p_data['sql'] = " SELECT count(*) as CNT ";
     $p_data['sql'] .= " FROM t_log_cash a LEFT JOIN member m ON a.member_idx=m.idx ";
     $p_data['sql'] .= " WHERE a.reg_time >= '".$p_data['db_srch_s_date']."' AND  a.reg_time <= '".$p_data['db_srch_e_date']."' ";
     $p_data['sql'] .= " AND ((ac_code IN(5,6,10,11,123,124,131,202,203,301,".USER_PAY_BACK_REWARD_POINT.",".RECOMMENDER_PAY_BACK_REWARD_POINT.",".USER_BET_BACK_REWARD_POINT.",".RECOMMENDER_BET_BACK_REWARD_POINT.",".USER_BET_LOSE_BACK_REWARD_POINT.",".RECOMMENDER_BET_LOSE_BACK_REWARD_POINT.") ";
-    $p_data['sql'] .= " AND a.af_point != 0) or ac_code in (10, 124))";
+    $p_data['sql'] .= " AND a.point != 0) or ac_code in (10, 124))";
     $p_data['sql'] .= $srch_basic;
 
+    
     $db_dataArrCnt = $CASHAdminDAO->getQueryData($p_data);
 
     $total_cnt = $db_dataArrCnt[0]['CNT'];
@@ -106,11 +103,11 @@ if($db_conn) {
         $p_data['sql'] .= " FROM t_log_cash a LEFT JOIN member m ON a.member_idx=m.idx ";
         $p_data['sql'] .= " WHERE a.reg_time >= '".$p_data['db_srch_s_date']."' AND  a.reg_time <= '".$p_data['db_srch_e_date']."' ";
         $p_data['sql'] .= " AND ((ac_code IN(5,6,10,11,123,124,131,202,203,301,".USER_PAY_BACK_REWARD_POINT.",".RECOMMENDER_PAY_BACK_REWARD_POINT.",".USER_BET_BACK_REWARD_POINT.",".RECOMMENDER_BET_BACK_REWARD_POINT.",".USER_BET_LOSE_BACK_REWARD_POINT.",".RECOMMENDER_BET_LOSE_BACK_REWARD_POINT.") ";
-        $p_data['sql'] .= " AND a.af_point != 0) or ac_code in (10, 124))";
+        $p_data['sql'] .= " AND a.point != 0) or ac_code in (10, 124))";
         $p_data['sql'] .= $srch_basic;
         $p_data['sql'] .= " ORDER BY a.idx DESC " ;
         $p_data['sql'] .= " LIMIT ".$p_data['start'].", ".$p_data['num_per_page'].";";
-
+        
         $db_dataArr = $CASHAdminDAO->getQueryData($p_data);
         
         //$UTIL->logWrite($p_data['sql'] ,"error");
@@ -271,7 +268,6 @@ if($total_cnt > 0) {
                 case 124: $db_ac_code_str = "관리자 포인트 회수"; break;     
                 case 202: $db_ac_code_str = "정산포인트취소"; break;
                 case 203: $db_ac_code_str = "정산추천인포인트취소"; break;
-                case 301: $db_ac_code_str = "총판정산포인트지급"; break;
             }
             
             // money에 값을 넣는 경우가 있다.
@@ -321,10 +317,10 @@ if($total_cnt > 0) {
                     <tr onmouseover="this.style.backgroundColor='#FDF2E9';" onmouseout="this.style.backgroundColor='#ffffff';">
                     	<td><?=$no?></td>
                     	<td style='text-align:left;'>
-                    		<a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>');"><?=$db_id?></a>
+                    		<a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>', '6');"><?=$db_id?></a>
                     	</td>
                         <td style='text-align:left;'>
-                        	<a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>');"><?=$db_nick?></a>
+                        	<a href="javascript:;" onClick="popupWinPost('/member_w/pop_userinfo.php','popuserinfo',800,1400,'userinfo','<?=$db_m_idx?>', '6');"><?=$db_nick?></a>
                         </td>
                         <td style='text-align:right;'><?=$db_point?></td>
                         <td style='text-align:right;'><?=$be_point?></td>

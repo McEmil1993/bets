@@ -247,13 +247,6 @@ class Admin_Member_DAO extends Database {
 	        return $recordset;
 	    }
 	}
-
-	public function getSecondPass()
-	{
-	$sql = "SELECT * FROM t_game_config WHERE set_type ='second_pass';";
-		$recordset = $this->select_query($sql);
-		return $recordset;
-	}
 }
 	
 ?>

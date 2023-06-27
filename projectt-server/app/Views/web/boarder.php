@@ -2,9 +2,7 @@
 <div id="wrap">
 <?= view('/web/common/header_wrap') ?>
 
-<div class="title_wrap">
-	<div class="title">공지사항</div>
-</div>
+<div class="title_wrap"><div class="title">공지사항</div></div>
 
 <?php
 
@@ -24,39 +22,40 @@
 
 <div class="contents_wrap">
 	<div class="contents_box">
-		<div class="con_box10">
+		<div class="con_box00">
 			<div class="list_box"> 
-				<ul class="list_tr4 trfirst">
-					<li class="list_title4">번호</li>
-					<li class="list_title4">제목</li>
-					<li class="list_title4">닉네임</li>
-					<!-- <li class="list_title4">날짜</li> -->
-				</ul>
-                <!-- 공지글 -->
+                    
+            <!-- 공지글 -->
                 <?php if($notice) : ?>
                     <?php foreach ($notice as $key => $val) {?>
-                        <ul class="list_tr4" onClick="fnLoadingMove('/web/border/update?idx=<?= $val['idx'] ?>&type=v')" style="cursor: pointer;">
-                            <li class="list_notice4"><span class="division3">NOTICE</span></li>
-                            <li class="list_notice4"><?=$val['title']?></li>
-                            <li class="list_notice4"><img src="/assets_w/images/lva.png" width="24">&nbsp;&nbsp;관리자</li>
+                        <ul class="list_tr6" onClick="fnLoadingMove('/web/border/update?idx=<?= $val['idx'] ?>&type=v')" style="cursor: pointer;">
+                            <li class="list_notice6"><span class="division3">NOTICE</span></li>
+                            <li class="list_notice6"><?=$val['title']?></li>
+                            <li class="list_notice6"><img src="/assets_w/images/lva.png" width="30">&nbsp;&nbsp;관리자</li>
                             <!-- <li class="list_notice4"><?=$val['create_dt']?></li> -->
                         </ul>
                     <?php }?>
                 <?php else : ?>
-                    <ul class="list_tr4">
-                        <li class="list_notice4" style="text-align: center; width: 100%;">조회된 데이터가 없습니다.</li>
+                    <ul class="list_tr6">
+                        <li class="list_notice6" style="text-align: center; width: 100%;">조회된 데이터가 없습니다.</li>
                     </ul>
 	            <?php endif; ?>
                 
                 <!-- 일반글 -->
                 <?php if($list) : ?>
+                    <ul class="list_tr6 trfirst">
+                        <li class="list_title1">번호</li>
+                        <li class="list_title1">제목</li>
+                        <li class="list_title1">닉네임</li>
+                        <li class="list_title1">날짜</li>
+                    </ul>
                     <?php foreach ($list as $key => $val) :?>
-                        <ul class="list_tr4" style="cursor:pointer" onClick="fnLoadingMove('/web/border/update?idx=<?= $val['idx'] ?>&type=v')">
-                            <li class="list4"><?= count($list) - $key ?></li>
-                            <li class="list4" ><?= $val['title']?> 
+                        <ul class="list_tr6" style="cursor:pointer" onClick="fnLoadingMove('/web/border/update?idx=<?= $val['idx'] ?>&type=v')">
+                            <li class="list1"><?= count($list) - $key ?></li>
+                            <li class="list1" ><?= $val['title']?> 
                                 <?= $val['is_new'] >= -3 ? '<img src="/assets_w/images/icon_new.png">' : '' ?> <?= $val['display'] == 2 ? '<img src="/assets_w/images/icon_bet.png">' : '' ?>
                             </li>
-                            <li class="list4">
+                            <li class="list1">
                                 <?php
                                     $level ;
                                     if( $val['level'] == 1 ) {
@@ -77,12 +76,12 @@
                                     &nbsp;
                                 <?php } ?>
                             </li>
-                            <!-- <li class="list4"><?= $val['create_dt']?></li>                         -->
+                            <li class="list1"><?= $val['create_dt']?></li>                        
                         </ul>
                 <?php endforeach; ?>
                 <?php else : ?>
-                    <!-- <ul class="list_tr4">
-                        <li class="list4" style="text-align: center; width: 100%;">조회된 데이터가 없습니다.</li>
+                    <!-- <ul class="list_tr6">
+                        <li class="list1" style="text-align: center; width: 100%;">조회된 데이터가 없습니다.</li>
                     </ul> -->
                 <?php endif; ?>
 			</div>

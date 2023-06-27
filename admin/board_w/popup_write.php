@@ -176,79 +176,90 @@ let image_check = false;
 $(document).ready(function(){
 	// 공지 등록
 	$("#adm_btn_event_send").click(function(){
-            if(!image_check){
-                alert("파일을 첨부해 주세요.");
-                return;
-            }
+        
+        var popuplistImg = document.querySelector("#popuplistImgId");
+        var popuplistImgWidth = popuplistImg.naturalWidth;
+        var popuplistImgHeight = popuplistImg.naturalHeight;
 
-            $('#saveName').val(getCurrentDate() + "_" + document.getElementById("uploadfile").files[0].name);
-            $("#thumbnail_fm").submit();
-            
-            let str_msg = '등록 하시겠습니까?';
+            if(popuplistImgWidth >= 450 && popuplistImgWidth <= 500 && popuplistImgHeight >= 550 && popuplistImgHeight <= 600){
 
-//            let msg_title = $("#send_m_title").val();
-            // document.getElementById 사용하니 fakepath 피해서 파일명이 가져와진다.
-            let filename = $('#saveName').val();
-            /* 
-            // 제목 길이 체크
-            if (msg_title.length < 4) {
-                    alert('이벤트명 4글자 이상 입력해 주세요.');
-                    $('#send_m_title').select();
-                    $('#send_m_title').focus();
-                    return ;
-            } */
-            
-//            oEditors.getById["b_content"].exec("UPDATE_CONTENTS_FIELD", []); 
-
-            // 내용
-            /* var msg_content = $("#b_content").val();	
-            if (msg_content.length < 5) {
-                    alert('내용을 입력해 주세요.');
-                    $('#b_content').select();
-                    $('#b_content').focus();
-                    return ;
-            } */
-
-            /*var detail = $("#detail").val();
-            if (detail.length < 5) {
-                    alert('썸네일을 입력해 주세요.');
-                    $('#b_content').select();
-                    $('#b_content').focus();
-                    return ;
-            }*/
-
-            // 상태
-            var status = $("#status option:selected").val();
-            var rank = $("#rank option:selected").val();
-
-            var result = confirm(str_msg);
-            if (result){
-                    //var prctype = "reg";
-
-                    $.ajax({
-                            type: 'post',
-                            dataType: 'json',
-                            url: '/board_w/_popup_prc.php',
-                            data:{'filename':filename,'status':status,'rank':rank},
-                            success: function (result) {
-                                console.log(result['retMsg']);
-                                    if(result['retCode'] == "1000"){
-                                            alert('등록하였습니다.');
-                                            location.href="/board_w/popup_list.php";
-                                            return;
-                                    }else{
-                                            alert(result['retMsg']);
-                                            return;
-                                    }
-                            },
-                            error: function (request, status, error) {
-                                    alert('등록에 실패하였습니다.');
-                                    return;
-                            }
-                    });
-            }
-            else {
+                if(!image_check){
+                    alert("파일을 첨부해 주세요.");
                     return;
+                }
+
+                $('#saveName').val(getCurrentDate() + "_" + document.getElementById("uploadfile").files[0].name);
+                $("#thumbnail_fm").submit();
+                
+                let str_msg = '등록 하시겠습니까?';
+
+    //            let msg_title = $("#send_m_title").val();
+                // document.getElementById 사용하니 fakepath 피해서 파일명이 가져와진다.
+                let filename = $('#saveName').val();
+                /* 
+                // 제목 길이 체크
+                if (msg_title.length < 4) {
+                        alert('이벤트명 4글자 이상 입력해 주세요.');
+                        $('#send_m_title').select();
+                        $('#send_m_title').focus();
+                        return ;
+                } */
+                
+    //            oEditors.getById["b_content"].exec("UPDATE_CONTENTS_FIELD", []); 
+
+                // 내용
+                /* var msg_content = $("#b_content").val();	
+                if (msg_content.length < 5) {
+                        alert('내용을 입력해 주세요.');
+                        $('#b_content').select();
+                        $('#b_content').focus();
+                        return ;
+                } */
+
+                /*var detail = $("#detail").val();
+                if (detail.length < 5) {
+                        alert('썸네일을 입력해 주세요.');
+                        $('#b_content').select();
+                        $('#b_content').focus();
+                        return ;
+                }*/
+
+                // 상태
+                var status = $("#status option:selected").val();
+                var rank = $("#rank option:selected").val();
+
+                var result = confirm(str_msg);
+                if (result){
+                        //var prctype = "reg";
+
+                        $.ajax({
+                                type: 'post',
+                                dataType: 'json',
+                                url: '/board_w/_popup_prc.php',
+                                data:{'filename':filename,'status':status,'rank':rank},
+                                success: function (result) {
+                                    console.log(result['retMsg']);
+                                        if(result['retCode'] == "1000"){
+                                                alert('등록하였습니다.');
+                                                location.href="/board_w/popup_list.php";
+                                                return;
+                                        }else{
+                                                alert(result['retMsg']);
+                                                return;
+                                        }
+                                },
+                                error: function (request, status, error) {
+                                        alert('등록에 실패하였습니다.');
+                                        return;
+                                }
+                        });
+                }
+                else {
+                        return;
+                }
+            } else {
+                alert("규정된 이미지 사이즈가 다릅니다");
+                console.log(popuplistImgWidth+"--"+popuplistImgHeight);
             }
     });
 
@@ -265,10 +276,12 @@ $(document).ready(function(){
 
     // 이미지 썸네일 추가 ADD KSG 
     function setThumbnail(event) {
+        $('.image_container').html('');
         var reader = new FileReader();
         
         reader.onload = function(event) {
             var img = document.createElement("img");
+            img.id = 'popuplistImgId';
             img.setAttribute("src", event.target.result);
             document.querySelector("div.image_container").appendChild(img);
             image_check = true;

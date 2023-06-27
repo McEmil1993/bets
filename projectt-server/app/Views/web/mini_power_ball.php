@@ -44,6 +44,9 @@ foreach ($betList as $key => $value) {
 
 <!-- <div id="wrap"> -->
 <?= view('/web/common/header_wrap') ?>
+
+<div class="title_wrap"><div class="title">미니게임</div></div>
+
 <div id="mini_wide_wrap">
     <!-- mini_menu_info -->
     <div class="mini_wide_left">
@@ -54,15 +57,93 @@ foreach ($betList as $key => $value) {
         </div>
         <div class="mini_left_list_wrap">
         	<div class="mini_left_list">
-            	<ul>
+                <ul>
                     <?php if('ON' == config(App::class)->IS_EOS_POWERBALL){ ?>
-                            <a href="/web/minigame?betType=3"><li><img src="/assets_w/images/icon_mini01.png" width="18"> 엔트리 EOS 파워볼</li></a>
-                        <?php } ?>
-                        <?php if('ON' == config(App::class)->IS_POWERBALL){ ?>
-                            <a href="/web/minigame?betType=15"><li style="border:1px solid #009dd9; background: #232323;"><img src="/assets_w/images/icon_mini01.png" width="18"> 엔트리 파워볼 </li></a>
-                        <?php } ?>
-                	<a href="/web/minigame?betType=4"><li><img src="/assets_w/images/icon_mini01.png" width="18">&nbsp; 엔트리 파워사다리</li></a>
-                	<a href="/web/minigame?betType=5"><li><img src="/assets_w/images/icon_mini01.png" width="18">&nbsp; 엔트리 키노사다리</li></a>
+                        <a href="/web/minigame?betType=3">
+                            <li class="mini_left_list1">
+                                <span class="mini_menu_left">
+									<img src="/assets_w/images/mini_icon03.png" width="24"> 엔트리 EOS 파워볼
+								</span>
+								<span class="mini_left_list_right">
+									<span class="mini_left_list_right_font remain_time">00:00</span></span>
+								</span>
+                            </li>
+                        </a>
+                    <?php } ?>
+                    <?php if('ON' == config(App::class)->IS_POWERBALL){ ?>
+                        <a href="/web/minigame?betType=15">
+                            <li class="mini_left_list1">
+                                <span class="mini_menu_left">
+									<img src="/assets_w/images/mini_icon03.png" width="24"> 엔트리 파워볼
+								</span>
+								<span class="mini_left_list_right">
+									<span class="mini_left_list_right_font remain_time">00:00</span></span>
+								</span>
+                            </li>
+                        </a>
+                    <?php } ?>
+                    <a href="/web/minigame?betType=4">
+                        <li class="mini_left_list1">
+                            <span class="mini_menu_left">
+                                <img src="/assets_w/images/mini_icon04.png" width="24"> 엔트리 파워사다리
+                            </span>
+                            <span class="mini_left_list_right">
+                                <span class="mini_left_list_right_font remain_time">00:00</span></span>
+                            </span>
+                        </li>
+                    </a>
+                    <a href="/web/minigame?betType=5">
+                        <li class="mini_left_list1">
+                            <span class="mini_menu_left">
+                                <img src="/assets_w/images/mini_icon04.png" width="24"> 엔트리 키노사다리
+                            </span>
+                            <span class="mini_left_list_right">
+                                <span class="mini_left_list_right_font remain_time">00:00</span></span>
+                            </span>
+                        </li>
+                    </a>
+
+                    <!-- 가상축구 -->
+                    <a href="/web/premiumShip">
+                        <li class="mini_left_list1">
+                            <span class="mini_menu_left">
+                                <img src="/assets_w/images/mini_icon02.png" width="24"> 프리미어쉽 (BET365)
+                            </span>
+                            <span class="mini_left_list_right">
+                                <span class="mini_left_list_right_font close_time_1">00:00</span></span>
+                            </span>
+                        </li>
+                    </a>
+                    <a href="/web/superLeague">
+                        <li class="mini_left_list1">
+                            <span class="mini_menu_left">
+                                <img src="/assets_w/images/mini_icon02.png" width="24"> 슈퍼리그 (BET365)
+                            </span>
+                            <span class="mini_left_list_right">
+                                <span class="mini_left_list_right_font close_time_11">00:00</span></span>
+                            </span>
+                        </li>
+                    </a>
+                    <a href="/web/worldCup">
+                        <li class="mini_left_list1">
+                            <span class="mini_menu_left">
+                                <img src="/assets_w/images/mini_icon02.png" width="24"> 월드컵 (BET365)
+                            </span>
+                            <span class="mini_left_list_right">
+                                <span class="mini_left_list_right_font close_time_2">00:00</span></span>
+                            </span>
+                        </li>
+                    </a>
+                    <a href="/web/euroCup">
+                        <li class="mini_left_list1">
+                            <span class="mini_menu_left">
+                                <img src="/assets_w/images/mini_icon02.png" width="24"> 유로컵 (BET365)
+                            </span>
+                            <span class="mini_left_list_right">
+                                <span class="mini_left_list_right_font close_time_3">00:00</span></span>
+                            </span>
+                        </li>
+                    </a>
                 </ul>
             </div>
         </div>
@@ -129,7 +210,7 @@ foreach ($betList as $key => $value) {
                     	<td class="mini_cart_style1">총 배당률 <span class="mini_cart_style2 bet_price">0</span></td>
                     </tr>
                     <tr>
-                    	<td class="mini_cart_style1">당첨예상금 <span class="mini_cart_style2 will_win_money">0</span></td>
+                    	<td class="mini_cart_style1">예상적중금 <span class="mini_cart_style2 will_win_money">0</span></td>
                     </tr>
                     <tr>
                     	<td class="mini_cart_style1"><input class="input3 input_style06"></td>
@@ -162,7 +243,7 @@ foreach ($betList as $key => $value) {
             </div>
         </div>
         <div id="domain_pc">
-            <a target="_blank" href="https://xn--tl3bs23a.com/"><img src="/images/bets_banner_pc.jpg"></a>
+            <a target="_blank" href="https://불스주소.com/"><img src="/assets_w/images/bulls_domain.png"></a>
         </div>
     </div><!-- mini_wide_right -->
 
@@ -209,38 +290,37 @@ foreach ($betList as $key => $value) {
             </div>
             <div class="con_box00 mini_history_list" id="tab_bet_list">
                 <table width="100%" cellspacing="0" cellpadding="0" class="mini_list_title1_bg" id="betHisTable">
-                    <tr>
-                        <td width="6%" class="mini_list_title1">회차</td>
-                        <td width="10%" class="mini_list_title1">배팅일자</td>
-                        <td width="10%" class="mini_list_title1">나의배팅</td>
-                        <td width="10%" class="mini_list_title1">배팅금액</td>
-                        <td width="10%" class="mini_list_title1">당첨금액</td>                    
-                        <td width="10%" class="mini_list_title1">게임결과</td>
-                        <td width="10%" class="mini_list_title1">결과</td>                                                                   
+                    <tr class='list_tr2 trfirst'>
+                        <td class="list_title1">회차</td>
+                        <td class="list_title1">배팅일자</td>
+                        <td class="list_title1">나의배팅</td>
+                        <td class="list_title1">배팅금액</td>
+                        <td class="list_title1">당첨금액</td>                    
+                        <td class="list_title1">게임결과</td>
+                        <td class="list_title1">결과</td>                                                                   
                     </tr>
                     <tbody id="my_bet_list">
 					</tbody>        
                 </table>
                 <div id="tab_bet_result" class="tab_content">
 					<table class="mini_list_title1_bg" width="100%" cellspacing="0" cellpadding="0">
-                        <tr>
-                            <td class="mini_list_title1">회차</td>
-                            <td class="mini_list_title1">시작시간</td>
-                            <td class="mini_list_title1">마감시간</td>
-                            <td class="mini_list_title1">게임결과</td>
+                        <tr class='list_tr2 trfirst'>
+                            <td class="list_title1">회차</td>
+                            <td class="list_title1">시작시간</td>
+                            <td class="list_title1">마감시간</td>
+                            <td class="list_title1">게임결과</td>
                         </tr>
                         <tbody id="game_result">
                         </tbody>
                     </table>
                 </div>        
-                <div class="con_box10">
-                	<div class="page_wrap acc_btn_wrap">
-						<ul  id="paginationArea">
-						</ul>
-					</div>
-				</div>                               
             </div>
-                        
+            <div class="con_box10">
+                <div class="page_wrap acc_btn_wrap">
+                    <ul  id="paginationArea">
+                    </ul>
+                </div>
+            </div>          
         </div>
     </div><!-- mini_wide_center -->
 
@@ -839,14 +919,14 @@ foreach ($betList as $key => $value) {
                     
                 
                 let $takemoney = betInfo['take_money'] !== undefined ? setComma(betInfo['take_money']) : setComma(temp_money);
-                html += "<tr>";
-                html += "<td class='mini_list1'><span class='font01'>" + `${cnt} 회` +"</span></td>";/*  `(${betInfo['ls_fixture_id']})` +  */
-                html += "<td class='mini_list1'><span class='font01'>" + getFormatDateMonth(arrCreateDt[0]) + " (" + dayOfWeek + ") " + arrCreateDt[1] + "</span></td>";
-                html += "<td class='mini_list1'><span class='font01'>" + betInfo['ls_markets_name'] + " (" + betInfo['bet_price'] + ")</span></td>";
-                html += "<td class='mini_list1'><span class='font01'>" + setComma(betInfo['total_bet_money']) + "</span></td>";
-                html += "<td class='mini_list1'><span class='font05'>" + $takemoney + "</span></td>";
-                html += "<td class='mini_list1'><span class='font01'>" + result + "</span></td>";
-                html += "<td class='mini_list1'><span class='"+$statusColor+"'>" + $status + "</span></td>";
+                html += "<tr class='list_tr2 trfirst'>";
+                html += "<td class='list1'><span class='font01'>" + `${cnt} 회` +"</span></td>";/*  `(${betInfo['ls_fixture_id']})` +  */
+                html += "<td class='list1'><span class='font01'>" + getFormatDateMonth(arrCreateDt[0]) + " (" + dayOfWeek + ") " + arrCreateDt[1] + "</span></td>";
+                html += "<td class='list1'><span class='font01'>" + betInfo['ls_markets_name'] + " (" + betInfo['bet_price'] + ")</span></td>";
+                html += "<td class='list1'><span class='font01'>" + setComma(betInfo['total_bet_money']) + "</span></td>";
+                html += "<td class='list1'><span class='font05'>" + $takemoney + "</span></td>";
+                html += "<td class='list1'><span class='font01'>" + result + "</span></td>";
+                html += "<td class='list1'><span class='"+$statusColor+"'>" + $status + "</span></td>";
                 html += "</tr>";
             }
             
@@ -872,15 +952,11 @@ foreach ($betList as $key => $value) {
                 let start_dayOfWeek = getDayOfWeek(gameResult['start_dt'].replace(/-/gi,"/"));
                 let end_dayOfWeek = getDayOfWeek(gameResult['end_dt'].replace(/-/gi,"/"));
                 result = getPowerBallResult(Number(result['pb']), Number(result['num1']), Number(result['num2']), Number(result['num3']), Number(result['num4']), Number(result['num5']));
-                html2 += "<tr>";
-                /* html2 += "<td><span class='font_002'>" + `${cnt} 회` + "</span> " + `(${gameResult['id']})` + "</span></td>";
-                html2 += "<td><span>" + getFormatDateMonth(start_dt[0]) + " (" + start_dayOfWeek + ") " + start_dt[1] + "</span></td>";
-                html2 += "<td><span>" + getFormatDateMonth(end_dt[0]) + " (" + end_dayOfWeek + ") " + end_dt[1] + "</span></td>";
-                html2 += "<td><span>" + result + "</span></td>"; */
-                html2 += "<td class='mini_list1'><span class='font01'>" + `${cnt} 회` + "</td>";//+ "</span> " + `(${gameResult['id']})` + "</span>
-                html2 += "<td class='mini_list1'><span class='font01'>" + getFormatDateMonth(start_dt[0]) + " (" + start_dayOfWeek + ") " + start_dt[1] + "</span></td>";
-                html2 += "<td class='mini_list1'><span class='font01'>" + getFormatDateMonth(end_dt[0]) + " (" + end_dayOfWeek + ") " + end_dt[1] + "</span></td>";
-                html2 += "<td class='mini_list1'><span class='font01'>" + result + "</span></td>";
+                html2 += "<tr class='list_tr2 trfirst'>";
+                html2 += "<td class='list1'><span class='font01'>" + `${cnt} 회` + "</td>";//+ "</span> " + `(${gameResult['id']})` + "</span>
+                html2 += "<td class='list1'><span class='font01'>" + getFormatDateMonth(start_dt[0]) + " (" + start_dayOfWeek + ") " + start_dt[1] + "</span></td>";
+                html2 += "<td class='list1'><span class='font01'>" + getFormatDateMonth(end_dt[0]) + " (" + end_dayOfWeek + ") " + end_dt[1] + "</span></td>";
+                html2 += "<td class='list1'><span class='font01'>" + result + "</span></td>";
                 html2 += "</tr>";
             }
             $('#game_result').append(html2);

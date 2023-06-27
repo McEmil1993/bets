@@ -6,9 +6,8 @@ header('Expires: 0'); // Proxies.
 header('Content-Type: text/html; charset=UTF-8');
 
 include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
-
 include_once(_BASEPATH . '/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH . '/class_Admin_LSports_Bet_dao.php');
 
 $LSportsAdminDAO = new Admin_LSports_Bet_DAO(_DB_NAME_WEB);
@@ -20,7 +19,7 @@ $bet_type = $_POST['bet_type'];
 $leaguesData = json_decode($leaguesData, true);
 
 if ($db_conn) {
-    $leaguesData = $LSportsAdminDAO->real_escape_string($leaguesData);
+    //$leaguesData = $LSportsAdminDAO->real_escape_string($leaguesData);
     $bet_type = $LSportsAdminDAO->real_escape_string($bet_type);
     
     $sql = "";

@@ -95,7 +95,8 @@ class DateTimeUtil
         else
             return false;
     }
-
+    
+    
     static public function getWeek($date){
         $DEFAULT_DAYS = 1; //1 ~ 7 (월 ~ 일)
         list($yy, $mm, $dd) = explode('-', $date); // - 로 잘라서 연,월,일을 구합니다

@@ -22,7 +22,7 @@ include_once(_BASEPATH . '/common/login_check.php');
                         </a>
                         <a id="a_join" style="margin-top: 5px" onclick="javascript:fnSetSound(this, 'a_join');">
                             <i style="color: blue;" class="mte i_volume_up vam"></i>
-                            <audio id="audio_join" src="../assets_admin/audio/join.mp3" />
+                            <audio id="audio_join" src="../assets_admin/audio/join.mp3">
                         </a>
                     </li>
                     <li>
@@ -32,7 +32,7 @@ include_once(_BASEPATH . '/common/login_check.php');
                         </a>
                         <a id="a_charge" style="margin-top: 5px" onclick="javascript:fnSetSound(this, 'a_charge');">
                             <i style="color: blue;" class="mte i_volume_up vam"></i>
-                            <audio id="audio_charge" src="../assets_admin/audio/charge_wait.mp3" />
+                            <audio id="audio_charge" src="../assets_admin/audio/charge_wait.mp3">
                         </a>
                     </li>
                     <li>
@@ -42,7 +42,7 @@ include_once(_BASEPATH . '/common/login_check.php');
                         </a>
                         <a id="a_exchange" style="margin-top: 5px" onclick="javascript:fnSetSound(this, 'a_exchange');">
                             <i style="color: blue;" class="mte i_volume_up vam"></i>
-                            <audio id="audio_exchange" src="../assets_admin/audio/exchange_wait.mp3" />
+                            <audio id="audio_exchange" src="../assets_admin/audio/exchange_wait.mp3">
                         </a>
                     </li>
                     <li>
@@ -52,7 +52,7 @@ include_once(_BASEPATH . '/common/login_check.php');
                         </a>
                         <a id="a_consult" style="margin-top: 5px" onclick="javascript:fnSetSound(this, 'a_consult');">
                             <i style="color: blue;" class="mte i_volume_up vam"></i>
-                            <audio id="audio_consult" src="../assets_admin/audio/consult_wait.mp3" />
+                            <audio id="audio_consult" src="../assets_admin/audio/consult_wait.mp3">
                         </a>
                     </li>
                     <li>
@@ -62,7 +62,7 @@ include_once(_BASEPATH . '/common/login_check.php');
                         </a>
                         <a id="a_sms" style="margin-top: 5px" onclick="javascript:fnSetSound(this, 'a_sms');">
                             <i style="color: blue;" class="mte i_volume_up vam"></i>
-                            <audio id="audio_sms" src="../assets_admin/audio/sms_wait.mp3" />
+                            <audio id="audio_sms" src="../assets_admin/audio/sms_wait.mp3">
                         </a>
                     </li>
                 </ul>

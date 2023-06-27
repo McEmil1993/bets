@@ -46,11 +46,16 @@
 
 /* 미니게임 - 좌측 - 마감시간 효과 */
 @keyframes mini_left_title_box_font {
-    0%   {color:#009dd9;}
+    0%   {color:#ffc600;}
     50%  {color:#ffffff;}
-    100%  {color:#009dd9;}
+    100%  {color:#ffc600;}
 }
 
+@-webkit-keyframes mini_left_title_box_font {
+    0%   {color:#ffc600;}
+    50%  {color:#ffffff;}
+    100%  {color:#ffc600;}
+}
 
 
 

@@ -48,7 +48,7 @@ if(!$injectionCheck){
 	reset($arr_get);
 
 	/** 한글 표현 때문에 ; 를 무조건 제거: semi-colon 사용하기 위해서 |mMm|59 라고 치환하시면 됩니다. **/
-	$arr_illegal = array('&',';','&#','--','/*','*/','iframe','script','embed','cookie','drop','truncate','select','fopen','fsockopen','file_get_contents','readfile','unlink','object','phpinfo','1=1','union','mydb_bets.member','mydb');
+	$arr_illegal = array('&',';','&#','--','/*','*/','iframe','script','embed','cookie','drop','truncate','select','fopen','fsockopen','file_get_contents','readfile','unlink','object','phpinfo','1=1','union','mydb.member','mydb');
 	$arr_replaced = array('','','','','','','if_rame','scr_ipt','emb_ed','coo_kie','dr_op','trun_cate_','sel_ect','fo_pen','fsoc_kopen_','_file_get_cont_ents_','read_file','un_link','obj_ect','php_info','1_=_1','u_ni_on','','');
 
 	$arr_request = str_ireplace($arr_illegal,$arr_replaced,$arr_request);
@@ -83,7 +83,7 @@ if($injectionCheck=='2'){
 	reset($arr_get);
 
 	/** 한글 표현 때문에 ; 를 무조건 제거: semi-colon 사용하기 위해서 |mMm|59 라고 치환하시면 됩니다. **/
-	$arr_illegal = array('&',';','&#','--','/*','*/','iframe','script','embed','cookie','drop','truncate','select','fopen','fsockopen','file_get_contents','readfile','unlink','object','phpinfo','1=1','union','mydb_bets.member','mydb');
+	$arr_illegal = array('&',';','&#','--','/*','*/','iframe','script','embed','cookie','drop','truncate','select','fopen','fsockopen','file_get_contents','readfile','unlink','object','phpinfo','1=1','union','mydb.member','mydb');
 	$arr_replaced = array('','','','','','','','','','','','','','','','','','','','','','','','');
 
 	$arr_request = str_ireplace($arr_illegal,$arr_replaced,$arr_request);

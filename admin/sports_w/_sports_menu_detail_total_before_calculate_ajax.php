@@ -7,7 +7,7 @@ header('Content-Type: json; charset=UTF-8');
 
 include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
 include_once(_BASEPATH . '/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once( _DAOPATH . '/class_Admin_Common_dao.php');
 include_once( _LIBPATH . '/class_Code.php');
 include_once( _DAOPATH . '/class_Admin_LSports_Bet_dao.php');
@@ -80,6 +80,10 @@ try {
             $re_value['admin_id'] = $_SESSION['aid'];
             GameCode::doRollbackCalculate($ALBetDAO, $UTIL, $re_value, 1);
         }
+    }else{
+        $result['retCode'] = FAIL_EMPTY_DATA;
+        $result['retMsg'] = FAIL_EMPTY_DATA_MSG;
+        throw new Exception('status on');
     }
   
     // 전체 마감전

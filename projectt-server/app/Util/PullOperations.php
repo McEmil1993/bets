@@ -40,6 +40,8 @@ class PullOperations {
     private $type = 'STM';
     private $logger;
     private $httpUtil;
+
+    private $getLeaguesSTM_URL = 'https://stm-api.lsports.eu/Leagues/Get ';
     
     // 네오덱스 개발
     /*private $dexApiKey = 'M09IK0KKKHAFDDFS7ASD82FZ';
@@ -70,6 +72,10 @@ class PullOperations {
         }
 
         $this->lang = 'ko';
+    }
+
+    private function getStmConnection(){
+        return array('PackageId' => $this->packageID, 'UserName' => $this->username, 'Password' => $this->password);
     }
 
     private function getConnectionString() {
@@ -203,9 +209,16 @@ class PullOperations {
         return $result->Body;
     }
 
+    public function getLeagues_stm() {
+        $url = $this->getLeaguesSTM_URL;
+        $result = $this->httpUtil->curl_post_stm($url,$this->getStmConnection());
+        $result = json_decode($result);
+        return $result->Body;
+    }
+
     public function getLeagues() {
         $url = $this->getLeaguesURL . $this->getConnectionString();
-        $result = $this->httpUtil->curl($url);
+        $result = $this->httpUtil->curl_($url);
         $result = json_decode($result);
         return $result->Body;
     }

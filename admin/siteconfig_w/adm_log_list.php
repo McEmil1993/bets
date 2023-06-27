@@ -1,7 +1,6 @@
 <?php 
 
 include_once($_SERVER['DOCUMENT_ROOT'].'/_LIB/base_config.php');
-
 include_once(_BASEPATH.'/common/_common_inc_class.php');
 include_once(_DAOPATH.'/class_Admin_Common_dao.php');
 include_once(_DAOPATH.'/class_Admin_Member_dao.php');
@@ -33,9 +32,7 @@ $MEMAdminDAO = new Admin_Member_DAO(_DB_NAME_WEB);
 $db_conn = $MEMAdminDAO->dbconnect();
 
 if($db_conn) {
-    if(false === GameCode::checkAdminType($_SESSION,$MEMAdminDAO)){
-        die();
-    }
+    
     $p_data['sql'] = " SELECT COUNT(*) AS CNT FROM t_adm_log ";
     $p_data['sql'] .= " WHERE log_type IN(1) ";
     

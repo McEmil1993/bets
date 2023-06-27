@@ -81,7 +81,65 @@ class httpUtil {
         return $response;
     }
     
-    
-    
+    // 2023-05-16, korea gaming get, post Ãß°¡
+    public static function postData($url, $data, $header = '')
+    {
+        try {
+            $ch = curl_init();
+
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+
+            if ($header == '') {
+                $header = array('Content-Type: application/json');
+            }
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+            if (is_array($data)) {
+                $data = json_encode($data);
+            }
+
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, -1); //dns lookup caching 
+
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_POSTREDIR, CURL_REDIR_POST_ALL);
+
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            return $response;
+        } catch (\Exception $e) {
+            return $e;
+        }
+    }
+
+    public static function getData($url, $header = '')
+    {
+        try {
+            $ch = curl_init();
+
+            curl_setopt($ch, CURLOPT_URL, $url);
+
+            if ($header == '') {
+                $header = array('Content-Type: application/json');
+            }
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, -1); //dns lookup caching 
+
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            return $response;
+        } catch (\Exception $e) {
+            return $e;
+        }
+    }
 }
 ?>

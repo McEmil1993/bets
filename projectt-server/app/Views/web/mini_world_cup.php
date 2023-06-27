@@ -1,31 +1,116 @@
 <?= view('/web/common/header') ?>
 <div id="wrap">
 <?= view('/web/common/header_wrap') ?>
+
+<div class="title_wrap"><div class="title">미니게임</div></div>
+
 <div id="mini_wide_wrap">
-    <!-- mini_wide_left -->
+    <!-- mini_menu_info -->
     <div class="mini_wide_left">
-    	<div class="mini_left_title">
-        	<div class="mini_left_title_game">월드컵(BET365)</div>
+        <div class="mini_left_title">
+        	<div class="mini_left_title_game">월드컵 (BET365)</div>
             <div class="mini_left_title_box">제 <span class="mini_left_title_box_font" id="round"></span> 회차</div>
             <div class="mini_left_title_box">베팅마감 <span class="mini_left_title_box_font close_time_11">00:00</span></div>
 		</div>
         <div class="mini_left_list_wrap">
         	<div class="mini_left_list">
-            	<ul>
-                	<a href="/web/premiumShip"><li><img src="/assets_w/images/icon_mini02.png" width="18">&nbsp; 프리미어쉽</li></a>
-                	<a href="/web/superLeague"><li><img src="/assets_w/images/icon_mini02.png" width="18">&nbsp; 슈퍼리그</li></a>
-                	<a href="/web/worldCup"><li style="border:1px solid #009dd9; background: #232323;"><img src="/assets_w/images/icon_mini02.png" width="18">&nbsp; 월드컵</li></a>
-                    <a href="/web/euroCup"><li><img src="/assets_w/images/icon_mini02.png" width="18">&nbsp; 유로컵</li></a>
+                <ul>
+                    <?php if('ON' == config(App::class)->IS_EOS_POWERBALL){ ?>
+                        <a href="/web/minigame?betType=3">
+                            <li class="mini_left_list1">
+                                <span class="mini_menu_left">
+									<img src="/assets_w/images/mini_icon03.png" width="24"> 엔트리 EOS 파워볼
+								</span>
+								<span class="mini_left_list_right">
+									<span class="mini_left_list_right_font remain_time">00:00</span></span>
+								</span>
+                            </li>
+                        </a>
+                    <?php } ?>
+                    <?php if('ON' == config(App::class)->IS_POWERBALL){ ?>
+                        <a href="/web/minigame?betType=15">
+                            <li class="mini_left_list1">
+                                <span class="mini_menu_left">
+									<img src="/assets_w/images/mini_icon03.png" width="24"> 엔트리 파워볼
+								</span>
+								<span class="mini_left_list_right">
+									<span class="mini_left_list_right_font remain_time">00:00</span></span>
+								</span>
+                            </li>
+                        </a>
+                    <?php } ?>
+                    <a href="/web/minigame?betType=4">
+                        <li class="mini_left_list1">
+                            <span class="mini_menu_left">
+                                <img src="/assets_w/images/mini_icon04.png" width="24"> 엔트리 파워사다리
+                            </span>
+                            <span class="mini_left_list_right">
+                                <span class="mini_left_list_right_font remain_time">00:00</span></span>
+                            </span>
+                        </li>
+                    </a>
+                    <a href="/web/minigame?betType=5">
+                        <li class="mini_left_list1">
+                            <span class="mini_menu_left">
+                                <img src="/assets_w/images/mini_icon04.png" width="24"> 엔트리 키노사다리
+                            </span>
+                            <span class="mini_left_list_right">
+                                <span class="mini_left_list_right_font remain_time">00:00</span></span>
+                            </span>
+                        </li>
+                    </a>
+
+                    <!-- 가상축구 -->
+                    <a href="/web/premiumShip">
+                        <li class="mini_left_list1">
+                            <span class="mini_menu_left">
+                                <img src="/assets_w/images/mini_icon02.png" width="24"> 프리미어쉽 (BET365)
+                            </span>
+                            <span class="mini_left_list_right">
+                                <span class="mini_left_list_right_font close_time_1">00:00</span></span>
+                            </span>
+                        </li>
+                    </a>
+                    <a href="/web/superLeague">
+                        <li class="mini_left_list1">
+                            <span class="mini_menu_left">
+                                <img src="/assets_w/images/mini_icon02.png" width="24"> 슈퍼리그 (BET365)
+                            </span>
+                            <span class="mini_left_list_right">
+                                <span class="mini_left_list_right_font close_time_11">00:00</span></span>
+                            </span>
+                        </li>
+                    </a>
+                    <a href="/web/worldCup">
+                        <li class="mini_left_list1">
+                            <span class="mini_menu_left">
+                                <img src="/assets_w/images/mini_icon02.png" width="24"> 월드컵 (BET365)
+                            </span>
+                            <span class="mini_left_list_right">
+                                <span class="mini_left_list_right_font close_time_2">00:00</span></span>
+                            </span>
+                        </li>
+                    </a>
+                    <a href="/web/euroCup">
+                        <li class="mini_left_list1">
+                            <span class="mini_menu_left">
+                                <img src="/assets_w/images/mini_icon02.png" width="24"> 유로컵 (BET365)
+                            </span>
+                            <span class="mini_left_list_right">
+                                <span class="mini_left_list_right_font close_time_3">00:00</span></span>
+                            </span>
+                        </li>
+                    </a>
                 </ul>
             </div>
         </div>
-    </div>
+    </div><!-- mini_wide_left -->
 
     <!-- mini_wide_center -->
     <div class="mini_wide_center">
         <div class="vsports_center_wrap">
             <div class="vsports_title_wrap">
-                <div class="vsports_title">월드컵(BET365) &nbsp;&nbsp; 남은시간 <span class="mini_left_title_box_font close_time_11"></span></span></div>
+                <div class="vsports_title">월드컵 (BET365) &nbsp;&nbsp; 남은시간 <span class="mini_left_title_box_font close_time_11"></span></span></div>
                 <script>//location.href=document.URL.replace('http://192.168.0.7/web/bsoccer', 'http://www.ace-abcde.com/web/bsoccer');</script>
                 <div class="vsports_movie_wrap">
                     <div class="vsports_movie_inner"><iframe id="soccer_screen" defer src="http://odds-info.net/b3mv/?vn=11" class="bsoccer_video" width="514" height="290" scrolling="no" frameborder="0"></iframe></div>
@@ -48,29 +133,29 @@
                 </div> 
                 <div class="con_box00" id="tab_bet_list">
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="mini_list_title1_bg" id="betHisTable">
-                        <tr>
-                            <td width="10%" class="mini_list_title1">회차</td>
-                            <td width="10%" class="mini_list_title1">배팅시간</td>
-                            <td width="10%" class="mini_list_title1">경기내용</td>
-                            <td width="10%" class="mini_list_title1">나의베팅</td>
-                            <td width="10%" class="mini_list_title1">베팅금액</td>                    
-                            <td width="10%" class="mini_list_title1">당첨금액</td>                    
-                            <td width="10%" class="mini_list_title1">게임결과</td>
-                            <td width="10%" class="mini_list_title1">회차결과</td>                                                             
+                        <tr class="list_tr2 trfirst">
+                            <th class="list_title1">회차</th>
+                            <th class="list_title1">배팅시간</th>
+                            <th class="list_title1">경기내용</th>
+                            <th class="list_title1">나의베팅</th>
+                            <th class="list_title1">베팅금액</th>                    
+                            <th class="list_title1">당첨금액</th>                    
+                            <th class="list_title1">게임결과</th>
+                            <th class="list_title1">회차결과</th>                                                             
                         </tr>
                         <tbody id="my_bet_list">
                         </tbody>                                                                    
                     </table>  
                     <div id="tab_bet_result" class="tab_content">
-                        <table class="mini_list_title1_bg" width="100%" border="0" cellspacing="0" cellpadding="0">                    
-                            <tr>
-                                <td class="mini_list_title1">회차</td>
-                                <td class="mini_list_title1">시작시간</td>
-                                <td class="mini_list_title1">홈팀</td>
-                                <td class="mini_list_title1">점수</td>
-                                <td class="mini_list_title1">원정팀</td>
-                                <td class="mini_list_title1">마켓타입</td>
-                                <td class="mini_list_title1">게임결과</td>
+                        <table class="mini_list_title1_bg" width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr class="list_tr2 trfirst">
+                                <th class="list_title1">회차</th>
+                                <th class="list_title1">시작시간</th>
+                                <th class="list_title1">홈팀</th>
+                                <th class="list_title1">점수</th>
+                                <th class="list_title1">원정팀</th>
+                                <th class="list_title1">마켓타입</th>
+                                <th class="list_title1">게임결과</th>
                             </tr>
                             <tbody id="game_result">
                             </tbody>
@@ -121,7 +206,7 @@
                             <td class="mini_cart_style1">총 배당률 <span class="mini_cart_style2 bet_price">0</span></td>
                         </tr>
                         <tr>
-                            <td class="mini_cart_style1">당첨예상금 <span class="mini_cart_style2 will_win_money">0</span></td>
+                            <td class="mini_cart_style1">예상적중금 <span class="mini_cart_style2 will_win_money">0</span></td>
                         </tr>
                         <tr>
                             <td class="mini_cart_style1"><input class="input3 input_style06"></td>
@@ -154,7 +239,7 @@
                 </div>
             </div>
             <div id="domain_pc">
-                <a target="_blank" href="https://xn--tl3bs23a.com/"><img src="/images/bets_banner_pc.jpg"></a>
+                <a target="_blank" href="https://불스주소.com/"><img src="/assets_w/images/bulls_domain.png"></a>
             </div>
         </div>
 
@@ -167,7 +252,6 @@
 
 <!-- top버튼 -->
 <a href="#myAnchor" class="go-top">▲</a>
-<script type="text/javascript" src="/assets_w/js/minigame_common.js?v=<?php echo date("YmdHis"); ?>"></script>
 <script type="text/javascript">
     let bet_markets_id = 0;
     let round = 0;  // 현재 선택한 id
@@ -529,7 +613,7 @@
         }
     }
     
-    /*function changeWillWinMoney(){
+    function changeWillWinMoney(){
         let inputBetMoney = $('.input_style06').val();
         let data = inputBetMoney.replace(/,/gi,""); //변경작업
       
@@ -538,7 +622,7 @@
 
         willMoney = Math.ceil(willMoney);
         $('.will_win_money').html(setComma(willMoney));
-    }*/
+    }
     
     const returnMaxCheck = function(inputBetMoney = 0) {
         let totalOdds = Number($('.bet_price').text());
@@ -564,7 +648,7 @@
         changeWillWinMoney();
     }
     
-    /*const notifyCloseBtn = function() {
+    const notifyCloseBtn = function() {
         initForm();
     }
     
@@ -605,10 +689,10 @@
         
         $('.input_style06').val(setComma(bet_money));
         changeWillWinMoney();
-    }*/
+    }
     
     // 남은시간 체크
-    /*function checkRemainTimeSoccer(gameCount = 0){
+    function checkRemainTime(gameCount = 0){
         // 넘어온 다음 게임이 없다.(점검중)
         if(gameCount == 0){
             $('.close_time_1').text('점검중');
@@ -704,7 +788,7 @@
             setCurrentData();
             clearInterval(timer);
         }
-    }*/
+    }
     
     // 경기 셋팅
     function setCurrentData(){
@@ -818,7 +902,7 @@
             $('#soccer_game_list').html(html);
             //timer = setInterval(checkRemainTime, 1000);
             timer = setInterval(function(){
-                checkRemainTimeSoccer(list.length);
+                checkRemainTime(list.length);
             }, 1000);
             getBetList();
         }).fail(function (error) {
@@ -827,7 +911,7 @@
     }
     
     // 리그별 시간 설정
-    /*function set_close_time(leagueTime, currentDate){
+    function set_close_time(leagueTime, currentDate){
         let close_time = miniutes = seconds = 0;
         let display_miniutes = display_seconds = '';
         let fixture_date = 0;
@@ -864,7 +948,7 @@
                 $('.close_time_11').text(displayRemainTime);
             }
         }
-    }*/
+    }
     
     function getLeagueNameKor(leagueName){
         if(leagueName === 'Premiership'){
@@ -987,29 +1071,16 @@
                 }
 
                 let $takemoney = betInfo['take_money'] !== undefined ? setComma(betInfo['take_money']) : setComma(temp_money);
-                
-                /* html += "<tr>";
-                    html += "<td><span>"+getLeagueNameKor(result['league'])+"</span></td>";
-                    html += "<td><span>"+getFormatDateMonth(arrCreateDt[0])+" ("+dayOfWeek+") "+arrCreateDt[1]+"</span></td>";
-                    html += "<td><span class='font_002'>"+round+"회</span></td>";
-                    html += "<td><span>"+ result['home'] + ' VS ' + result['away']+"</span></td>";
-                    html += "<td><span class='font_002'>"+betInfo['ls_markets_name']+" ("+betInfo['bet_price']+")</span></td>";
-                    html += "<td><span>"+setComma(betInfo['total_bet_money'])+"</span></td>";
-                    html += "<td><span class='font_002'>"+ $takemoney +"</span></td>";
-                    html += "<td><span>"+getResultByName(result['res'])+"</span></td>";
-                    html += "<td><span class='bet_result_icon "+$statusColor+"'>"+$status+"</span></td>";
-                html += "</tr>"; */
 
-                html += "<tr>";
-               /*  html += "<td class='mini_list1'><span class='font01'>" + getLeagueNameKor(result['league']) + "</span></td>"; */
-                html += "<td class='vmini_list1'><span class='font03'>"+round+"회</span></td>";
-                html += "<td class='vmini_list1'><span class='font03'>"+arrCreateDt[0]+" <br> "+arrCreateDt[1]+"</span></td>";
-                html += "<td class='vmini_list1'>"+ result['home'] + '<br> vs <br>' + result['away']+"</td>";
-                html += "<td class='vmini_list1'><span class='font01'>"+betInfo['ls_markets_name']+" ("+Number(betInfo['bet_price']).toFixed(2)+")</span></td>";
-                html += "<td class='vmini_list1'><span class='font05'>"+setComma(betInfo['total_bet_money'])+"</span></td>";
-                html += "<td class='vmini_list1'><span class='font06'>"+ $takemoney +"</span></td>";
-                html += "<td class='vmini_list1'><span class='font06'>" + getResultByName(result['res']) + "</span></td>";
-                html += "<td class='vmini_list1'><span class='"+$statusColor+"'>"+$status+"</span></td>";
+                html += "<tr class='list_tr2 trfirst'>";
+                html += "<td class='list1'><span class='font03'>"+round+"회</span></td>";
+                html += "<td class='list1'><span class='font03'>"+arrCreateDt[0]+" <br> "+arrCreateDt[1]+"</span></td>";
+                html += "<td class='list1'>"+ result['home'] + '<br> vs <br>' + result['away']+"</td>";
+                html += "<td class='list1'><span class='font01'>"+betInfo['ls_markets_name']+" ("+Number(betInfo['bet_price']).toFixed(2)+")</span></td>";
+                html += "<td class='list1'><span class='font05'>"+setComma(betInfo['total_bet_money'])+"</span></td>";
+                html += "<td class='list1'><span class='font06'>"+ $takemoney +"</span></td>";
+                html += "<td class='list1'><span class='font06'>" + getResultByName(result['res']) + "</span></td>";
+                html += "<td class='list1'><span class='"+$statusColor+"'>"+$status+"</span></td>";
                 html += "</tr>";
             }
             $('#my_bet_list').append(html);
@@ -1031,24 +1102,14 @@
                     type = '오버언더';
                 }
                 
-                html2 += "<tr>";
-                    /* html2 += "<td><span>"+getLeagueNameKor(result['league'])+"</span></td>";
-                    html2 += "<td><span>"+getFormatDateMonth(start_dt[0])+" ("+start_dayOfWeek+") "+start_dt[1]+"</span></td>";
-                    html2 += "<td><span class='font_002'>"+round+"회</span></td>";
-                    html2 += "<td><span>"+ result['home'] +"</span></td>";
-                    html2 += "<td><span>"+ result['scoreh'] + ':' + result['scorea']+"</span></td>";
-                    html2 += "<td><span>"+ result['away'] +"</span></td>";
-                    html2 += "<td><span>"+type+"</span></td>";
-                    html2 += "<td><span>"+getResultByName(result['res'])+"</span></td>"; */
-
-/*                     html2 += "<td class='mini_list1'><span class='font01'>" +getLeagueNameKor(result['league'])+ "</span></td>"; */
-                    html2 += "<td class='vmini_list1'><span class='font03'>"+round+"회</span></td>";
-					html2 += "<td class='vmini_list1'><span class='font03'>"+start_dt[0]+" <br> "+start_dt[1]+"</span></td>";
-                    html2 += "<td class='vmini_list1'><span class='font01'>"+ result['home'] +"</span></td>";
-                    html2 += "<td class='vmini_list1'><span class='font06'>"+ result['scoreh'] + ':' + result['scorea']+"</span></td>";
-                    html2 += "<td class='vmini_list1'><span class='font01'>"+ result['away'] +"</span></td>";
-                    html2 += "<td class='vmini_list1'><span class='font05'>"+type+"</span></td>";
-                    html2 += "<td class='vmini_list1'><span class='font06'>"+getResultByName(result['res'])+"</span></td>";
+                html2 += "<tr class='list_tr2 trfirst'>";
+                    html2 += "<td class='list1'><span class='font03'>"+round+"회</span></td>";
+					html2 += "<td class='list1'><span class='font03'>"+start_dt[0]+" <br> "+start_dt[1]+"</span></td>";
+                    html2 += "<td class='list1'><span class='font01'>"+ result['home'] +"</span></td>";
+                    html2 += "<td class='list1'><span class='font06'>"+ result['scoreh'] + ':' + result['scorea']+"</span></td>";
+                    html2 += "<td class='list1'><span class='font01'>"+ result['away'] +"</span></td>";
+                    html2 += "<td class='list1'><span class='font05'>"+type+"</span></td>";
+                    html2 += "<td class='list1'><span class='font06'>"+getResultByName(result['res'])+"</span></td>";
                 html2+= "</tr>";
             }
             $('#game_result').append(html2);
@@ -1113,7 +1174,7 @@
         return result;
     }
 
-    /*const showBetList = function(type) {
+    const showBetList = function(type) {
 
     	$('li[name=showList]').removeClass('mini_tab_wide_td_on');
     	$('#betHisTable').hide();
@@ -1130,7 +1191,7 @@
 			
 		}
     	
-    }*/
+    }
 </script>
 </body>
 </html>

@@ -1,35 +1,63 @@
 /*-------------------------------------------------------------------------------------*
  *  공통                                                                           *
  *-------------------------------------------------------------------------------------*/
-.aside {background:url("../../images/bg01.jpg"); position:fixed; width:100%; min-width:0px; top:0; left:0; bottom:0; box-shadow:0 5px 15px rgba(0, 0, 0, 0.5); width:0px; overflow:hidden; transition:0.35s width ease, 0.35s min-width ease; z-index:2000; overflow-y:scroll;   -webkit-overflow-scrolling:touch;}
-.aside.in {width: 100%; min-width:320px;}
-.aside_wrap {float:left; width:100%; height:1500px; -webkit-overflow-scrolling:touch;}
-
-.aside_top_wrap {width:100%; height:70px; line-height:70px; background:#333333; border-bottom:2px solid #009dd9; padding:0 2% 0 2%;}
-.aside_top_left {float:left;}
-.aside_top_right {float:right; cursor:pointer;}
-
-.aside2 {background:url("../../images/bg01.jpg"); position:fixed; width:100%; min-width:0px; top:0; right:0; bottom:0; box-shadow:0 5px 15px rgba(0, 0, 0, 0.5); width:0px; overflow:hidden; transition:0.35s width ease, 0.35s min-width ease; z-index:2000;   overflow-y:scroll; -webkit-overflow-scrolling:touch;}
-.aside2.in {width: 100%; min-width:320px;}
-
-.aside2_box1_wrap {float:left; width:100%;}
-.aside2_box1 {float:left; width:100%;  background:#222222; border-bottom:1px solid rgba(255,255,255,0.1);}
-.aside2_box1 td {width:50%; height:42px; padding:5px 10px 5px 10px; border-top:1px solid rgba(255,255,255,0.1); border-left:1px solid rgba(255,255,255,0.1); font-size:12px; border-radius:2px;}
-
-.aside2_box2_wrap {float:left; width:100%;}
-.aside2_box2 {float:left; width:100%;}
-
+ .aside {background:#333333; position:fixed; width:100%; min-width:0px; top:0; left:0; bottom:0; box-shadow:0 5px 15px rgba(0, 0, 0, 0.5); width:0px; overflow:hidden; transition:0.35s width ease, 0.35s min-width ease; z-index:2000; overflow-y:scroll;   -webkit-overflow-scrolling:touch;}
+ .aside.in {width: 100%; min-width:320px;}
+ .aside_wrap {float:left; width:100%; height:1500px; -webkit-overflow-scrolling:touch;}
+ 
+ .aside_top_wrap {width:100%; height:60px; line-height:60px; background:#000000; border-bottom:2px solid #01aef0; padding:0 2% 0 2%;}
+ .aside_top_left {float:left;}
+ .aside_top_right {float:right; cursor:pointer;}
+ 
+ .aside2 {background:#141414; position:fixed; width:100%; min-width:0px; top:0; right:0; bottom:0; box-shadow:0 5px 15px rgba(0, 0, 0, 0.5); width:0px; overflow:hidden; transition:0.35s width ease, 0.35s min-width ease; z-index:2000;   overflow-y:scroll; -webkit-overflow-scrolling:touch;}
+ .aside2.in {width: 100%; min-width:320px;}
+ 
+ .aside2_box1_wrap {float:left; width:100%;}
+ .aside2_box1 {float:left; width:100%;  background:#33; border-bottom:1px solid rgba(255,255,255,0.1);}
+ .aside2_box1 td {width:50%; height:42px; padding:5px 10px 5px 10px; border-top:1px solid rgba(255,255,255,0.1); border-left:1px solid rgba(255,255,255,0.1); font-family:'Nanum Gothic'; font-weight:300; color:#b9b9b9; font-size:12px; border-radius:2px;}
+ 
+ .aside2_box2_wrap {float:left; width:100%;}
+ .aside2_box2 {float:left; width:100%;}
+ 
 /*-------------------------------------------------------------------------------------*
  *  좌측메뉴                                                                           *
  *-------------------------------------------------------------------------------------*/
-.aside_btn3  {background:rgba(0,0,0,0.2); color:#ffffff; border-bottom:1px solid rgba(255,255,255,0.1); width:100%; height:64px; line-height:64px; display:inline-block; font-size:16px; font-weight:500; font-family:'GmarketSans'; text-shadow:2px 1px 1px rgba(0,0,0,0.8); padding:0 0 0 20px;}
+.menu_acc_c {  width:100%; height:52px; line-height:52px; display:block ;text-align:left; padding:0 3% 0 3%; background:#1a1a1a; border-bottom:solid 1px #404040; font-size:16px; font-weight:500;}
+.menu_acc_c a{ width:100%; height:52px; line-height:52px; display:inline-block ; text-align:left; font-size:16px; font-weight:500; font-family:'Nanum Gothic'; color:#ffffff; transition:all 0.5s;}
+.menu_acc_c:hover{border-bottom:1px solid #01aef0;}
+.menu_acc_c:hover a{color:#01aef0;}
+.menu_acc_n {  width:100%; height:52px; line-height:52px; display:block ;text-align:left; padding:0 3% 0 3%; background:#131313; border-bottom:solid 1px #404040; font-size:16px; font-weight:500;}
+.menu_acc_n a{ width:100%; height:52px; line-height:52px; display:inline-block ; text-align:left; font-size:16px; font-weight:500; font-family:'Nanum Gothic'; color:#ffffff; transition:all 0.5s;}
+.menu_acc_n:hover{border-bottom:1px solid #01aef0;}
+.menu_acc_n:hover a{color:#01aef0;}
+
+.menu_acc_d {  width:100%; height:52px; line-height:52px; display:block ;text-align:left; padding:0 3% 0 3%; background:#000000; border-bottom:solid 1px #404040; font-size:16px; font-weight:500;}
+.menu_acc_d a { width:100%; height:52px; line-height:52px; display:inline-block ; text-align:left; font-size:16px; font-weight:500; font-family:'Nanum Gothic'; color:#ffffff; transition:all 0.5s;}
+.menu_accordion {list-style:none; padding:0;}
+.menu_accordion li .menu_acc_h {position: relative; background:#1a1a1a; border-bottom:solid 1px #404040; line-height:52px; font-size:14px;font-weight:500; transition:all 0.5s;}
+.menu_accordion span.menu_acc_h {width:100%; height:52px;line-height:52px; display:block ;}
+.menu_accordion span.menu_acc_h a{width:94%; height:52px;line-height:52px; display:inline-block ; text-align:left; margin:0 3% 0 3%; font-size:16px; font-weight:500; font-family:'Nanum Gothic'; color:#ffffff; position:relative;}
+.menu_accordion span:hover{border-bottom:1px solid #01aef0;}
+.menu_accordion span:hover a{color:#01aef0;}
+.menu_accordion span.active{border-bottom:1px solid #01aef0;}
+.menu_accordion span.active a{color:#01aef0;}
+.menu_accordion li div.menu_acc_b {display: none;}
+.menu_acc_b_in li {text-align:left;}
+
+.menu_btn_4 {width:100%; height:52px;line-height:52px; font-weight:500; font-family:'Nanum Gothic'; font-size:12px; color:#ffffff; padding:0 3% 0 5%; text-align:left; font-weight:400; background:#3e3e3e; border-bottom:1px solid #404040;}
+.menu_btn_4:hover{background:#01aef0; border-bottom:1px solid #01aef0;}
+
+
+.m_game_arrow{position:absolute; right:0; top:50%; margin:-4px 0 0 0;}
 
 /*-------------------------------------------------------------------------------------*
  *  우측메뉴                                                                         *
  *-------------------------------------------------------------------------------------*/
-.aside_btn1  {background:rgba(0,0,0,0.2); color:#ffffff; border-bottom:1px solid rgba(255,255,255,0.1); width:100%; height:54px; line-height:54px; display:inline-block; font-size:16px; font-weight:500; font-family:'GmarketSans'; text-shadow:2px 1px 1px rgba(0,0,0,0.8); padding:0 0 0 30px;}
-.aside_btn2  {background:rgba(0,0,0,0.0); color:#ffffff; width:100%; height:60px; line-height:60px; display:inline-block; font-size:16px; font-weight:500; font-family:'GmarketSans'; padding:0 0 0 25px;}
-
+ .aside_btn1  {background:#282828; color:#ffffff; border:1px solid rgba(255,255,255,0.1); width:100%; height:50px; line-height:54px; display:inline-block; font-size:16px; font-weight:500; font-family:'Nanum Gothic'; text-align: center;}
+ .aside_btn2  {background:#404040; color:#ffffff; border:1px solid rgba(255,255,255,0.1); width:100%; height:50px; line-height:54px; display:inline-block; font-size:16px; font-weight:500; font-family:'Nanum Gothic'; text-align: center;}
+ 
+ 
+ .aside2_box2_title {line-height:36px; color:#ffffff; font-family:'Nanum Gothic'; font-size:16px; font-weight:300; padding:15px 0 0 3px;}
 
 
 

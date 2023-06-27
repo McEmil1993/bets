@@ -31,24 +31,24 @@ function changeWillWinMoney() {
     
     // 클래식은 $(document).find(".odds_3_folder_bonus") 로 체크필요
     if (betSlipCount >= 3) {
-        //bonus_odds = +odds_3_folder_bonus;
-        bonus_odds = +1.03;
+        bonus_odds = +odds_3_folder_bonus;
+        // bonus_odds = +1.03;
     }
     if (betSlipCount >= 4) {
-        //bonus_odds = +odds_4_folder_bonus;
-        bonus_odds = +1.03;
+        bonus_odds = +odds_4_folder_bonus;
+        // bonus_odds = +1.03;
     }
     if (betSlipCount >= 5) {
-        //bonus_odds = +odds_5_folder_bonus;
-        bonus_odds = +1.05;
+        bonus_odds = +odds_5_folder_bonus;
+        // bonus_odds = +1.05;
     }
     if (betSlipCount >= 6) {
-        //bonus_odds = +odds_6_folder_bonus;
-        bonus_odds = +1.05;
+        bonus_odds = +odds_6_folder_bonus;
+        // bonus_odds = +1.05;
     }
     if (betSlipCount >= 7) {
-        //bonus_odds = +odds_7_folder_bonus;
-        bonus_odds = +1.07;
+        bonus_odds = +odds_7_folder_bonus;
+        // bonus_odds = +1.07;
     }
     
     for (let slip of betSlip) {
@@ -259,7 +259,7 @@ function initForm() {
 
 // 금액 버튼
 function setBettingMoney(money, userMoney) {
-    userMoney = userMoney ? userMoney : Nummber(format_remove($('.util_money').text()));
+    userMoney = userMoney ? userMoney : Number(format_remove($('.util_money').text()));
     // userMoney = $('.util_money').text();
     // userMoney = userMoney.replace(/,/gi,"");
 
@@ -732,9 +732,13 @@ function openBetData(fixture_id){
         target.find(".sports_s_right").addClass("active");
         target.addClass("active");
     } else {
-        // console.log("자신클릭");
-        target.find(".sports_s_right").removeClass("active");
-        target.removeClass("active");
+        var full_window_width = window.outerWidth;
+
+        if(full_window_width <= 1240){
+            target.find(".sports_s_right").removeClass("active");
+            target.removeClass("active");
+
+        }
     }
 
     // PC click
@@ -776,6 +780,7 @@ function openBetData(fixture_id){
         let gameSportsId = response['data']['gameSportsId'];
         let teamName = '';
         let fixtureTime = '';
+        counts = 0
         const today = new Date();
         for (const[key, fixture_list] of Object.entries(list)) {
             //let arrMenuKey = Object.keys(fixture_list);
@@ -838,6 +843,8 @@ function openBetData(fixture_id){
                         setSportsBackGroundColor(gameSportsId, fixture_id);
 
                         // 데이터가 있으면 표기
+                        counts = counts + 1
+                        console.log($sportsLineColor,marketsName)
                         if(Object.keys(game_list[firstKey]['bet_data']).length > 0){
                             // 마켓명 표기
                             if((marketKey != 1 && marketKey != 52 && marketKey != 226) || !mobileCheck()){
@@ -1148,8 +1155,7 @@ function openBetData(fixture_id){
                                             }
                                             
                                             //총득점 홀짝
-                                            if (game['markets_id'] == 5 || game['markets_id'] == 51 
-                                                    || game['markets_id'] == 1326 || game['markets_id'] == 1327 || game['markets_id'] == 1328 || game['markets_id'] == 1332) {
+                                            if (game['markets_id'] == 5 || game['markets_id'] == 51) {
                                                 classWidth = 'w50';
                                             }
 
@@ -1541,8 +1547,7 @@ function openBetData(fixture_id){
                                             display_bet_name = betNameToDisplay_new(betData['bet_name'], game['markets_id']);
 
                                             //총득점 홀짝
-                                            if (game['markets_id'] == 5 || game['markets_id'] == 51 
-                                                    || game['markets_id'] == 1326 || game['markets_id'] == 1327 || game['markets_id'] == 1328 || game['markets_id'] == 1332) {
+                                            if (game['markets_id'] == 5 || game['markets_id'] == 51) {
                                                 classWidth = 'w50';
                                             }
                                             
@@ -1615,7 +1620,7 @@ function openBetData(fixture_id){
             // 더보기 메뉴빼고 반복
             // 하나의 경기안에 메뉴별로 루프
             } // 모바일 더보기
-            html += "</li>";  // sports_dd_p
+            html += "</li>";
 
             $(document).find(".dropdown3 li").remove();
             if(isMobile){
@@ -1627,6 +1632,7 @@ function openBetData(fixture_id){
             }else{
                 // $(".dropdown3 li").remove();
                 $(".dropdown3").append(html);
+                
             }
             // 경기선택 처리
             $("#fixture_row_"+selectFixtureId).removeClass('bet_list1_wrap_on');
@@ -1637,8 +1643,6 @@ function openBetData(fixture_id){
             // 베팅슬립에 있는 베팅이면 선택표시를 해준다.
             moreDisplaySelect();
             fnSortBetting();
-            //console.log(arrMenuKey.length);
-
         }
 
         contentHeight();
@@ -1965,7 +1969,7 @@ const bettingSlipMoneyBlur = function(){
     
     let totalMax = Infinity;
     if (!betSlip || !betSlip[0]) {
-        $('#betting_slip_money').val(userInputBetBefore);
+        $('#betting_slip_money').val("0");
         changeWillWinMoney();
         sessionStorage.removeItem('userInputBet');
         alert(`경기를 선택해주세요.`);
@@ -2061,34 +2065,31 @@ const oddsBtn = function(){
 
 // 종목별 마켓 라인 색상구하기  ea8d8d
 const setSportsBackGroundColor = function(gameSportsId, fixture_id){
-	
-	// $(".bettingInfo").css('backgroundColor','');
-	$(".bettingInfo").css('border','');
+
+	$(".bettingInfo").css('border','1px solid #3d3d3d');
+    $(".bettingInfo").css('background','#313639');
+
     let sportsColor = '';
     switch(Number(gameSportsId)){
-        case 6046: // 축구
-            $("#fixture_row_"+fixture_id).css('border','solid 1px #009dd9');
+        case 6046:
+            $("#fixture_row_"+fixture_id).css('border','2px solid #134E5E');
             break;
-        case 48242:
-            $("#fixture_row_"+fixture_id).css('border','solid 1px #009dd9');
+        case 48242: 
+            $("#fixture_row_"+fixture_id).css('border','2px solid #414d0b');
             break;
         case 154914:
-            $("#fixture_row_"+fixture_id).css('border','solid 1px #009dd9');
+            $("#fixture_row_"+fixture_id).css('border','2px solid #B79891');
             break;
         case 154830:
-            $("#fixture_row_"+fixture_id).css('border','solid 1px #009dd9');
+            $("#fixture_row_"+fixture_id).css('border','2px solid #536976');
             break;
         case 35232:
-            $("#fixture_row_"+fixture_id).css('border','solid 1px #009dd9');
+            $("#fixture_row_"+fixture_id).css('border','2px solid #15627f');
             break;
         case 687890:
-            $("#fixture_row_"+fixture_id).css('border','solid 1px #009dd9');
+            $("#fixture_row_"+fixture_id).css('border','2px solid #5f2c82');
             break;
         case 154919:
-            $("#fixture_row_"+fixture_id).css('border','solid 1px #009dd9');
-            break;
-        case 54094:
-            $("#fixture_row_"+fixture_id).css('border','solid 1px #009dd9');
             break;
         default :
     }

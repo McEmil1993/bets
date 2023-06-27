@@ -28,6 +28,7 @@ try {
         }
 
         $srch_level = trim(isset($_REQUEST['srch_level']) ? $_REQUEST['srch_level'] : 0);
+        $dist_type = trim(isset($_REQUEST['dist_type']) ? $_REQUEST['dist_type'] : -1);
 
         $p_data['sql_where'] = 'WHERE 1 = 1 ';
 
@@ -41,6 +42,13 @@ try {
             $p_data['sql_where'] .= " AND a.u_business= $srch_level";
             $where_new = " AND parent.u_business = ? ";
             $param_where_new[] = $srch_level;
+        }
+        
+        // dist type
+        if (($dist_type >= 0)) {
+            $p_data['sql_where'] .= " AND a.dist_type = $dist_type";
+            //$where_new = " AND dist_type = ? ";
+            //$param_where_new[] = $srch_level;
         }
         //$p_data['sql_where'] .= $srch_basic;
         $p_data['sql'] .= $p_data['sql_where'];
@@ -221,6 +229,23 @@ include_once(_BASEPATH . '/common/head.php');
                                     </select>
 
                                 </div>
+                                
+                                <div class="" style="padding-right: 10px;">
+
+                                    <select name="dist_type" id="dist_type">
+                                        <option value="-1" <?php if (-1 == $dist_type){echo "selected";} ?>>전체</option>
+                                        <?php
+                                        if (!empty($db_dist_types)) {
+                                            foreach ($db_dist_types as $row) {
+                                                $id = $row['id'];
+                                                $name = $row['name'];
+                                        ?>
+                                        <option value="<?= $id ?>" <?php if ($id == $dist_type) {echo "selected";} ?>><?= $name ?></option>
+                                            <?php }
+                                        } ?>
+                                    </select>
+
+                                </div>
 
                                 <div><a href="javascript:goSearch();" class="btn h30 btn_red">검색</a></div>
                             </div>
@@ -343,7 +368,7 @@ if ($total_cnt > 0) {
                             <?php
                             $reqFile = basename($_SERVER['REQUEST_URI'], '?' . $_SERVER['QUERY_STRING']);
                             //$default_link = "$reqFile?srch_key=" . $p_data['srch_key'] . "&srch_val=" . $p_data['srch_val'] . "&srch_level=" . $srch_level . "";
-                            $default_link = "$reqFile?srch_level=" . $srch_level . "";
+                            $default_link = "$reqFile?srch_level=" . $srch_level . "&dist_type=" . $dist_type . "";
                             include_once(_BASEPATH . '/common/page_num.php');
                             ?>                
                     </div>

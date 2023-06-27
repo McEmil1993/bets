@@ -5,9 +5,8 @@ header('Expires: 0'); // Proxies.
 header('Content-Type: text/html; charset=UTF-8');
 
 include_once($_SERVER['DOCUMENT_ROOT'].'/_LIB/base_config.php');
-
 include_once(_BASEPATH.'/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH.'/class_Admin_Bbs_dao.php');
 
 //$MEMAdminDAO = new Admin_Member_DAO(_DB_NAME_WEB);
@@ -17,6 +16,8 @@ $db_conn = $BdsAdminDAO->dbconnect();
 $idx = $BdsAdminDAO->real_escape_string($_POST['idx']);
 $msg_title = $BdsAdminDAO->real_escape_string($_POST['msg_title']);
 $msg_content = $BdsAdminDAO->real_escape_string(urldecode($_POST['msg_content']));
+$pdf_attachment = urldecode($_POST['pdf_attachment']);
+
 //$msg_content = str_replace("nbsp", "&nbsp;", $msg_content);
 // $msg_content = str_replace("&nbsp;", "", $msg_content);
 //$msg_content = addslashes(str_replace("&amp;", "", $msg_content));
@@ -24,7 +25,7 @@ $msg_content = $BdsAdminDAO->real_escape_string(urldecode($_POST['msg_content'])
 //$p_data['aid'] = 'asdf';
 
 if($db_conn) {
-    $p_data['sql'] = "update menu_board set title = '$msg_title', contents = '$msg_content' where idx = $idx";
+    $p_data['sql'] = "update menu_board set title = '$msg_title', contents = '$msg_content', pdf_attachment='$pdf_attachment' where idx = $idx";
 	
     $BdsAdminDAO->setQueryData($p_data);
 

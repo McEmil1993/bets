@@ -4,15 +4,15 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/_LIB/base_config.php');
 include_once(_BASEPATH . '/common/_common_inc_class.php');
 include_once(_DAOPATH . '/class_Admin_Common_dao.php');
 include_once(_DAOPATH . '/class_Admin_Member_dao.php');
-//////// login check start
-include_once(_BASEPATH . '/common/login_check.php');
-//////// login check end
 
 $UTIL = new CommonUtil();
 
 if(0 != $_SESSION['u_business']){
     die();
 }
+//////// login check start
+include_once(_BASEPATH . '/common/login_check.php');
+//////// login check end
 
 $MEMAdminDAO = new Admin_Member_DAO(_DB_NAME_WEB);
 $db_conn = $MEMAdminDAO->dbconnect();
@@ -61,13 +61,11 @@ if ($db_conn) {
                 $srch_basic = " b.dis_line_id='" . $p_data['srch_val'] . "' ";
             }
             break;
-
         case "ip":
             if ($p_data['srch_val'] != '') {
                 $srch_basic = " a.ip like '%" . $p_data['srch_val'] . "%' ";
             }
         break;
-    
     }
 
     $p_data['sql'] = " SELECT COUNT(*) AS CNT FROM member_login_history a ";
@@ -196,7 +194,7 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                                         } ?>>총판라인</option>
                                         <option value="ip" <?php if ($p_data['srch_key'] == 'ip') {
                                             echo "selected";
-                                        } ?>>IP검색</option>     
+                                        } ?>>IP검색</option>      
                                     </select>
                                 </div>
 
@@ -257,11 +255,11 @@ include_once(_BASEPATH . '/common/iframe_head_menu.php');
                                             </td>
                                             <td><?= $db_status ?></td>
                                             <td style='text-align:left'><?= $row['login_domain'] ?></td>
-                                            <td style='text-align:left'><?= $row['country'] != '필리핀' ? $row['ip']:'x.x.x.x' ?></td>
-                                            <td style='text-align:left'><?= $row['country'] != '필리핀' ? $row['country']:'' ?></td>
+                                            <td style='text-align:left'><?= $row['ip'] ?></td>
+                                            <td style='text-align:left'><?= $row['country'] ?></td>
                                             <td><?= $row['login_datetime'] ?></td>
                                             <td>
-                                                <a href="javascript:;" class="btn h25 btn_blu" onClick="popupWinPost('/member_w/pop_userinfo.php', 'popuserinfo', 800, 1400, 'userinfo', '<?= $db_m_idx ?>');">로그인 로그</a>
+                                                <a href="javascript:;" class="btn h25 btn_blu" onClick="popupWinPost('/member_w/pop_userinfo.php', 'popuserinfo', 800, 1400, 'userinfo', '<?= $db_m_idx ?>','3');">로그인 로그</a>
                                                 <?php
                                                 if ($row['bip'] == '') {
                                                     ?>

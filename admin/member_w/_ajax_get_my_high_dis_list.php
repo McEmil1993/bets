@@ -6,7 +6,7 @@ header('Content-Type: text/html; charset=UTF-8');
 
 include_once($_SERVER['DOCUMENT_ROOT'].'/_LIB/base_config.php');
 include_once(_BASEPATH.'/common/_common_inc_class.php');
-include_once(_BASEPATH.'/common/auth_check.php');
+include_once(_BASEPATH . '/common/auth_check.php');
 include_once(_DAOPATH.'/class_Admin_Bbs_dao.php');
 
 // 내가 속할수 있는 총판리스트를 가져온다.
